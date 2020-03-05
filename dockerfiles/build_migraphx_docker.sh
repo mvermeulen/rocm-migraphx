@@ -13,6 +13,12 @@ if [ `id -u` != 0 ]; then
     exit 0
 fi
 
-docker build -t rocm-migraphx:${ROCM_RELEASE} -f dockerfile \
-       --build-arg ROCM_BASE=${ROCM_BASE} \
+DOCKERFILE=dockerfile.`date '+%Y-%m-%d'`
+
+# use sed to create updated dockerfile.  Some might work with ARGs but
+# had difficulties with substitutions
+sed -e "s?ROCM_RELEASE?${ROCM_RELEASE}?g" \
+    -e "s?ROCM_BASE?${ROCM_BASE}?g" dockerfile > $DOCKERFILE
+
+docker build -t rocm-migraphx:${ROCM_RELEASE} -f $DOCKERFILE \
        .
