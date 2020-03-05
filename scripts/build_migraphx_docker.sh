@@ -13,6 +13,7 @@ if [ `id -u` != 0 ]; then
     exit 0
 fi
 
+cd ../dockerfiles
 DOCKERFILE=dockerfile.`date '+%Y-%m-%d'`
 
 # use sed to create updated dockerfile.  Some might work with ARGs but

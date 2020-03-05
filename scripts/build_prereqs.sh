@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Build MIGraphX prerequisites for current environment
+# Build MIGraphX prerequisites for docker container
 
 # pybind11
 cd /src
@@ -35,7 +35,5 @@ cd ..
 rm blaze-3.5.tar.gz
 
 # half
-cd /src
-git clone https://github.com/pfultz/half/archive/1.12.tar.gz
-tar xf 1.12.0.tar.gz
+# already copied by dockerfile
 
