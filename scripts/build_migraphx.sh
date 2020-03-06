@@ -9,4 +9,3 @@ mkdir build
 cd build
 env CXX=/opt/rocm/bin/hcc CXXFLAGS="-O3" cmake ..
 make -j4
-make check
