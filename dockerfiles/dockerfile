@@ -9,4 +9,5 @@ RUN cd /src && git clone https://github.com/ROCmSoftwarePlatform/AMDMIGraphX
 RUN cd /src && git clone https://github.com/mvermeulen/rocm-migraphx
 RUN cd /src/rocm-migraphx/scripts && ./build_prereqs.sh
 COPY half.hpp /usr/local/include/half.hpp
+ENV LD_LIBRARY_PATH=/usr/local/lib:
 RUN cd /src/rocm-migraphx/scripts && ./build_migraphx.sh
