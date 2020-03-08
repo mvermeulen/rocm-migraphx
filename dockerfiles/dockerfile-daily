@@ -1,4 +1,4 @@
 ARG DOCKERBASE=rocm-migraphx:3.1
-FROM DOCKERBASE
+FROM $DOCKERBASE
 RUN cd /src/AMDMIGraphX && git pull
-RUN cd /src/rocm-migraphx/scripts && ./build_migraphx
+RUN cd /src/AMDMIGraphX && /src/rocm-migraphx/scripts/build_migraphx.sh
