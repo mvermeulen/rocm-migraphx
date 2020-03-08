@@ -2,7 +2,7 @@
 #
 # build migraphx in docker container
 cd /src/AMDMIGraphX
-if [ -f build ]; then
+if [ -d build ]; then
     rm -rf build
 fi
 mkdir build
