@@ -6,3 +6,6 @@ else
     git pull
     cd ..
 fi
+cd tensorflow
+git checkout v1.13.1
+
