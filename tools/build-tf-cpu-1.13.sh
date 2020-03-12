@@ -3,8 +3,10 @@ if [ ! -d tensorflow ]; then
     git clone https://github.com/tensorflow/tensorflow
     cd tensorflow
     git checkout v1.13.1
+    cd ..
 fi
 
+cd tensorflow
 ./configure <<CMDS
 /usr/bin/python3
 
