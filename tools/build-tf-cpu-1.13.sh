@@ -1,11 +1,22 @@
 #!/bin/bash
 if [ ! -d tensorflow ]; then
     git clone https://github.com/tensorflow/tensorflow
-else
     cd tensorflow
-    git pull
-    cd ..
+    git checkout v1.13.1
 fi
-cd tensorflow
-git checkout v1.13.1
 
+./configure <<CMDS
+/usr/bin/python3
+
+
+
+
+
+
+
+
+
+
+CMDS
+
+bazel build --jobs 4 --config=opt //tensorflow/tools/pip_package:build_pip_package
