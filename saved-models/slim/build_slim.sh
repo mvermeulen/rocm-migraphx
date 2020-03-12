@@ -2,6 +2,7 @@
 #
 # Build frozen protobuf for models from http://github.com/tensorflow/models
 # in the research/slim subdirectory
+# Note: Slim models seem to work with TF 1.12
 if [ ! -d models ]; then
     git clone https://github.com/tensorflow/models
 else
