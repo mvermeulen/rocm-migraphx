@@ -1,0 +1,5 @@
+# dockerfile for saving models includes both PyTorch and Tensorflow
+#
+FROM rocm/tensorflow:rocm3.1-tf1.15-dev
+RUN pip3 install torch
+RUN pip3 install pretrainedmodels
