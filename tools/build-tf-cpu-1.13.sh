@@ -27,5 +27,6 @@ cd tensorflow
 CMDS
 
 bazel build --jobs 4 --config=opt //tensorflow/tools/pip_package:build_pip_package
+./bazel-bin/tensorflow/tools/pip_package/build_pip_package ./tensorflow_pkg
 bazel build tensorflow/python/tools:freeze_graph
 bazel build tensorflow/tools/graph_transforms:summarize_graph
