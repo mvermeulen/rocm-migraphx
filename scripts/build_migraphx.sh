@@ -7,5 +7,5 @@ if [ -d build ]; then
 fi
 mkdir build
 cd build
-env CXX=/opt/rocm/bin/hcc CXXFLAGS="-O3" cmake ..
+env CXX=/opt/rocm/bin/hcc CXXFLAGS="-O3 -fno-gpu-rdc" cmake ..
 make -j4
