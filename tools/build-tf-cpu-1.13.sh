@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# Build version of TF from source so it can freeze slim graphs
+#
+# Prerequisites: bazel 19.2
+#                pip: keras_preprocessing
 if [ ! -d tensorflow ]; then
     git clone https://github.com/tensorflow/tensorflow
     cd tensorflow
