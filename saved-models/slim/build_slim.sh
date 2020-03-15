@@ -7,6 +7,7 @@ EXPORT_GRAPH=${EXPORT_GRAPH:="../models/research/slim/export_inference_graph.py"
 FREEZE_GRAPH=${FREEZE_GRAPH:="../../../tools/tensorflow/bazel-bin/tensorflow/python/tools/freeze_graph"}
 if [ ! -d models ]; then
     git clone https://github.com/tensorflow/models
+    git checkout r1.13.0
 else
     cd models
     git pull

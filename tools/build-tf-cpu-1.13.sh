@@ -7,7 +7,7 @@
 if [ ! -d tensorflow ]; then
     git clone https://github.com/tensorflow/tensorflow
     cd tensorflow
-    git checkout v1.13.0-rc2
+    git checkout v1.13.2
     cd ..
 fi
 
