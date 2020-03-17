@@ -1,0 +1,12 @@
+diff --git a/examples/run_glue.py b/examples/run_glue.py
+index 57d1c56a..8401e673 100644
+--- a/examples/run_glue.py
++++ b/examples/run_glue.py
+@@ -327,6 +327,7 @@ def evaluate(args, model, tokenizer, prefix=""):
+         for batch in tqdm(eval_dataloader, desc="Evaluating"):
+             model.eval()
+             batch = tuple(t.to(args.device) for t in batch)
++            torch.onnx.export(model,(batch[0],batch[1],batch[2]),'bert_'+args.task_name.lower()+str(args.eval_batch_size)+'.onnx',verbose=True)
+ 
+             with torch.no_grad():
+                 inputs = {"input_ids": batch[0], "attention_mask": batch[1], "labels": batch[3]}

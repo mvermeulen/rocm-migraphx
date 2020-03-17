@@ -4,6 +4,9 @@ GLUE_TASK=${GLUE_TASK:="MRPC"}
 
 if [ ! -d transformers ]; then
     git clone https://github.com/huggingface/transformers
+    cd transformers/examples
+    git apply ../../run_glue.diff
+    cd ../..
 else
     cd transformers
     git pull
@@ -24,8 +27,5 @@ python3 run_glue.py \
 	--task_name ${GLUE_TASK} \
 	--do_eval \
 	--do_train \
-	--output_dir ./checkpoint/${GLUE_TASK} \
-	--data_dir ../../../../datasets/glue/glue_data
-
-    
-       
+	--output_dir ./checkpoint/ \
+	--data_dir ../../../../datasets/glue/glue_data/${GLUE_TASK}
