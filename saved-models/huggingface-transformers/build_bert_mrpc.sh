@@ -31,6 +31,7 @@ if [ ! -f bert_mrpc1.onnx ]; then
 	    --output_dir ./checkpoint/ \
 	    --data_dir ../../../../datasets/glue/glue_data/${GLUE_TASK}
     cp bert_mrpc1.onnx ../..
+    rm -rf checkpoint
 fi
 
 if [ ! -f bert_mrpc8.onnx ]; then
@@ -44,5 +45,6 @@ if [ ! -f bert_mrpc8.onnx ]; then
 	    --output_dir ./checkpoint/ \
 	    --data_dir ../../../../datasets/glue/glue_data/${GLUE_TASK}
     cp bert_mrpc8.onnx ../..
+    rm -rf checkpoint    
 fi
 
