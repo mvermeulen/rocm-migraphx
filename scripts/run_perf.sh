@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 # saved model directory mounted to the docker image
-SAVED_MODELS=${SAVED_MODELS:="/media/mev/EXTRA/rocm-migraphx/saved-models"}
-TEST_RESULTDIR=${TEST_RESULTDIR:="/media/mev/EXTRA/rocm-migraphx/test-results"}
+SAVED_MODELS=${SAVED_MODELS:="../saved-models"}
+TEST_RESULTDIR=${TEST_RESULTDIR:="../test-results"}
 
 DRIVER=${DRIVER:="/src/AMDMIGraphX/build/bin/driver"}
 
