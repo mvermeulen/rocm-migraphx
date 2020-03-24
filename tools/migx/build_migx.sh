@@ -6,5 +6,5 @@ if [ -d build ]; then
 fi
 mkdir build
 cd build
-env CXXFLAGS=-v cmake ..
+cmake ..
 make
