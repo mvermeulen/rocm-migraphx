@@ -6,4 +6,4 @@ if [ `id -u` != 0 ]; then
     exit 0
 fi
 cd ../dockerfiles
-docker build -t rocm-migraphx:${DATESTAMP} --build-arg DOCKERBASE=${BASE} -f ../dockerfiles/dockerfile-daily .
+docker build -t rocm-migraphx:${DATESTAMP} --no-cache --build-arg DOCKERBASE=${BASE} -f ../dockerfiles/dockerfile-daily .

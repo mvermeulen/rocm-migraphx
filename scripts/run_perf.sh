@@ -28,8 +28,8 @@ torchvision-densenet121      32 torchvision/densenet121i32.onnx
 torchvision-densenet121      32 torchvision/densenet121i32.onnx --fp16
 cadene-dpn92                 32 cadene/dpn92i32.onnx
 cadene-fbresnet152           32 cadene/fbresnet152i32.onnx
-torchvision-inceptionv3	     32 torchvision/inceptionv3i32.onnx
-torchvision-inceptionv3_fp16 32 torchvision/inceptionv3i32.onnx --fp16
+torchvision-inceptionv3	     32 torchvision/inceptioni32.onnx
+torchvision-inceptionv3_fp16 32 torchvision/inceptioni32.onnx --fp16
 cadene-inceptionv4           16 cadene/inceptionv4i16.onnx
 cadene-resnext64x4           16 cadene/resnext101_64x4di16.onnx
 torchvision-vgg16            16 torchvision/vgg16i16.onnx
