@@ -2,7 +2,7 @@
 #
 # saved model directory mounted to the docker image
 SAVED_MODELS=${SAVED_MODELS:="../saved-models"}
-TEST_RESULTDIR=${TEST_RESULTDIR:="../test-results"}
+TEST_RESULTDIR=${TEST_RESULTDIR:="../../test-results"}
 
 DRIVER=${DRIVER:="/src/AMDMIGraphX/build/bin/driver"}
 
@@ -41,12 +41,10 @@ slim-nasnetalarge            16 slim/nasnet_i16.pb
 slim-resnet50v2              64 slim/resnet50v2_i64.pb
 MODELLIST
 
-MIGX=${MIGX:="../tools/migx/build/migx"}
+MIGX=${MIGX:="../../tools/migx/build/migx"}
 ${MIGX} --zero_input --onnx $SAVED_MODELS/pytorch-examples/wlang_gru.onnx --perf_report --argname=input.1 > wlang_gru.out
 time=`grep 'Total time' wlang_gru.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
 echo "pytorchexamples-wlang-gru,1,$time" |  | tee -a results.csv
 ${MIGX} --zero_input --onnx $SAVED_MODELS/pytorch-examples/wlang_lstm.onnx --perf_report --argname=input.1 > wlang.lstm.out
 time=`grep 'Total time' wlang_lstm.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
 echo "pytorchexamples-wlang-lstm,1,$time" |  | tee -a results.csv
-
-
