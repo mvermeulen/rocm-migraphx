@@ -2,7 +2,7 @@
 #
 # Build frozen protobuf for models from http://github.com/tensorflow/models
 # in the research/slim subdirectory
-# Note: Slim models seem to work with TF 1.12
+# Note: Slim models seem to work with TF 1.13.2
 EXPORT_GRAPH=${EXPORT_GRAPH:="../models/research/slim/export_inference_graph.py"}
 FREEZE_GRAPH=${FREEZE_GRAPH:="../../../tools/tensorflow/bazel-bin/tensorflow/python/tools/freeze_graph"}
 SUMMARIZE_GRAPH=${SUMMARIZE_GRAPH:="../../../tools/tensorflow/bazel-bin/tensorflow/tools/graph_transforms/summarize_graph"}
@@ -116,7 +116,7 @@ if [ ! -f mobilenet_i1.pb -o ! -f mobilenet_i64.pb ]; then
 fi
 
 # NASNetALarge
-if [ ! -f nasnet_i1.pb -o ! -f nasnet_i16.pb ]; then
+if [ ! -f nasnet_i1.pb -o ! -f nasnet_i64.pb ]; then
     if [ -d nasnet ]; then
 	rm -rf nasnet
     fi
@@ -124,9 +124,9 @@ if [ ! -f nasnet_i1.pb -o ! -f nasnet_i16.pb ]; then
     cd nasnet
     tar xf ../nasnet-a_large_04_10_2017.tar.gz
     python3 ${EXPORT_GRAPH} --model_name=nasnet_large --output_file=./nasnet_model1.pb --batch_size=1
-    python3 ${EXPORT_GRAPH} --model_name=nasnet_large --output_file=./nasnet_model16.pb --batch_size=16
+    python3 ${EXPORT_GRAPH} --model_name=nasnet_large --output_file=./nasnet_model64.pb --batch_size=64
     ${SUMMARIZE_GRAPH} --in_graph=nasnet_model1.pb > ./nasnet_model1.sum
-    ${SUMMARIZE_GRAPH} --in_graph=nasnet_model16.pb > ./nasnet_model16.sum
+    ${SUMMARIZE_GRAPH} --in_graph=nasnet_model64.pb > ./nasnet_model64.sum
     ${FREEZE_GRAPH} \
 	--input_graph=./nasnet_model1.pb \
 	--input_binary=true \
@@ -134,11 +134,11 @@ if [ ! -f nasnet_i1.pb -o ! -f nasnet_i16.pb ]; then
 	--output_node_names=final_layer/predictions \
 	--output_graph=../nasnet_i1.pb
     ${FREEZE_GRAPH} \
-	--input_graph=./nasnet_model16.pb \
+	--input_graph=./nasnet_model64.pb \
 	--input_binary=true \
 	--input_checkpoint=./model.ckpt \
 	--output_node_names=final_layer/predictions \
-	--output_graph=../nasnet_i16.pb
+	--output_graph=../nasnet_i64.pb
     cd ..
 fi
 
