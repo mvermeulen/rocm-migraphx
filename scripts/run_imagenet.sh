@@ -10,7 +10,7 @@ do
 	continue
     fi
     echo $tag
-    echo ${MIGX} --imagenet ${IMAGENET} $typeopt ${MODELDIR}/$model $opts 2>${tag}.err | tee ${tag}.out
+    ${MIGX} --imagenet ${IMAGENET} $typeopt ${MODELDIR}/$model $opts 2>${tag}.err | tee ${tag}.out
 done<<EOF
 resnet50v2-onnx --onnx torchvision/resnet50i1.onnx --argname input.1
 inceptionv3-onnx --onnx torchvision/inceptioni1.onnx --argname input.1
