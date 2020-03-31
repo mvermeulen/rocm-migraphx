@@ -8,7 +8,7 @@ DRIVER=${DRIVER:="/src/AMDMIGraphX/build/bin/driver"}
 
 # run predefined list of test files, all these relative to SAVED_MODELS dir
 cd ${TEST_RESULTDIR}
-testdir=results-`date '+%Y-%m-%d-%H-%M'`
+testdir=perf-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
 cd $testdir
 while read tag batch savefile extra
