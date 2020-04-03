@@ -4,7 +4,7 @@ RUN rm /etc/apt/sources.list.d/rocm.list
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && apt install -y git cmake python-pip python3-pip zlib1g-dev unzip autogen autoconf libtool wget
 RUN apt update && apt install -y libnuma-dev rocm-cmake rocm-libs miopen-hip
-RUN apt update && apt install -y libopencv-dev
+RUN apt update && apt install -y libopencv-dev kmod
 RUN mkdir /src
 RUN cd /src && git clone https://github.com/ROCmSoftwarePlatform/AMDMIGraphX
 RUN cd /src && git clone https://github.com/mvermeulen/rocm-migraphx
