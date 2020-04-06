@@ -25,7 +25,7 @@ torchvision-resnet50_fp16    64 torchvision/resnet50i64.onnx --fp16
 torchvision-alexnet          64 torchvision/alexneti64.onnx
 torchvision-alexnet_fp16     64 torchvision/alexneti64.onnx --fp16
 torchvision-densenet121      32 torchvision/densenet121i32.onnx
-torchvision-densenet121      32 torchvision/densenet121i32.onnx --fp16
+torchvision-densenet121_fp16 32 torchvision/densenet121i32.onnx --fp16
 torchvision-inceptionv3	     32 torchvision/inceptioni32.onnx
 torchvision-inceptionv3_fp16 32 torchvision/inceptioni32.onnx --fp16
 torchvision-vgg16            16 torchvision/vgg16i16.onnx
