@@ -1,4 +1,4 @@
-ARG DOCKERBASE=rocm-migraphx:3.1
+ARG DOCKERBASE=rocm-migraphx:3.3
 FROM $DOCKERBASE
 RUN cd /src/AMDMIGraphX && git pull
 ENV HIP_DOCKER_WORKAROUND=1
