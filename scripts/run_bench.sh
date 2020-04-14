@@ -23,6 +23,7 @@ if [ "$RUN_MIGX" = "1" ]; then
 fi
 
 /usr/bin/python3 ${SCRIPTS}/bench.py --model resnet50v2 --batch 1 --framework tensorflow --save_file ${SAVED_MODELS}/slim/resnet50v2_i1.pb --image_file ${IMAGE} 1>resnet50v2i1_tf.out 2> resnet50v2i1_tf.err
+/usr/bin/python3 ${SCRIPTS}/bench.py --model resnet50v2 --resize_val 299 --batch 1 --framework tensorflow --save_file ${SAVED_MODELS}/onnxruntime/opset11/tf_resnet_v2_50/model.tf.pb --image_file ${IMAGE} 1>resnet50v2i1_ort_tf.out 2> resnet50v2i1_ort_tf.err
 /usr/bin/python3 ${SCRIPTS}/bench.py --model resnet50v2 --batch 64 --framework tensorflow --save_file ${SAVED_MODELS}/slim/resnet50v2_i64.pb --image_file ${IMAGE} 1>resnet50v2i64_tf.out 2> resnet50v2i64_tf.err
 
 echo "mobilenet"
@@ -34,6 +35,7 @@ if [ "$RUN_MIGX" = "1" ]; then
 fi
 
 /usr/bin/python3 ${SCRIPTS}/bench.py --model mobilenet --batch 1 --framework tensorflow --save_file ${SAVED_MODELS}/slim/mobilenet_i1.pb --image_file ${IMAGE} 1>mobileneti1_tf.out 2> mobileneti64_tf.err
+/usr/bin/python3 ${SCRIPTS}/bench.py --model mobilenet --batch 1 --framework tensorflow --save_file ${SAVED_MODELS}/onnxruntime/opset11/tf_mobilenet_v1_1.0_224/model.tf.pb --image_file ${IMAGE} 1>mobileneti1_ort_tf.out 2> mobileneti64_ort_tf.err
 /usr/bin/python3 ${SCRIPTS}/bench.py --model mobilenet --batch 64 --framework tensorflow --save_file ${SAVED_MODELS}/slim/mobilenet_i64.pb --image_file ${IMAGE} 1>mobileneti64_tf.out 2> mobileneti64_tf.err
 
 echo "inception"
@@ -45,4 +47,5 @@ if [ "$RUN_MIGX" = "1" ]; then
 fi
 
 /usr/bin/python3 ${SCRIPTS}/bench.py --model inceptionv3 --resize_val 299 --batch 1 --framework tensorflow --save_file ${SAVED_MODELS}/slim/inceptionv3_i1.pb --image_file ${IMAGE} 1>inceptionv3i1_tf.out 2> inceptionv3i1_tf.err
+/usr/bin/python3 ${SCRIPTS}/bench.py --model inceptionv3 --resize_val 299 --batch 1 --framework tensorflow --save_file ${SAVED_MODELS}/onnxruntime/opset11/tf_inception_v3/model.tf.pb --image_file ${IMAGE} 1>inceptionv3i1_ort_tf.out 2> inceptionv3i1_ort_tf.err
 /usr/bin/python3 ${SCRIPTS}/bench.py --model inceptionv3 --resize_val 299 --batch 32 --framework tensorflow --save_file ${SAVED_MODELS}/slim/inceptionv3_i32.pb --image_file ${IMAGE} 1>inceptionv3i32_tf.out 2> inceptionv3i32_tf.err
