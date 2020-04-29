@@ -3,3 +3,5 @@ FROM $DOCKERBASE
 RUN cd /src/AMDMIGraphX && git pull
 ENV HIP_DOCKER_WORKAROUND=1
 RUN cd /src/AMDMIGraphX && /src/rocm-migraphx/scripts/build_migraphx.sh
+# Add pre-tuned db
+COPY miopen /root/.config/miopen/
