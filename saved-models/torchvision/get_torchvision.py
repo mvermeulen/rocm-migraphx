@@ -43,11 +43,11 @@ def resnet152():
         torch.onnx.export(resnet152,torch.randn(batch,3,224,224),filename)
 
 def resnet():
-    resnet18()
-    resnet34()
+#    resnet18()
+#    resnet34()
     resnet50()
-    resnet101()
-    resnet152()
+#    resnet101()
+#    resnet152()
 
 def inception():
     inception = models.inception_v3(pretrained=True)
@@ -162,9 +162,9 @@ def vgg():
     vgg19()
 
 resnet()
-inception()
+#inception()
 # squeezenet gives me errors when trying to export
-squeezenet()
-alexnet()
-densenet()
-vgg()
+#squeezenet()
+#alexnet()
+#densenet()
+#vgg()
