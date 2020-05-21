@@ -48,10 +48,5 @@ RUN cd /src && git clone https://github.com/mvermeulen/rocm-migraphx
 # Install rbuild
 RUN pip3 install https://github.com/RadeonOpenCompute/rbuild/archive/master.tar.gz
 
-#RUN rbuild prepare --cxx /opt/rocm/llvm/bin/clang++ -d $PREFIX -S /src/AMDMIGraphX
-
 # Install rocm-cmake
 RUN cget -p $PREFIX install -U RadeonOpenCompute/rocm-cmake@master
-
-# Mark build as hip-clang
-RUN touch /root/hip-clang
