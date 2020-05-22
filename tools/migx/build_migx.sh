@@ -6,5 +6,9 @@ if [ -d build ]; then
 fi
 mkdir build
 cd build
-cmake ..
+if [ -f /root/hip-clang ]; then
+    cmake -DCMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ ..
+else
+    cmake ..
+fi
 make

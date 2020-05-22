@@ -50,3 +50,6 @@ RUN pip3 install https://github.com/RadeonOpenCompute/rbuild/archive/master.tar.
 
 # Install rocm-cmake
 RUN cget -p $PREFIX install -U RadeonOpenCompute/rocm-cmake@master
+
+# Mark as hip-clang
+RUN touch /root/hip-clang
