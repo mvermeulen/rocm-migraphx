@@ -7,6 +7,6 @@ if [ `id -u` != 0 ]; then
 fi
 
 cd ../dockerfiles
-DOCKERFILE=dockerfile-rocm35-12-migraphx
+DOCKERFILE=dockerfile-rocm35-migraphx
 
-docker build -t rocm-migraphx:rocm35-12-migraphx -f ${DOCKERFILE} .
+docker build -t rocm-migraphx:rocm35-migraphx -f ${DOCKERFILE} .
