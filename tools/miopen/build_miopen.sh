@@ -1,6 +1,6 @@
 #!/bin/bash
 RELEASE=${RELEASE:="2.3.0"}
-git clone https://github.com/MIOpen
+git clone https://github.com/ROCmSoftwarePlatform/MIOpen
 cd MIOpen
 git checkout $RELEASE
 cmake -P install_deps.cmake --minimum --prefix /usr/local

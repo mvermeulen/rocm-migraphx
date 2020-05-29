@@ -4,9 +4,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Add OpenCV
 RUN apt update && apt install -y libopencv-dev emacs gdb
 
-# workaround broken ROCblas
-# RUN sed -i 's/rocblas-types.h/rocblas.h/g' /src/AMDMIGraphX/src/targets/gpu/gemm_impl.cpp
-
 # Build MIGraphX
 RUN cd /src/AMDMIGraphX && git checkout master && env CXXFLAGS=-g rbuild build -d depend --cxx=/opt/rocm/llvm/bin/clang++
 RUN cd /src/AMDMIGraphX && cd build && make -j4 | tee build.log
