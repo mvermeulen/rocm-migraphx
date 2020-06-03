@@ -9,8 +9,8 @@ fi
 mkdir build
 cd build
 # workaround for hip packaging in docker
-if [ -f /root/hip-clang ]; then
-    env CXX=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-O3 cmake ..    
+if [ -f '/opt/rocm/llvm/bin/clang++' ]; then
+    env CXX=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-O3" cmake ..    
 elif [ "$HIP_DOCKER_WORKAROUND" = "1" ]; then
     env CXX=/opt/rocm/bin/hcc CXXFLAGS="-O3 -fno-gpu-rdc -amdgpu-target=gfx906" cmake ..
 else
