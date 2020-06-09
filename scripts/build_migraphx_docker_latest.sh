@@ -1,6 +1,6 @@
 #!/bin/bash
 DATESTAMP=`date '+%Y%m%d'`
-BASE=rocm-migraphx:3.3
+BASE=rocm-migraphx:3.5
 if [ `id -u` != 0 ]; then
     echo script should be run as root
     exit 0
