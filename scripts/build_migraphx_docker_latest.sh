@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 DATESTAMP=`date '+%Y%m%d'`
 BASE=rocm-migraphx:3.5
 if [ `id -u` != 0 ]; then
