@@ -9,4 +9,5 @@ if [ `id -u` != 0 ]; then
     exit 0
 fi
 cd onnxruntime/dockerfiles
-docker build -f Dockerfile.migraphx -t rocm-migraphx-ort:$DATESTAMP .
+sed -e 's/debian/3.3/g' Dockerfile.migraphx > Dockerfile.migraphx-rocm33
+docker build -f Dockerfile.migraphx-rocm33 -t rocm-migraphx-ort:$DATESTAMP-rocm33 .
