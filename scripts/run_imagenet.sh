@@ -1,7 +1,7 @@
 #!/bin/bash
 # imagenet correctness tests
 set -x
-MIGX=${MIGX:="../tools/migx/build/migx"}
+MIGX=${MIGX:="/src/rocm-migraphx/tools/migx/build/migx"}
 IMAGENET=${IMAGENET:="../datasets/imagenet"}
 TEST_RESULTDIR=${TEST_RESULTDIR:="../test-results"}
 MODELDIR=${MODELDIR:="../saved-models"}
