@@ -14,5 +14,5 @@ ONNXRUNNER=${ONNXRUNNER:="/code/onnxruntime/build/Linux/Release/onnx_test_runner
 
 base=`basename $TESTCASE`
 
-/usr/bin/time -o $base.time1 $ONNXRUNNER -c 1 -r 1 -e migraphx $ONNXMODELDIR/$TESTCASE 1>$base.out1 2>$base.err1
-/usr/bin/time -o $base.time${ITERATIONS}  $ONNXRUNNER -c 1 -r ${ITERATIONS} -e migraphx $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS} 2>$base.err${ITERATIONS}
+/usr/bin/time -p -o $base.time1 $ONNXRUNNER -c 1 -r 1 -e migraphx $ONNXMODELDIR/$TESTCASE 1>$base.out1 2>$base.err1
+/usr/bin/time -p -o $base.time${ITERATIONS}  $ONNXRUNNER -c 1 -r ${ITERATIONS} -e migraphx $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS} 2>$base.err${ITERATIONS}
