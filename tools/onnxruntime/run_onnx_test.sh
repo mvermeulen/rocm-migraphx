@@ -15,12 +15,12 @@ RUNCPU=${RUNCPU:="no"}
 
 base=`basename $TESTCASE`
 
-/usr/bin/time -p -o $base.time1 $ONNXRUNNER -c 1 -r 1 -e migraphx $ONNXMODELDIR/$TESTCASE 1>$base.out1 2>$base.err1
-/usr/bin/time -p -o $base.time${ITERATIONS}  $ONNXRUNNER -c 1 -r ${ITERATIONS} -e migraphx $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS} 2>$base.err${ITERATIONS}
+/usr/bin/time -p -o $base.time1 $ONNXRUNNER -v -c 1 -r 1 -e migraphx $ONNXMODELDIR/$TESTCASE 1>$base.out1 2>$base.err1
+/usr/bin/time -p -o $base.time${ITERATIONS}  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e migraphx $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS} 2>$base.err${ITERATIONS}
 
 base_cpu=${base}_cpu
 if [ "$RUNCPU" != "no" ]; then
-    /usr/bin/time -p -o $base_cpu.time1 $ONNXRUNNER -c 1 -r 1 -e cpu $ONNXMODELDIR/$TESTCASE 1>$base_cpu.out1 2>$base_cpu.err1
-    /usr/bin/time -p -o $base_cpu.time${ITERATIONS}  $ONNXRUNNER -c 1 -r ${ITERATIONS} -e cpu $ONNXMODELDIR/$TESTCASE 1>$base_cpu.out${ITERATIONS} 2>$base_cpu.err${ITERATIONS}
+    /usr/bin/time -p -o $base_cpu.time1 $ONNXRUNNER -v -c 1 -r 1 -e cpu $ONNXMODELDIR/$TESTCASE 1>$base_cpu.out1 2>$base_cpu.err1
+    /usr/bin/time -p -o $base_cpu.time${ITERATIONS}  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e cpu $ONNXMODELDIR/$TESTCASE 1>$base_cpu.out${ITERATIONS} 2>$base_cpu.err${ITERATIONS}
 fi
 
