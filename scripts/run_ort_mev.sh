@@ -3,7 +3,7 @@
 # Run ONNX runtime performance/correctness tests.
 #
 # NOTE: This script should be run inside a docker container build using the
-#       tools/onnxruntime directory scripts
+#       tools/onnxruntime directory scripts.
 TEST_RESULTDIR=${TEST_RESULTDIR:="/home/mev/source/rocm-migraphx/test-results"}
 TESTDRIVER=${TESTDRIVER:="/home/mev/source/rocm-migraphx/tools/onnxruntime/run_onnx_test.sh"}
 RUNCPU=${RUNCPU:="no"}
