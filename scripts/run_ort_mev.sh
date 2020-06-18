@@ -15,8 +15,9 @@ cd $testdir
 
 while read testcase
 do
-    echo $testcase
+    base=`basename $testcase`
     env TESTCASE=$testcase RUNCPU=$RUNCPU $TESTDRIVER
+    cat ${base}.sum | awk -F, '{ print $1 "," $2 }'
 done <<TESTLIST
 opset10/BERT_Squad
 opset11/tf_resnet_v2_50
