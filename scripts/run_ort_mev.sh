@@ -17,7 +17,7 @@ while read testcase
 do
     base=`basename $testcase`
     env TESTCASE=$testcase RUNCPU=$RUNCPU $TESTDRIVER
-    cat ${base}.sum | awk -F, '{ print $1 "," $2 }'
+    cat ${base}.sum | awk -F, '{ print $1 "," $2 }' | tee -a results.csv
 done <<TESTLIST
 opset10/BERT_Squad
 opset11/tf_resnet_v2_50
