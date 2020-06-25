@@ -2,7 +2,10 @@ FROM rocm-migraphx:rocm351
 
 ENV DEBIAN_FRONTEND=noninteractive
 # Add OpenCV
-RUN apt update && apt install -y libopencv-dev emacs gdb
+RUN apt update && apt install -y libopencv-dev emacs gdb autogen autoconf libtool wget
+
+# Build prereqs
+RUN cd /src/rocm-migraphx/scripts && ./build_prereqs.sh
 
 # Build MIGraphX
 RUN cd /src/AMDMIGraphX && git checkout master && env CXXFLAGS=-g rbuild build -d depend --cxx=/opt/rocm/llvm/bin/clang++
