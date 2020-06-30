@@ -9,4 +9,4 @@ fi
 cd ../dockerfiles
 DOCKERFILE=dockerfile-rocm351-migraphx
 
-docker build -t rocm-migraphx:rocm35-migraphx -f ${DOCKERFILE} .
+docker build -t rocm-migraphx:rocm351-migraphx -f ${DOCKERFILE} .
