@@ -13,4 +13,4 @@ cd onnxruntime/dockerfiles
 sed -e 's/debian/3.3/g' -e 's/onnxruntime cmake-3.14.3-Linux-x86_64/cmake-3.14.3-Linux-x86_64/g' -e 's/--parallel//g' Dockerfile.migraphx > Dockerfile.migraphx-rocm33
 echo "RUN apt-get install -y time bc" >> Dockerfile.migraphx-rocm33
 echo "COPY gfx906_60.HIP.2_3_0.ufdb.txt miopen.udb miopen.udb.lock /root/.config/miopen/" >> Dockerfile.migraphx-rocm33
-docker build -f Dockerfile.migraphx-rocm33 -t rocm-migraphx-ort:$DATESTAMP-rocm33 .
+docker build --no-cache -f Dockerfile.migraphx-rocm33 -t rocm-migraphx-ort:$DATESTAMP-rocm33 .
