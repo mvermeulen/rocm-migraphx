@@ -1,5 +1,5 @@
 #!/bin/bash
-SETUP=0
+SETUP=1
 GLUE_TASK=${GLUE_TASK:="MRPC"}
 
 if [ ! -d transformers ]; then
