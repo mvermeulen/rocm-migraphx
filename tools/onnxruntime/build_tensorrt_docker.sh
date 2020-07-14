@@ -12,4 +12,4 @@ cd onnxruntime/dockerfiles
 sed 's/onnxruntime cmake-3.14.3-Linux-x86_64/cmake-3.14.3-Linux-x86_64/g' Dockerfile.tensorrt > Dockerfile.tensorrt-ort
 echo "RUN apt-get install -y time bc" >> Dockerfile.tensorrt-ort
 
-docker build -f Dockerfile.tensorrt-ort -t tensorrt-ort:$DATESTAMP-rocm33 .
+docker build -f Dockerfile.tensorrt-ort -t ort:tensorrt-$DATESTAMP .
