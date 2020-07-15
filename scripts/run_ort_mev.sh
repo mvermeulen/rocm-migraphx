@@ -12,6 +12,7 @@ cd ${TEST_RESULTDIR}
 testdir=ort-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
 cd $testdir
+echo $EXPROVIDER > exprovider.txt
 
 while read testcase
 do
