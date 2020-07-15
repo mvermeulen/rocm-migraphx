@@ -6,7 +6,7 @@
 #       tools/onnxruntime directory scripts.
 TEST_RESULTDIR=${TEST_RESULTDIR:="/home/mev/source/rocm-migraphx/test-results"}
 TESTDRIVER=${TESTDRIVER:="/home/mev/source/rocm-migraphx/tools/onnxruntime/run_onnx_test.sh"}
-RUNCPU=${RUNCPU:="no"}
+EXPROVIDER=${EXPROVIDER:="migraphx"}
 
 cd ${TEST_RESULTDIR}
 testdir=ort-`date '+%Y-%m-%d-%H-%M'`
@@ -16,8 +16,10 @@ cd $testdir
 while read testcase
 do
     base=`basename $testcase`
-    env TESTCASE=$testcase RUNCPU=$RUNCPU $TESTDRIVER
-    cat ${base}.sum | awk -F, '{ print $1 "," $2 }' | tee -a results.csv
+    env TESTCASE=$testcase EXPROVIDER=$EXPROVIDER $TESTDRIVER
+    cat ${base}.suma | awk -F, '{ print $1 "," $2 }' | tee -a results.csv
+    cat ${base}.sumb | awk -F, '{ print $1 "," $2 }' | tee -a results.csv
+    cat ${base}.sumc | awk -F, '{ print $1 "," $2 }' | tee -a results.csv        
 done <<TESTLIST
 opset10/BERT_Squad
 opset11/tf_resnet_v2_50
