@@ -15,12 +15,12 @@ EXPROVIDER=${EXPROVIDER:="migraphx"}
 
 base=`basename $TESTCASE`
 
-/usr/bin/time -p -o $base.time1 $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out1a 2>$base.err1a
-/usr/bin/time -p -o $base.time${ITERATIONS}  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS}a 2>$base.err${ITERATIONS}a
-/usr/bin/time -p -o $base.time1 $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out1b 2>$base.err1b
-/usr/bin/time -p -o $base.time${ITERATIONS}  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS}b 2>$base.err${ITERATIONS}b
-/usr/bin/time -p -o $base.time1 $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out1c 2>$base.err1c
-/usr/bin/time -p -o $base.time${ITERATIONS}  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS}c 2>$base.err${ITERATIONS}c
+/usr/bin/time -p -o $base.time1a $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out1a 2>$base.err1a
+/usr/bin/time -p -o $base.time${ITERATIONS}a  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS}a 2>$base.err${ITERATIONS}a
+/usr/bin/time -p -o $base.time1b $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out1b 2>$base.err1b
+/usr/bin/time -p -o $base.time${ITERATIONS}b  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS}b 2>$base.err${ITERATIONS}b
+/usr/bin/time -p -o $base.time1c $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out1c 2>$base.err1c
+/usr/bin/time -p -o $base.time${ITERATIONS}c  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS}c 2>$base.err${ITERATIONS}c
 
 migraphxtime1a=`grep real ${base}.time1a|awk '{print $2}'`
 migraphxtimena=`grep real ${base}.time${ITERATIONS}a|awk '{print $2}'`
