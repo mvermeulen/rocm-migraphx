@@ -7,8 +7,8 @@ fi
 
 while read input output
 do
-      echo $SHAPE_INFER_SCRIPT --input $input --output $output --auto_merge    
-      $SHAPE_INFER_SCRIPT --input $input --output $output --auto_merge
+      echo python3 $SHAPE_INFER_SCRIPT --input $input --output $output --auto_merge    
+      python3 $SHAPE_INFER_SCRIPT --input $input --output $output --auto_merge
 done <<INFERLIST
 opset10/BERT_Squad/bertsquad10.onnx inferred/BERT_Squad/bertsquad10_inf.onnx
 opset10/faster_rcnn/faster_rcnn_R_50_FPN_1x.onnx inferred/faster_rcnn/faster_rcnn_R_50_FPN_1x_inf.onnx
