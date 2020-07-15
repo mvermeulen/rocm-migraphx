@@ -9,7 +9,7 @@ TESTDRIVER=${TESTDRIVER:="/home/mev/source/rocm-migraphx/tools/onnxruntime/run_o
 EXPROVIDER=${EXPROVIDER:="migraphx"}
 
 cd ${TEST_RESULTDIR}
-testdir=ort-`date '+%Y-%m-%d-%H-%M'`
+testdir=ort-${EXPROVIDER}-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
 cd $testdir
 echo $EXPROVIDER > exprovider.txt
