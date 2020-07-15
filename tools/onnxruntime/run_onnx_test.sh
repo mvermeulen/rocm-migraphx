@@ -12,24 +12,24 @@ ITERATIONS=${ITERATIONS:="1001"}
 ONNXMODELDIR=${ONNXMODELDIR:="/home/mev/source/rocm-migraphx/saved-models/onnxruntime"}
 ONNXRUNNER=${ONNXRUNNER:="/code/onnxruntime/build/Linux/Release/onnx_test_runner"}
 EXPROVIDER=${EXPROVIDER:="migraphx"}
-RUNCPU=${RUNCPU:="no"}
 
 base=`basename $TESTCASE`
 
-/usr/bin/time -p -o $base.time1 $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out1 2>$base.err1
-/usr/bin/time -p -o $base.time${ITERATIONS}  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS} 2>$base.err${ITERATIONS}
-migraphxtime1=`grep real ${base}.time1|awk '{print $2}'`
-migraphxtimen=`grep real ${base}.time${ITERATIONS}|awk '{print $2}'`
-cputime1=
-cputimen=
+/usr/bin/time -p -o $base.time1 $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out1a 2>$base.err1a
+/usr/bin/time -p -o $base.time${ITERATIONS}  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS}a 2>$base.err${ITERATIONS}a
+/usr/bin/time -p -o $base.time1 $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out1b 2>$base.err1b
+/usr/bin/time -p -o $base.time${ITERATIONS}  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS}b 2>$base.err${ITERATIONS}b
+/usr/bin/time -p -o $base.time1 $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out1c 2>$base.err1c
+/usr/bin/time -p -o $base.time${ITERATIONS}  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS}c 2>$base.err${ITERATIONS}c
 
-base_cpu=${base}_cpu
-if [ "$RUNCPU" != "no" ]; then
-    /usr/bin/time -p -o $base_cpu.time1 $ONNXRUNNER -v -c 1 -r 1 -e cpu $ONNXMODELDIR/$TESTCASE 1>$base_cpu.out1 2>$base_cpu.err1
-    /usr/bin/time -p -o $base_cpu.time${ITERATIONS}  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e cpu $ONNXMODELDIR/$TESTCASE 1>$base_cpu.out${ITERATIONS} 2>$base_cpu.err${ITERATIONS}
-    cputime1=`grep real ${base}_cpu.time1|awk '{print $2}'`
-    cputimen=`grep real ${base}_cpu.time${ITERATIONS}|awk '{print $2}'`    
-fi
+migraphxtime1a=`grep real ${base}.time1a|awk '{print $2}'`
+migraphxtimena=`grep real ${base}.time${ITERATIONS}a|awk '{print $2}'`
+migraphxtime1b=`grep real ${base}.time1b|awk '{print $2}'`
+migraphxtimenb=`grep real ${base}.time${ITERATIONS}b|awk '{print $2}'`
+migraphxtime1c=`grep real ${base}.time1c|awk '{print $2}'`
+migraphxtimenc=`grep real ${base}.time${ITERATIONS}c|awk '{print $2}'`
 
-echo $base,`echo $migraphxtimen-$migraphxtime1|bc`,$ITERATIONS,$migraphxtime1,$migraphxtimen,$cputime1,$cputimen > ${base}.sum
+echo $base,`echo $migraphxtimena-$migraphxtime1a|bc`,$ITERATIONS,$migraphxtime1a,$migraphxtimena > ${base}.suma
+echo $base,`echo $migraphxtimenb-$migraphxtime1b|bc`,$ITERATIONS,$migraphxtime1b,$migraphxtimenb > ${base}.sumb
+echo $base,`echo $migraphxtimenc-$migraphxtime1c|bc`,$ITERATIONS,$migraphxtime1c,$migraphxtimenc > ${base}.sumc
 
