@@ -11,12 +11,13 @@ TESTCASE=${TESTCASE:="opset11/tf_resnet_v2_50"}
 ITERATIONS=${ITERATIONS:="1001"}
 ONNXMODELDIR=${ONNXMODELDIR:="/home/mev/source/rocm-migraphx/saved-models/onnxruntime"}
 ONNXRUNNER=${ONNXRUNNER:="/code/onnxruntime/build/Linux/Release/onnx_test_runner"}
+EXPROVIDER=${EXPROVIDER:="migraphx"}
 RUNCPU=${RUNCPU:="no"}
 
 base=`basename $TESTCASE`
 
-/usr/bin/time -p -o $base.time1 $ONNXRUNNER -v -c 1 -r 1 -e migraphx $ONNXMODELDIR/$TESTCASE 1>$base.out1 2>$base.err1
-/usr/bin/time -p -o $base.time${ITERATIONS}  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e migraphx $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS} 2>$base.err${ITERATIONS}
+/usr/bin/time -p -o $base.time1 $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out1 2>$base.err1
+/usr/bin/time -p -o $base.time${ITERATIONS}  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>$base.out${ITERATIONS} 2>$base.err${ITERATIONS}
 migraphxtime1=`grep real ${base}.time1|awk '{print $2}'`
 migraphxtimen=`grep real ${base}.time${ITERATIONS}|awk '{print $2}'`
 cputime1=
