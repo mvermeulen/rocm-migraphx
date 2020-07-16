@@ -23,7 +23,11 @@ do
     cat ${base}.sumc | awk -F, '{ print $1 "," $2 }' | tee -a results.csv        
 done <<TESTLIST
 inferred/BERT_Squad
+opset11/tf_resnet_v2_50
+opset11/tf_inception_v4
+opset11/tf_mobilenet_v2_1.4_224
 inferred/faster_rcnn
 inferred/mask_rcnn
+opset10/mlperf_resnet
 TESTLIST
 
