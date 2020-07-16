@@ -1,7 +1,7 @@
 #!/bin/bash
 DATESTAMP=`date '+%Y%m%d'`
-if [ ! -f onnxruntime/dockerfiles/Dockerfile.cuda ]; then
-    echo "onnxruntime/dockerfiles/Dockerfile.cuda is missing"
+if [ ! -f onnxruntime/dockerfiles/Dockerfile.source ]; then
+    echo "onnxruntime/dockerfiles/Dockerfile.source is missing"
     exit 0
 fi
 if [ `id -u` != 0 ]; then
