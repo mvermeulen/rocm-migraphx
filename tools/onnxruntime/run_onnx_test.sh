@@ -32,7 +32,13 @@ migraphxtimenb=`grep real ${base}.time${ITERATIONS}b|awk '{print $2}'`
 migraphxtime1c=`grep real ${base}.time1c|awk '{print $2}'`
 migraphxtimenc=`grep real ${base}.time${ITERATIONS}c|awk '{print $2}'`
 
+echo -e `echo $migraphxtimena-$migraphxtime1a|bc` '\n' \
+     `echo $migraphxtimenb-$migraphxtime1b|bc` '\n' \
+     `echo $migraphxtimenc-$migraphxtime1c|bc` | calc-median > ${base}.timen
+migraphxtimen=`cat ${base}.timen`
+
 echo $base,`echo $migraphxtimena-$migraphxtime1a|bc`,$ITERATIONS,$migraphxtime1a,$migraphxtimena > ${base}.suma
 echo $base,`echo $migraphxtimenb-$migraphxtime1b|bc`,$ITERATIONS,$migraphxtime1b,$migraphxtimenb > ${base}.sumb
 echo $base,`echo $migraphxtimenc-$migraphxtime1c|bc`,$ITERATIONS,$migraphxtime1c,$migraphxtimenc > ${base}.sumc
+echo $base,$migraphxtimen,$ITERATIONS > ${base}.sum
 
