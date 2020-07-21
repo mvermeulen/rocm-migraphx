@@ -20,7 +20,7 @@ do
     base=`basename $testcase`
     dir=`dirname $testcase`
     env TESTCASE=$testcase PREFIX="${dir}@" ITERATIONS=$ITERATIONS $TESTDRIVER
-    cat ${base}.sum | sed -e 's?@?/?g | tee -a results.csv
+    cat ${base}.sum | sed -e 's?@?/?g' | tee -a results.csv
 done <<TESTLIST
 opset10/tf_resnet_v1_101
 opset10/mlperf_mobilenet
