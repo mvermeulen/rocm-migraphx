@@ -18,9 +18,10 @@ while read testcase
 do
     base=`basename $testcase`
     env TESTCASE=$testcase EXPROVIDER=$EXPROVIDER $TESTDRIVER
-    cat ${base}.suma | awk -F, '{ print $1 "," $2 }' | tee -a results.csv
-    cat ${base}.sumb | awk -F, '{ print $1 "," $2 }' | tee -a results.csv
-    cat ${base}.sumc | awk -F, '{ print $1 "," $2 }' | tee -a results.csv        
+#    cat ${base}.suma | awk -F, '{ print $1 "," $2 }' | tee -a results.csv
+#    cat ${base}.sumb | awk -F, '{ print $1 "," $2 }' | tee -a results.csv
+#    cat ${base}.sumc | awk -F, '{ print $1 "," $2 }' | tee -a results.csv
+    cat ${base}.sum  | awk -F, '{ print $1 "," $2 }' | tee -a results.csv    
 done <<TESTLIST
 opset10/BERT_Squad
 opset11/tf_resnet_v2_50
