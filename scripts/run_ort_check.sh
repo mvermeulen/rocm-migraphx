@@ -20,7 +20,7 @@ do
     base=`basename $testcase`
     dir=`dirname $testcase`
     env TESTCASE=$testcase PREFIX=$dir $TESTDRIVER
-    cat ${base}.sum  | awk -F, '{ print $1 "," $2 }' | tee -a results.csv    
+    cat ${base}.sum | tee -a results.csv
 done <<TESTLIST
 opset10/tf_resnet_v1_101
 opset10/mlperf_mobilenet
