@@ -269,7 +269,9 @@ int check_convolution(){
   }
   
   sprintf(user_db_path,"%s/.config/miopen/miopen.udb",getenv("HOME"));
+  printf("\tuser db = %s\n",user_db_path);      
   if (stat(user_db_path,&statbuf) == 0){
+    printf("\tchecking miopen.udb\n");    
     sqlite3 *user_sqlite_db;    
     if (sqlite3_open(user_db_path,&user_sqlite_db) != SQLITE_OK){
       fprintf(stderr,"%s: unable to open %s database\n",prog,user_db_path);
@@ -278,10 +280,27 @@ int check_convolution(){
     found = lookup_convolution(user_sqlite_db);
     sqlite3_close(user_sqlite_db);
     if (found){
-      printf("found (%d)\n",found);
+      printf("found (%d) udb\n",found);
       return found;
     }
   }
+
+  sprintf(user_db_path,"%s/.config/miopen/miopen_1.0.0.udb",getenv("HOME"));
+  if (stat(user_db_path,&statbuf) == 0){
+    printf("\tchecking miopen_1.0.0.udb\n");
+    sqlite3 *user_sqlite_db;    
+    if (sqlite3_open(user_db_path,&user_sqlite_db) != SQLITE_OK){
+      fprintf(stderr,"%s: unable to open %s database\n",prog,user_db_path);
+      exit(-1);
+    }
+    found = lookup_convolution(user_sqlite_db);
+    sqlite3_close(user_sqlite_db);
+    if (found){
+      printf("found (%d) udb_1.0.0\n",found);
+      return found;
+    }
+  }
+  
   printf("not found\n");
   return 0;
 }
@@ -315,6 +334,7 @@ int lookup_convolution(sqlite3 *sqldb){
 	  direction,
 	  group_count
 	  );
+  printf("SQL = %s\n",sql_stmt);
   count = 0;
   int rc = sqlite3_exec(sqldb,sql_stmt,callback,0,&err_msg);
   if (rc != SQLITE_OK){
