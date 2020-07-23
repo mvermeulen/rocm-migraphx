@@ -17,7 +17,7 @@ PREFIX=${PREFIX:=""}
 base=`basename $TESTCASE`
 
 # first run may cause kernels to be compiled
-env MIOPEN_ENABLE_LOGGING_CMD=1 /usr/bin/time -p -o ${PREFIX}${base}.time1x $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>${PREFIX}${base}.out1x 2>${PREFIX}${base}.err1x
+env MIOPEN_ENABLE_LOGGING_CMD=1 MIGRAPHX_TRACE_EVAL=1 /usr/bin/time -p -o ${PREFIX}${base}.time1x $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>${PREFIX}${base}.out1x 2>${PREFIX}${base}.err1x
 # three runs for real
 /usr/bin/time -p -o ${PREFIX}${base}.time1a $ONNXRUNNER -v -c 1 -r 1 -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>${PREFIX}${base}.out1a 2>${PREFIX}${base}.err1a
 /usr/bin/time -p -o ${PREFIX}${base}.time${ITERATIONS}a  $ONNXRUNNER -v -c 1 -r ${ITERATIONS} -e ${EXPROVIDER} $ONNXMODELDIR/$TESTCASE 1>${PREFIX}${base}.out${ITERATIONS}a 2>${PREFIX}${base}.err${ITERATIONS}a
