@@ -3,7 +3,7 @@
 # Take a performance results directory that includes MIOPEN_ENABLE_LOGGING_CMD, create tuning script files.
 #
 MIOPEN_DRIVER=${MIOPEN_DRIVER:="/opt/rocm/miopen/bin/MIOpenDriver"}
-SUFFIX=".err"
+SUFFIX=${SUFFIX:=".err"}
 OUTPUTDIR=${OUTPUTDIR:="results"}
 
 if [ "$#" -ne 1 ]; then
@@ -28,6 +28,6 @@ fi
 ls $1/*${SUFFIX} | while read file
 do
     filebase=`basename $file $SUFFIX`
-    cat $file | grep MIOpenDriver | sed -e 's/^.*MIOpenDriver //g' > ${filebase}.sh
+    cat $file | grep conv | grep MIOpenDriver | sed -e "s?^.*MIOpenDriver ?$MIOPEN_DRIVER ?g" > ${filebase}.sh
 done
 
