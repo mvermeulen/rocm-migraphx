@@ -37,3 +37,12 @@ rm blaze-3.5.tar.gz
 # half
 # already copied by dockerfile
 
+# json
+cd /src
+git clone https://github.com/nlohmann/json
+cd json
+mkdir build
+cd build
+cmake ..
+make
+make install
