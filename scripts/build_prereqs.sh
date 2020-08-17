@@ -41,8 +41,21 @@ rm blaze-3.5.tar.gz
 cd /src
 git clone https://github.com/nlohmann/json
 cd json
+git checkout v3.8.0
 mkdir build
 cd build
 cmake ..
+make
+make install
+
+# msgpack
+apt install -y doxygen
+cd /src
+git clone https://github.com/msgpack/msgpack-c
+cd msgpack-c
+git checkout cpp-3.3.0
+mkdir build
+cd build
+cmake -DMSGPACK_BUILD_TESTS=Off ..
 make
 make install
