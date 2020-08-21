@@ -13,5 +13,4 @@ COPY half.hpp /usr/local/include/half.hpp
 # Workaround for broken cmake in hip's binary package
 # RUN sed -i -e 's/hcc::hccrt;hcc::hc_am//g' /opt/rocm/hip/lib/cmake/hip/hip-targets-release.cmake
 ENV LD_LIBRARY_PATH=/usr/local/lib:
-ENV HIP_DOCKER_WORKAROUND=1
 RUN cd /src/rocm-migraphx/scripts && ./build_migraphx.sh
