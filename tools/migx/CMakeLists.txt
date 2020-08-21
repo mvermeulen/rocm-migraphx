@@ -28,4 +28,4 @@ link_directories(${MIGRAPHX_BUILD}/src/onnx
 file(GLOB SRC_FILES "/src/rocm-migraphx/tools/migx/src/*.cpp")
 set(bin_name migx)
 add_executable(${bin_name} ${SRC_FILES})
-target_link_libraries(${bin_name} migraphx migraphx_cpu migraphx_device migraphx_gpu migraphx_onnx migraphx_tf hip_hcc MIOpen ${OpenCV_LIBS})
+target_link_libraries(${bin_name} migraphx migraphx_cpu migraphx_device migraphx_gpu migraphx_onnx migraphx_tf MIOpen ${OpenCV_LIBS})
