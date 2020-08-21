@@ -29,5 +29,6 @@ ls $1/*${SUFFIX} | while read file
 do
     filebase=`basename $file $SUFFIX`
     cat $file | grep conv | grep MIOpenDriver | sed -e "s?^.*MIOpenDriver ?$MIOPEN_DRIVER ?g" > ${filebase}.sh
+    cat ${filebase}.sh | sort -u > ${filebase}-unique.sh
 done
 
