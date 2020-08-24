@@ -11,5 +11,5 @@ do
     echo ------
     date
     echo $f
-    mv $f /home/mev//miopen-${count}
+    mv $f /home/mev/miopen-${count}
 done

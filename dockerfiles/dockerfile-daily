@@ -1,9 +1,9 @@
-ARG DOCKERBASE=rocm-migraphx:3.5
+ARG DOCKERBASE=rocm-migraphx:3.7
 FROM $DOCKERBASE
 RUN cd /src/AMDMIGraphX && git pull
 ENV DEBIAN_FRONTEND=noninteractive
 RUN cd /src/AMDMIGraphX && /src/rocm-migraphx/scripts/build_migraphx.sh
 # Add pre-tuned db
-COPY miopen /root/.config/miopen/
+COPY miopen-rocm37 /root/.config/miopen/
 # Build the migx driver
 RUN cd /src/rocm-migraphx/tools/migx && git pull && ./build_migx.sh
