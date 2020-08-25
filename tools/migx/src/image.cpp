@@ -43,7 +43,8 @@ void read_image(std::string filename,enum image_type etype,std::vector<float> &i
     stdev[1] = 0.5;
     stdev[2] = 0.5;
   }
-  img = imread(filename,CV_LOAD_IMAGE_COLOR);
+  //  img = imread(filename,CV_LOAD_IMAGE_COLOR);
+  img = imread(filename,cv::IMREAD_COLOR);
   Mat_<Vec3b> _img = img;
   int pixel_orig0 = _img(0,0)[0];
   int pixel_orig1 = _img(0,0)[1];
