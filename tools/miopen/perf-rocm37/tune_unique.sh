@@ -1,5 +1,6 @@
 #!/bin/bash
 export MIOPEN_FIND_ENFORCE=3
+export MIOPEN_FIND_MODE=1
 MIOPENDIR=/root/.config/miopen
 count=0
 for f in *unique.sh
