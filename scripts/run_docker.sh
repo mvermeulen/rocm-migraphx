@@ -4,4 +4,4 @@ if [ `id -u` != 0 ]; then
     exit 0
 fi
 
-docker run -it --device=/dev/dri --device=/dev/kfd --network=host --group-add=video -v /home/mev:/home/mev rocm-migraphx:20200825 /bin/bash
+docker run -it --device=/dev/dri --device=/dev/kfd --network=host --group-add=video -v /home/mev:/home/mev rocm-migraphx:20200831 /bin/bash
