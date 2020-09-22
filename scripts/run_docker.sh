@@ -5,7 +5,7 @@ if [ `id -u` != 0 ]; then
 fi
 
 if [ -d /extra ]; then
-    EXTRAMOUNT="-v /extra:extra"
+    EXTRAMOUNT="-v /extra:/extra"
 else
     EXTRAMOUNT=""
 fi
