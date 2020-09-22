@@ -4,4 +4,10 @@ if [ `id -u` != 0 ]; then
     exit 0
 fi
 
-docker run -it --device=/dev/dri --device=/dev/kfd --network=host --group-add=video -v /home/mev:/home/mev rocm-migraphx:20200921 /bin/bash
+if [ -d /extra ]; then
+    EXTRAMOUNT="-v /extra:extra"
+else
+    EXTRAMOUNT=""
+fi
+
+docker run -it --device=/dev/dri --device=/dev/kfd --network=host --group-add=video -v /home/mev:/home/mev $EXTRAMOUNT rocm-migraphx:20200921 /bin/bash
