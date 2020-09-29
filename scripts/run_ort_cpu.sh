@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ -d /extra ]; then
-    EXTRAMOUNT="-v /extra:extra"
+    EXTRAMOUNT="-v /extra:/extra"
 else
     EXTRAMOUNT=""
 fi
