@@ -12,6 +12,7 @@ cp calc-median miopen37/*.txt miopen37/*.udb miopen37/*.lock onnxruntime/dockerf
 cd onnxruntime/dockerfiles
 sed -e 's/onnxruntime cmake-3.14.3-Linux-x86_64/cmake-3.14.3-Linux-x86_64/g' -e 's/--parallel//g' Dockerfile.migraphx > Dockerfile.migraphx-rocm37
 echo "RUN apt-get install -y time bc" >> Dockerfile.migraphx-rocm37
+echo "COPY gfx906_60.HIP.2_6_0_8145-rocm-rel-3.7-20-c16087a4.ufdb.txt miopen_1.0.0.udb miopen.udb.lock /root/.config/miopen/" >> Dockerfile.migraphx-rocm37
 echo "COPY gfx906_60.HIP.2_3_0.ufdb.txt miopen.udb miopen.udb.lock /root/.config/miopen/" >> Dockerfile.migraphx-rocm37
 echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.migraphx-rocm37
 echo "ENV EXPROVIDER=migraphx" >> Dockerfile.migraphx-rocm37
