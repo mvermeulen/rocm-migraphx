@@ -30,8 +30,6 @@ torchvision-inceptionv3	     32 torchvision/inceptioni32.onnx
 torchvision-inceptionv3_fp16 32 torchvision/inceptioni32.onnx --fp16
 torchvision-vgg16            16 torchvision/vgg16i16.onnx
 torchvision-vgg16_fp16       16 torchvision/vgg16i16.onnx --fp16
-cadene-dpn92                 32 cadene/dpn92i32.onnx
-cadene-fbresnet152           32 cadene/fbresnet152i32.onnx
 cadene-inceptionv4           16 cadene/inceptionv4i16.onnx
 cadene-resnext64x4           16 cadene/resnext101_64x4di16.onnx
 slim-mobilenet               64 slim/mobilenet_i64.pb
@@ -66,8 +64,6 @@ do
 done <<MODELLIST
 torchvision-resnet50_1         1 torchvision/resnet50i1.onnx
 torchvision-inceptionv3_1      1 torchvision/inceptioni1.onnx
-torchvision-densenet121_1      1 torchvision/densenet121i1.onnx
-torchvision-squeezenet11_1     1 torchvision/squeezenet11i1.onnx
 torchvision-vgg16_1            1 torchvision/vgg16i1.onnx
 cadene-dpn92_1                 1 cadene/dpn92i1.onnx
 cadene-resnext101_1            1 cadene/resnext101_64x4di1.onnx
