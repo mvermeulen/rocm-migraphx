@@ -8,11 +8,11 @@ if [ `id -u` != 0 ]; then
     echo script should be run as root
     exit 0
 fi
-cp calc-median miopen33/*.txt miopen33/*.udb miopen33/*.lock onnxruntime/dockerfiles
+cp calc-median miopen37/*.txt miopen37/*.udb miopen37/*.lock onnxruntime/dockerfiles
 cd onnxruntime/dockerfiles
-sed -e 's/debian/3.3/g' -e 's/onnxruntime cmake-3.14.3-Linux-x86_64/cmake-3.14.3-Linux-x86_64/g' -e 's/--parallel//g' Dockerfile.migraphx > Dockerfile.migraphx-rocm33
-echo "RUN apt-get install -y time bc" >> Dockerfile.migraphx-rocm33
-echo "COPY gfx906_60.HIP.2_3_0.ufdb.txt miopen.udb miopen.udb.lock /root/.config/miopen/" >> Dockerfile.migraphx-rocm33
-echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.migraphx-rocm33
-echo "ENV EXPROVIDER=migraphx" >> Dockerfile.migraphx-rocm33
-docker build --no-cache -f Dockerfile.migraphx-rocm33 -t ort:migraphx-rocm33-$DATESTAMP .
+sed -e 's/onnxruntime cmake-3.14.3-Linux-x86_64/cmake-3.14.3-Linux-x86_64/g' -e 's/--parallel//g' Dockerfile.migraphx > Dockerfile.migraphx-rocm37
+echo "RUN apt-get install -y time bc" >> Dockerfile.migraphx-rocm37
+echo "COPY gfx906_60.HIP.2_3_0.ufdb.txt miopen.udb miopen.udb.lock /root/.config/miopen/" >> Dockerfile.migraphx-rocm37
+echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.migraphx-rocm37
+echo "ENV EXPROVIDER=migraphx" >> Dockerfile.migraphx-rocm37
+docker build --no-cache -f Dockerfile.migraphx-rocm37 -t ort:migraphx-rocm37-$DATESTAMP .
