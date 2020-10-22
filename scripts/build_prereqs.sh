@@ -7,7 +7,7 @@ cd /src
 git clone https://github.com/pybind/pybind11
 pip3 install pytest
 cd pybind11
-git checkout v2.2.4
+git checkout d159a563383d10c821ba7b2a71905d1207db6de4
 mkdir build
 cd build
 cmake ..
