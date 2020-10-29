@@ -5,7 +5,7 @@
 set -x
 #
 # Parameters
-ROCM_RELEASE=${ROCM_RELEASE:="3.8"}
+ROCM_RELEASE=${ROCM_RELEASE:="3.9"}
 ROCM_BASE=${ROCM_BASE:="rocm/dev-ubuntu-18.04:${ROCM_RELEASE}"}
 
 if [ `id -u` != 0 ]; then
