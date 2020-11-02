@@ -1,1 +1,1 @@
-docker run --gpus all --network=host -v /home/mev:/home/mev ort:cuda-20201026 env EXPROVIDER=cuda /home/mev/source/rocm-migraphx/scripts/run_ort_mev.sh
+docker run --gpus all --network=host -v /home/mev:/home/mev ort:cuda-20201102 env EXPROVIDER=cuda /home/mev/source/rocm-migraphx/scripts/run_ort_mev.sh
