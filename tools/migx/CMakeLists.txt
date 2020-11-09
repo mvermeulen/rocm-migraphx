@@ -12,7 +12,7 @@ find_package(OpenCV REQUIRED)
 
 include_directories(${MIGRAPHX_FOLDER}/src/include
 		    ${MIGRAPHX_FOLDER}/src/targets/gpu/include
-		    ${MIGRAPHX_FOLDER}/src/targets/cpu/include
+		    ${MIGRAPHX_FOLDER}/src/targets/ref/include
 		    ${OpenCV_INCLUDE_DIRS}
 		    inc)
 
@@ -20,7 +20,7 @@ link_directories(${MIGRAPHX_BUILD}/src/onnx
                  ${MIGRAPHX_BUILD}/src/tf
                  ${MIGRAPHX_BUILD}/src
                  ${MIGRAPHX_BUILD}/src/targets/gpu
-                 ${MIGRAPHX_BUILD}/src/targets/cpu
+                 ${MIGRAPHX_BUILD}/src/targets/ref
 		 ${MIGRAPHX_BUILD}/lib
 		 ${MIOPEN_LIBS}
 		 ${HIP_LIBS})
@@ -28,4 +28,4 @@ link_directories(${MIGRAPHX_BUILD}/src/onnx
 file(GLOB SRC_FILES "/src/rocm-migraphx/tools/migx/src/*.cpp")
 set(bin_name migx)
 add_executable(${bin_name} ${SRC_FILES})
-target_link_libraries(${bin_name} migraphx migraphx_cpu migraphx_device migraphx_gpu migraphx_onnx migraphx_tf MIOpen ${OpenCV_LIBS})
+target_link_libraries(${bin_name} migraphx migraphx_ref migraphx_device migraphx_gpu migraphx_onnx migraphx_tf MIOpen ${OpenCV_LIBS})
