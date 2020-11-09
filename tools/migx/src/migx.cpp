@@ -29,7 +29,7 @@
 #include <migraphx/tf.hpp>
 #include <migraphx/gpu/target.hpp>
 #include <migraphx/gpu/hip.hpp>
-#include <migraphx/cpu/target.hpp>
+#include <migraphx/ref/target.hpp>
 #include <migraphx/generate.hpp>
 #include <migraphx/context.hpp>
 #include <migraphx/quantization.hpp>
