@@ -379,7 +379,7 @@ int main(int argc,char *const argv[],char *const envp[]){
     if (is_gpu)
       quantize_int8(prog,migraphx::gpu::target{},calibration);      
     else
-      quantize_int8(prog,migraphx::cpu::target{},calibration);
+      quantize_int8(prog,migraphx::ref::target{},calibration);
   } else
     if (quantization_type != quantization_none){
     std::cerr << "quantization not yet implemented" << std::endl;
@@ -394,7 +394,7 @@ int main(int argc,char *const argv[],char *const envp[]){
   if (is_gpu)
     prog.compile(migraphx::gpu::target{});
   else
-    prog.compile(migraphx::cpu::target{});
+    prog.compile(migraphx::ref::target{});
 
   // remove the last "trim=n" instructions, debugging tool with --eval to print out intermediate results
   if (trim_instructions > 0 && trim_instructions < prog.size()){
