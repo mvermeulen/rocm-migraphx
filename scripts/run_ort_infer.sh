@@ -8,6 +8,10 @@ TEST_RESULTDIR=${TEST_RESULTDIR:="/home/mev/source/rocm-migraphx/test-results"}
 TESTDRIVER=${TESTDRIVER:="/home/mev/source/rocm-migraphx/tools/onnxruntime/run_onnx_test.sh"}
 EXPROVIDER=${EXPROVIDER:="migraphx"}
 
+if [ "$EXPROVIDER" = "tensorrt" ]; then
+    export LD_LIBRARY_PATH=/code/onnxruntime/build/Linux/Release:$LD_LIBRARY_PATH
+fi
+
 cd ${TEST_RESULTDIR}
 testdir=ort-${EXPROVIDER}-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
