@@ -362,8 +362,8 @@ int main(int argc,char *const argv[],char *const envp[]){
       ;
   } else if (quantization_type == quantization_int8){
 #if 0
-    std::vector<migraphx::program::parameter_map> calibration;
-    migraphx::program::parameter_map *calibration_map = new migraphx::program::parameter_map;
+    std::vector<migraphx::parameter_map> calibration;
+    migraphx::parameter_map *calibration_map = new migraphx::parameter_map;
     // use 100 pieces of randomly generated argument...
     for (int i = 0;i<100;i++){
       for (auto&& x : prog.get_parameter_shapes()){
@@ -373,7 +373,7 @@ int main(int argc,char *const argv[],char *const envp[]){
     }
 #else
     // use empty calibration data
-    std::vector<migraphx::program::parameter_map> calibration;
+    std::vector<migraphx::parameter_map> calibration;
 #endif
 
     if (is_gpu)
@@ -406,7 +406,7 @@ int main(int argc,char *const argv[],char *const envp[]){
   }
 
   // set up the parameter map
-  program::parameter_map pmap;  
+  parameter_map pmap;  
   bool argname_found = false;
   shape argshape;
   int batch_size=1, channels=1, height=1, width=1;  
