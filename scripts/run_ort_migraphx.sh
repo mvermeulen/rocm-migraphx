@@ -1,1 +1,1 @@
-docker run --device=/dev/dri --device=/dev/kfd --network=host --group-add=video -v /home/mev:/home/mev ort:migraphx-rocm37-20201109 env EXPROVIDER=migraphx /home/mev/source/rocm-migraphx/scripts/run_ort_mev.sh
+docker run --device=/dev/dri --device=/dev/kfd --network=host --group-add=video -v /home/mev:/home/mev ort:migraphx-rocm37-20201116 env EXPROVIDER=migraphx /home/mev/source/rocm-migraphx/scripts/run_ort_mev.sh
