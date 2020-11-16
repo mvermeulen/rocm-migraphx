@@ -10,4 +10,4 @@ else
     EXTRAMOUNT=""
 fi
 
-docker run -it --device=/dev/dri --device=/dev/kfd --network=host --group-add=video -v /home/mev:/home/mev $EXTRAMOUNT rocm-migraphx:20201109 /bin/bash
+docker run -it --device=/dev/dri --device=/dev/kfd --network=host --group-add=video -v /home/mev:/home/mev $EXTRAMOUNT rocm-migraphx:20201116 /bin/bash
