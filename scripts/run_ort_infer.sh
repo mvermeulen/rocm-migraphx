@@ -27,6 +27,8 @@ do
 #    cat ${base}.sumc | awk -F, '{ print $1 "," $2 }' | tee -a results.csv
     cat ${base}.sum  | awk -F, '{ print $1 "," $2 }' | tee -a results.csv    
 done <<TESTLIST
+single/cadene_resnet50
+single/tf_resnet_v2_50
 inferred/BERT_Squad
 opset11/tf_resnet_v2_50
 opset11/tf_inception_v4
