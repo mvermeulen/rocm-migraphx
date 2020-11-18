@@ -59,3 +59,15 @@ cd build
 cmake -DMSGPACK_BUILD_TESTS=Off ..
 make
 make install
+
+# OneDNN
+apt install -y libomp-dev
+cd /src
+git clone https://github.com/oneapi-src/oneDNN.git
+cd oneDNN
+git checkout v1.7
+mkdir build
+cd build
+env CXX=/opt/rocm/llvm/bin/clang++ cmake ..
+make
+make install
