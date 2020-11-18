@@ -1,0 +1,9 @@
+FROM rocm-migraphx:3.7-pybind
+RUN apt install -y libomp-dev
+RUN cd /src && git clone https://github.com/oneapi-src/oneDNN.git && cd oneDNN && git checkout v1.7 && mkdir build && cd build && env CXX=/opt/rocm/llvm/bin/clang++ cmake -j .. && make && make install
+RUN cd /src/AMDMIGraphX && git pull && git checkout cpu-target
+RUN cd /src/AMDMIGraphX && rm -rf build && mkdir build && cd build && env CXX=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-O3" cmake -DMIGRAPHX_ENABLE_CPU=On ..
+RUN cd /src/AMDMIGraphX/build && make
+RUN cd /src/AMDMIGraphX && rm -rf buildg && mkdir buildg && cd buildg && env CXX=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-O1 -g" cmake -DMIGRAPHX_ENABLE_CPU=On ..
+RUN cd /src/AMDMIGraphX/buildg && make
+RUN cd /src/rocm-migraphx/tools/migx && git pull && ./build_migx.sh
