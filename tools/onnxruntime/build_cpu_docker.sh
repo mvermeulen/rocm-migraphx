@@ -11,7 +11,8 @@ fi
 cp calc-median onnxruntime/dockerfiles
 cd onnxruntime/dockerfiles
 sed 's/onnxruntime cmake-3.14.3-Linux-x86_64/cmake-3.14.3-Linux-x86_64/g' Dockerfile.source > Dockerfile.source-ort
-echo "\nRUN apt-get install -y time bc" >> Dockerfile.source-ort
+echo "" >> Dockerfile.source-ort
+echo "RUN apt-get install -y time bc" >> Dockerfile.source-ort
 echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.source-ort
 echo "ENV EXPROVIDER=cpu" >> Dockerfile.source-ort
 cd ..
