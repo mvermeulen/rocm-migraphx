@@ -16,4 +16,6 @@ echo "COPY gfx906_60.HIP.2_6_0_8145-rocm-rel-3.7-20-c16087a4.ufdb.txt miopen_1.0
 echo "COPY gfx906_60.HIP.2_3_0.ufdb.txt miopen.udb miopen.udb.lock /root/.config/miopen/" >> Dockerfile.migraphx-rocm37
 echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.migraphx-rocm37
 echo "ENV EXPROVIDER=migraphx" >> Dockerfile.migraphx-rocm37
-docker build --no-cache -f Dockerfile.migraphx-rocm37 -t ort:migraphx-rocm37-$DATESTAMP .
+cd ..
+
+docker build --no-cache -f dockerfiles/Dockerfile.migraphx-rocm37 -t ort:migraphx-rocm37-$DATESTAMP .

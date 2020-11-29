@@ -14,5 +14,6 @@ sed 's/onnxruntime cmake-3.14.3-Linux-x86_64/cmake-3.14.3-Linux-x86_64/g' Docker
 echo "RUN apt-get install -y time bc" >> Dockerfile.cuda-ort
 echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.cuda-ort
 echo "ENV EXPROVIDER=cuda" >> Dockerfile.cuda-ort
+cd ..
 
-docker build --no-cache -f Dockerfile.cuda-ort -t ort:cuda-$DATESTAMP .
+docker build --no-cache -f dockerfiles/Dockerfile.cuda-ort -t ort:cuda-$DATESTAMP .
