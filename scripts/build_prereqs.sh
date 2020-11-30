@@ -2,6 +2,9 @@
 #
 # Build MIGraphX prerequisites for docker container
 
+# Used for testing
+pip3 install onnx
+
 # pybind11
 cd /src
 git clone https://github.com/pybind/pybind11

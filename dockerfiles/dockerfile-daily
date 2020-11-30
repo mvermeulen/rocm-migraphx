@@ -7,3 +7,4 @@ RUN cd /src/AMDMIGraphX && /src/rocm-migraphx/scripts/build_migraphx.sh
 COPY miopen-rocm37 /root/.config/miopen/
 # Build the migx driver
 RUN cd /src/rocm-migraphx/tools/migx && git pull && ./build_migx.sh
+RUN pip3 install onnx
