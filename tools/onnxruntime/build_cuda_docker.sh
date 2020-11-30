@@ -10,8 +10,9 @@ if [ `id -u` != 0 ]; then
 fi
 cp calc-median onnxruntime
 cd onnxruntime/dockerfiles
-sed 's/onnxruntime cmake-3.14.3-Linux-x86_64/cmake-3.14.3-Linux-x86_64/g' Dockerfile.cuda > Dockerfile.cuda-ort
+cp Dockerfile.cuda Dockerfile.cuda-ort
 echo "" >> Dockerfile.cuda-ort
+echo "COPY --from=0 /code/build/Linux/Release /code/onnxruntime/build/Linux/Release" >> Dockerfile.cuda-ort
 echo "RUN apt-get install -y time bc" >> Dockerfile.cuda-ort
 echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.cuda-ort
 echo "ENV EXPROVIDER=cuda" >> Dockerfile.cuda-ort

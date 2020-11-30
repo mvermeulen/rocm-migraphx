@@ -3,7 +3,7 @@
 # Build MIGraphX prerequisites for docker container
 
 # Used for testing
-pip3 install onnx
+pip3 install onnx==1.7.0
 
 # pybind11
 cd /src
