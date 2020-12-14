@@ -3,14 +3,18 @@
 # saved model directory mounted to the docker image
 SAVED_MODELS=${SAVED_MODELS:="/home/mev/source/rocm-migraphx/saved-models"}
 TEST_RESULTDIR=${TEST_RESULTDIR:="/home/mev/source/rocm-migraphx/test-results"}
+AMDMIGRAPHX=${AMDMIGRAPHX:="/src/AMDMIGraphX"}
+DRIVER=${DRIVER:="${AMDMIGRAPHX}/build/bin/driver"}
 
-DRIVER=${DRIVER:="/src/AMDMIGraphX/build/bin/driver"}
-
+cd ${AMDMIGRAPHX}
+commit=`git log | head -1 | awk '{ print $2 }'`
 # run predefined list of test files, all these relative to SAVED_MODELS dir
 cd ${TEST_RESULTDIR}
 testdir=perf-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
 cd $testdir
+echo $commit > commit.txt
+echo $commit
 while read tag batch savefile extra
 do
     if [ "$tag" == "#" ]; then
