@@ -8,12 +8,13 @@ DRIVER=${DRIVER:="${AMDMIGRAPHX}/build/bin/driver"}
 
 cd ${AMDMIGRAPHX}
 commit=`git log | head -1 | awk '{ print $2 }'`
+git log | head -5 > /tmp/commit.txt
 # run predefined list of test files, all these relative to SAVED_MODELS dir
 cd ${TEST_RESULTDIR}
 testdir=perf-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
 cd $testdir
-echo $commit > commit.txt
+mv /tmp/commit.txt .
 echo $commit
 while read tag batch savefile extra
 do
