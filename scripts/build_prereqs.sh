@@ -71,6 +71,6 @@ cd oneDNN
 git checkout v1.7
 mkdir build
 cd build
-env CXX=/opt/rocm/llvm/bin/clang++ cmake ..
+env CXX=/opt/rocm/llvm/bin/clang++ cmake -DDNNL_CPU_RUNTIME=OMP ..
 make
 make install
