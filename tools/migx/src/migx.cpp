@@ -33,6 +33,7 @@
 #include <migraphx/generate.hpp>
 #include <migraphx/context.hpp>
 #include <migraphx/quantization.hpp>
+#include <migraphx/verify_args.hpp>
 #include "migx.hpp"
 #define MIGRAPHX_NO_MULTIPLE 0
 using namespace migraphx;
@@ -71,6 +72,8 @@ std::string usage_message =
   "        --print_model        show MIGraphX instructions for model\n" +
   "        --eval               run model and dump output to stdout\n" +
   "        --trim=<n>           trim program to remove last <n> instructions\n" +
+  "        --validate           run model in CPU and GPU and see if values are within tolerance\n" +
+  "        --tolerance=<fp>     tolerance to use for validation\n" +
   "        --iterations=<n>     set iterations for perf_report and benchmark (default 1000)\n" +
   "        --copyarg            copy arguments in and results back (--benchmark only)\n" +
   "        --argname=<name>     set name of model input argument (default 0)\n";
@@ -82,7 +85,7 @@ std::string model_filename;
 bool is_nhwc = true;
 bool set_nhwc = false;
 enum quantization_type { quantization_none, quantization_fp16, quantization_int8 } quantization_type = quantization_none;
-enum run_type { run_none, run_benchmark, run_perfreport, run_imageinfo, run_imagenet, run_glue, run_mnist, run_printmodel, run_eval, run_eval_print } run_type = run_none;
+enum run_type { run_none, run_benchmark, run_perfreport, run_imageinfo, run_imagenet, run_glue, run_mnist, run_printmodel, run_eval, run_eval_print, run_validate } run_type = run_none;
 enum glue_type glue_type = glue_none;
 std::string glue_file;
 std::string glue_arg1;
@@ -105,6 +108,7 @@ bool trace_compile = false;
 std::string trace_compile_var = "MIGRAPHX_TRACE_COMPILE=1";
 bool has_random_input = false;
 bool has_zero_input = false;
+double tolerance = 80;
 
 /* parse_options
  *
@@ -138,10 +142,12 @@ int parse_options(int argc,char *const argv[]){
     { "mnist", required_argument, 0, 24 },
     { "print_model", no_argument,   0, 25 },
     { "eval", no_argument, 0, 26 },
-    { "trim", required_argument, 0, 27 },
-    { "iterations", required_argument, 0, 28 },
-    { "copyarg", no_argument,       0, 29 },
-    { "argname", required_argument, 0, 30 },
+    { "validate", no_argument, 0, 27 },
+    { "tolerance", required_argument, 0, 28 },
+    { "trim", required_argument, 0, 29 },
+    { "iterations", required_argument, 0, 30 },
+    { "copyarg", no_argument,       0, 31 },
+    { "argname", required_argument, 0, 32 },
     { 0,         0,                 0, 0  },
   };
   while ((opt = getopt_long(argc,argv,"",long_options,NULL)) != -1){
@@ -258,23 +264,33 @@ int parse_options(int argc,char *const argv[]){
 	run_type = run_eval;
       break;
     case 27:
+      run_type = run_validate;
+      break;
+    case 28:
+      if (std::stoi(optarg) < 0){
+	std::cerr << migx_program << ": tolerance < 0, ignored" << std::endl;
+      } else {
+	tolerance = std::stod(optarg);
+      }
+      break;
+    case 29:
       if (std::stoi(optarg) < 0){
 	std::cerr << migx_program << ": trim < 0, ignored" << std::endl;	
       } else {
 	trim_instructions = std::stoi(optarg);
       }
       break;
-    case 28:
+    case 30:
       if (std::stoi(optarg) < 0){
 	std::cerr << migx_program << ": iterations < 0, ignored" << std::endl;
       } else {
 	iterations = std::stoi(optarg);
       }
       break;
-    case 29:
+    case 31:
       copyarg = true;
       break;
-    case 30:
+    case 32:
       argname = optarg;
       break;
     default:
@@ -385,6 +401,9 @@ int main(int argc,char *const argv[],char *const envp[]){
     std::cerr << "quantization not yet implemented" << std::endl;
   }
 
+  // copy the original program for use in validation
+  program validate_program = prog;
+
   // compile the program
   if (trace_compile){
     putenv((char *) trace_compile_var.c_str());
@@ -397,7 +416,7 @@ int main(int argc,char *const argv[],char *const envp[]){
     prog.compile(migraphx::ref::target{});
 
   // remove the last "trim=n" instructions, debugging tool with --eval to print out intermediate results
-  if (trim_instructions > 0 && trim_instructions < prog.size()){
+  if (run_type != run_validate && trim_instructions > 0 && trim_instructions < prog.size()){
     auto prog2 = prog;
     // create shorter program removing "trim" instructions in size
     auto last = std::prev(prog2.end(),trim_instructions);
@@ -891,7 +910,10 @@ int main(int argc,char *const argv[],char *const envp[]){
       for (int i=0;i < image_data.size();i++)
 	std::cout << "\t" << image_data[i] << std::endl;
     }
-    if (is_gpu){
+    if (image_data.size() == 0){
+      std::cerr << migx_program << ": missing image data for eval" << std::endl;
+      return 1;
+    } else if (is_gpu){
       pmap[argname] = migraphx::gpu::to_gpu(migraphx::argument{
 	  pmap[argname].get_shape(),image_data.data()});
     } else {
@@ -915,7 +937,45 @@ int main(int argc,char *const argv[],char *const envp[]){
 #endif
     }
     std::cout << result << std::endl;
+  case run_validate:
+    migraphx::argument cpu_result;
+    migraphx::argument gpu_result;
     
+    if (image_data.size() == 0){
+      std::cerr << migx_program << ": missing image data for validate" << std::endl;
+      return 1;
+    }
+
+    if (trim_instructions > 0 && trim_instructions < validate_program.size()){
+      auto prog2 = validate_program;
+      auto last = std::prev(prog2.end(),trim_instructions);
+      prog2.remove_instructions(last,prog2.end());
+      validate_program = prog2;
+    }
+
+    for(auto&& x: validate_program.get_parameter_shapes()){
+      pmap[x.first] = migraphx::gpu::allocate_gpu(x.second);
+    }
+
+    program gpu_program = validate_program;
+    program cpu_program = validate_program;
+
+    gpu_program.compile(migraphx::gpu::target{});
+    pmap[argname] = migraphx::gpu::to_gpu(migraphx::argument{
+	pmap[argname].get_shape(),image_data.data()});
+    resarg = gpu_program.eval(pmap);
+    gpu_result = migraphx::gpu::from_gpu(resarg[0]);
+      
+    cpu_program.compile(migraphx::ref::target{});
+    pmap[argname] = migraphx::argument{
+      pmap[argname].get_shape(),image_data.data()};
+    resarg = cpu_program.eval(pmap);
+    cpu_result = resarg[0];
+
+    std::cout << validate_program << std::endl;
+    verify_args("cpu vs. gpu",cpu_result,gpu_result,80);
+
+    break;
   }
 
   return 0;

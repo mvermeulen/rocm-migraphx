@@ -68,7 +68,7 @@ apt install -y libomp-dev
 cd /src
 git clone https://github.com/oneapi-src/oneDNN.git
 cd oneDNN
-git checkout v1.7
+git checkout v2.0
 mkdir build
 cd build
 env CXX=/opt/rocm/llvm/bin/clang++ cmake -DDNNL_CPU_RUNTIME=OMP ..
