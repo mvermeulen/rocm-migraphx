@@ -5,4 +5,4 @@ else
     EXTRAMOUNT=""
 fi
 
-docker run -e TZ=America/Chicago --network=host -v /home/mev:/home/mev $EXTRAMOUNT ort:openvino-20201214 env EXPROVIDER=openvino /home/mev/source/rocm-migraphx/scripts/run_ort_mev.sh
+docker run -e TZ=America/Chicago --network=host -v /home/mev:/home/mev $EXTRAMOUNT ort:openvino-20210104 env EXPROVIDER=openvino /home/mev/source/rocm-migraphx/scripts/run_ort_mev.sh
