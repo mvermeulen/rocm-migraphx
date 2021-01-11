@@ -418,9 +418,10 @@ int main(int argc,char *const argv[],char *const envp[]){
   // remove the last "trim=n" instructions, debugging tool with --eval to print out intermediate results
   if (run_type != run_validate && trim_instructions > 0 && trim_instructions < prog.size()){
     auto prog2 = prog;
+    auto mod = prog2.get_main_module();
     // create shorter program removing "trim" instructions in size
-    auto last = std::prev(prog2.end(),trim_instructions);
-    prog2.remove_instructions(last,prog2.end());
+    auto last = std::prev(mod.end(),trim_instructions);
+    prog2.remove_instructions(last,mod.end());
     prog = prog2;
   }
 
@@ -948,8 +949,9 @@ int main(int argc,char *const argv[],char *const envp[]){
 
     if (trim_instructions > 0 && trim_instructions < validate_program.size()){
       auto prog2 = validate_program;
-      auto last = std::prev(prog2.end(),trim_instructions);
-      prog2.remove_instructions(last,prog2.end());
+      auto mod = prog2.get_main_module();
+      auto last = std::prev(mod.end(),trim_instructions);
+      mod.remove_instructions(last,mod.end());
       validate_program = prog2;
     }
 
