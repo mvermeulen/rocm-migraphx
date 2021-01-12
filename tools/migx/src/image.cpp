@@ -1,9 +1,12 @@
 /*
  * image.cpp - image processing using OpenCV
  */
-#include <opencv2/opencv.hpp>
 #include <stdlib.h>
+#include <iostream>
 #include "migx.hpp"
+
+#if OPENCV
+#include <opencv2/opencv.hpp>
 using namespace cv;
 
 void read_image(std::string filename,enum image_type etype,std::vector<float> &image_data,bool is_nhwc,bool is_torchvision){
@@ -130,3 +133,12 @@ void image_top5(float* array,int *top5){
     std::cout << "\tlabel=" << sort_array[995].index << " value=" << sort_array[995].value << std::endl;
   }
 }
+#else
+void read_image(std::string filename,enum image_type etype,std::vector<float> &image_data,bool is_nhwc,bool is_torchvision){
+  std::cout << "OpenCV not installed" << std::endl;
+  exit(0);
+}
+
+void image_top5(float* array,int *top5){
+}
+#endif

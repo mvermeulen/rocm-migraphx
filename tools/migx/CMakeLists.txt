@@ -8,7 +8,14 @@ set (CMAKE_CXX_STANDARD 14)
 set (MIOPEN_LIBS /opt/rocm/miopen/lib)
 set (HIP_LIBS /opt/rocm/hip/lib)
 
-find_package(OpenCV REQUIRED)
+find_package(OpenCV)
+IF(OpenCV_FOUND)
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOPENCV")
+ELSE()
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -UOPENCV")
+ENDIF()
+  
+
 
 include_directories(${MIGRAPHX_FOLDER}/src/include
 		    ${MIGRAPHX_FOLDER}/src/targets/gpu/include
