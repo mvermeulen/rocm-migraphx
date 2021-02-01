@@ -10,7 +10,8 @@ if [ `id -u` != 0 ]; then
 fi
 cp calc-median onnxruntime
 cd onnxruntime/dockerfiles
-cp Dockerfile.cuda Dockerfile.cuda-ort
+#cp Dockerfile.cuda Dockerfile.cuda-ort
+sed -e 's/--parallel//g' Dockerfile.cuda > Dockerfile.cuda-ort
 echo "" >> Dockerfile.cuda-ort
 echo "COPY --from=0 /code/build/Linux/Release /code/onnxruntime/build/Linux/Release" >> Dockerfile.cuda-ort
 echo "RUN apt-get install -y time bc" >> Dockerfile.cuda-ort
