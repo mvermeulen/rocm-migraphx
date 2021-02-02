@@ -75,4 +75,5 @@ cadene-resnext101_1            1 cadene/resnext101_64x4di1.onnx
 slim-vgg16_1                   1 slim/vgg16_i1.pb
 slim-mobilenet_1               1 slim/mobilenet_i1.pb
 slim-inceptionv4_1             1 slim/inceptionv4_i1.pb
+onnx-taau-downsample	       1 onnx-misc/taau_low_res_downsample_d2s_for_infer_time_fp16_opset11.onnx --input-dim @inputs 1 1920 1080 8
 MODELLIST
