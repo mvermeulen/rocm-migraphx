@@ -63,7 +63,7 @@ do
     if [ "$tag" == "#" ]; then
 	continue
     fi
-    $DRIVER perf $extra $SAVED_MODELS/$savefile > ${tag}.out 2> ${tag}.err
+    $DRIVER perf $SAVED_MODELS/$savefile $extra > ${tag}.out 2> ${tag}.err
     time=`grep 'Total time' ${tag}.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
     echo $tag,$batch,$time | tee -a results.csv
 done <<MODELLIST
