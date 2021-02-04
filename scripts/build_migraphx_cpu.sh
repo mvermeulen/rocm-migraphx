@@ -9,7 +9,7 @@ if [ ! -d /src/oneDNN ]; then
     git checkout v2.0
     mkdir build
     cd build
-    env CXX=/opt/rocm/llvm/clang++ cmake -DDNNL_CPU_RUNTIME=OMP ..
+    env CXX=/opt/rocm/llvm/bin/clang++ cmake -DDNNL_CPU_RUNTIME=OMP ..
     make -j4
     make install
 fi
