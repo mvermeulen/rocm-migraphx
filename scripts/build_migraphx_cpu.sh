@@ -1,5 +1,19 @@
 #!/bin/bash
 #
+# check for dnnl dependency and build if necessary
+if [ ! -d /src/oneDNN ]; then
+    apt update && apt install -y libomp-dev
+    cd /src
+    git clone https://github.com/oneapi-src/oneDNN.git
+    cd oneDNN
+    git checkout v2.0
+    mkdir build
+    cd build
+    env CXX=/opt/rocm/llvm/clang++ cmake -DDNNL_CPU_RUNTIME=OMP ..
+    make -j4
+    make install
+fi
+
 # build migraphx in docker container
 env HIP_DOCKER_WORKAROUND=${HIP_DOCKER_WORKAROUND:="0"}
 cd /src/AMDMIGraphX
