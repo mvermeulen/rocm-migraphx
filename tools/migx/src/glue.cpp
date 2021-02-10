@@ -16,7 +16,10 @@ void parse_sentence(const std::string& sent, std::vector<int64_t>& vec_feature)
         vec_feature.push_back(std::stoll(word_feature));
         pos = pos_next + 1;
     }
+#if 0
+    // this was crashing on ROCm 4.1, for now comment it out so can get perf #s.
     vec_feature.push_back(std::stoll(sent.substr(pos)));
+#endif
     vec_feature.push_back(102);
 }
 
