@@ -5,4 +5,4 @@ else
     EXTRAMOUNT=""
 fi
 
-docker run -e TZ=America/Chicago --network=host -v /home/mev:/home/mev $EXTRAMOUNT ort:cpu-20210205 env EXPROVIDER=cpu /home/mev/source/rocm-migraphx/scripts/run_ort_mev.sh
+docker run -e TZ=America/Chicago --network=host -v /home/mev:/home/mev $EXTRAMOUNT ort:cpu-20210215 env EXPROVIDER=cpu /home/mev/source/rocm-migraphx/scripts/run_ort_mev.sh
