@@ -9,12 +9,13 @@ DRIVER=${DRIVER:="${AMDMIGRAPHX}/build/bin/driver"}
 cd ${AMDMIGRAPHX}
 commit=`git log | head -1 | awk '{ print $2 }'`
 git log | head -5 > /tmp/commit.txt
+echo `ls -d /opt/rocm*` > /tmp/rocm.txt
 # run predefined list of test files, all these relative to SAVED_MODELS dir
 cd ${TEST_RESULTDIR}
 testdir=perf-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
 cd $testdir
-mv /tmp/commit.txt .
+mv /tmp/commit.txt /tmp/rocm.txt .
 echo $commit
 while read tag batch savefile extra
 do
