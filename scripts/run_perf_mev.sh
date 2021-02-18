@@ -25,6 +25,9 @@ do
     $DRIVER perf $extra $SAVED_MODELS/$savefile > ${tag}.out 2> ${tag}.err
     time=`grep 'Total time' ${tag}.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
     echo $tag,$batch,$time | tee -a results.csv
+    if [ "$MEMORY" != "" ]; then
+	/home/mev/source/rocm-migraphx/tools/memory/display_memory
+    fi
 done <<MODELLIST
 torchvision-resnet50         64 torchvision/resnet50i64.onnx
 torchvision-resnet50_fp16    64 torchvision/resnet50i64.onnx --fp16
