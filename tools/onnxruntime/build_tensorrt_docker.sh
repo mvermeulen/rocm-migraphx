@@ -11,7 +11,8 @@ fi
 cp calc-median onnxruntime/dockerfiles
 cd onnxruntime/dockerfiles
 sed 's/onnxruntime cmake-3.14.3-Linux-x86_64/cmake-3.14.3-Linux-x86_64/g' Dockerfile.tensorrt > Dockerfile.tensorrt-ort
-echo "RUN env LD_LIBRARY_PATH= apt-get install -y time bc" >> Dockerfile.tensorrt-ort
+echo "ENV LD_LIBRARY_PATH=" >> Dockerfile.tensorrt-ort
+echo "RUN apt-get install -y time bc" >> Dockerfile.tensorrt-ort
 echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.tensorrt-ort
 echo "ENV EXPROVIDER=tensorrt" >> Dockerfile.tensorrt-ort
 cd ..
