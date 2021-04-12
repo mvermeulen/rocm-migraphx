@@ -4,8 +4,17 @@
 SAVED_MODELS=${SAVED_MODELS:="/home/mev/source/rocm-migraphx/saved-models"}
 TEST_RESULTDIR=${TEST_RESULTDIR:="/home/mev/source/rocm-migraphx/test-results"}
 AMDMIGRAPHX=${AMDMIGRAPHX:="/src/AMDMIGraphX"}
-DRIVER=${DRIVER:="${AMDMIGRAPHX}/build/bin/driver"}
-
+TARGETOPT=""
+if [ "$DRIVER" = "" ]; then
+    if [ "$TARGET" = "cpu" ]; then
+	DRIVER=${DRIVER:="${AMDMIGRAPHX}/build-cpu/bin/driver"}
+	TARGETOPT="--cpu"
+    else
+	DRIVER=${DRIVER:="${AMDMIGRAPHX}/build/bin/driver"}
+	TARGETOPT="--gpu"
+    fi
+fi
+  
 cd ${AMDMIGRAPHX}
 commit=`git log | head -1 | awk '{ print $2 }'`
 git log | head -5 > /tmp/commit.txt
@@ -22,7 +31,7 @@ do
     if [ "$tag" == "#" ]; then
 	continue
     fi
-    $DRIVER perf $extra $SAVED_MODELS/$savefile > ${tag}.out 2> ${tag}.err
+    $DRIVER perf $extra $TARGETOPT $SAVED_MODELS/$savefile > ${tag}.out 2> ${tag}.err
     time=`grep 'Total time' ${tag}.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
     echo $tag,$batch,$time | tee -a results.csv
     if [ "$MEMORY" != "" ]; then
@@ -46,6 +55,9 @@ slim-nasnetalarge            64 slim/nasnet_i64.pb
 slim-resnet50v2              64 slim/resnet50v2_i64.pb
 MODELLIST
 
+if [ "$TARGET" = "cpu" ]; then
+    #
+else
 # Run models that require MIGX driver
 MIGX=${MIGX:="/src/rocm-migraphx/tools/migx/build/migx"}
 ${MIGX} --glue=MRPC --gluefile=../../datasets/glue/MRPC.tst --onnx ${SAVED_MODELS}/huggingface-transformers/bert_mrpc8.onnx --perf_report > bert_mrpc8.out
@@ -60,6 +72,7 @@ echo "pytorchexamples-wlang-gru,1,$time" |  tee -a results.csv
 ${MIGX} --zero_input --onnx $SAVED_MODELS/pytorch-examples/wlang_lstm.onnx --perf_report --argname=input.1 > wlang_lstm.out
 time=`grep 'Total time' wlang_lstm.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
 echo "pytorchexamples-wlang-lstm,1,$time" | tee -a results.csv
+fi
 
 # Run models with batch size 1
 while read tag batch savefile extra
@@ -67,7 +80,7 @@ do
     if [ "$tag" == "#" ]; then
 	continue
     fi
-    $DRIVER perf $SAVED_MODELS/$savefile $extra > ${tag}.out 2> ${tag}.err
+    $DRIVER perf $TARGETOPT $SAVED_MODELS/$savefile $extra > ${tag}.out 2> ${tag}.err
     time=`grep 'Total time' ${tag}.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
     echo $tag,$batch,$time | tee -a results.csv
 done <<MODELLIST
