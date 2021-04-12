@@ -24,7 +24,7 @@ git log | head -5 > /tmp/commit.txt
 echo `ls -d /opt/rocm*` > /tmp/rocm.txt
 # run predefined list of test files, all these relative to SAVED_MODELS dir
 cd ${TEST_RESULTDIR}
-testdir=perf-`date '+%Y-%m-%d-%H-%M'`
+testdir=perf-cpu-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
 cd $testdir
 mv /tmp/commit.txt /tmp/rocm.txt .
