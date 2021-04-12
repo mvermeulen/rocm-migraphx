@@ -5,9 +5,12 @@ SAVED_MODELS=${SAVED_MODELS:="/home/mev/source/rocm-migraphx/saved-models"}
 TEST_RESULTDIR=${TEST_RESULTDIR:="/home/mev/source/rocm-migraphx/test-results"}
 AMDMIGRAPHX=${AMDMIGRAPHX:="/src/AMDMIGraphX"}
 TARGETOPT=""
+MIGX=${MIGX:="/src/rocm-migraphx/tools/migx/build/migx"}
+
 if [ "$DRIVER" = "" ]; then
     if [ "$TARGET" = "cpu" ]; then
 	DRIVER=${DRIVER:="${AMDMIGRAPHX}/build-cpu/bin/driver"}
+	MIGX="/src/rocm-migraphx/tools/migx/build-cpu/migx"
 	TARGETOPT="--cpu"
     else
 	DRIVER=${DRIVER:="${AMDMIGRAPHX}/build/bin/driver"}
@@ -55,24 +58,19 @@ slim-nasnetalarge            64 slim/nasnet_i64.pb
 slim-resnet50v2              64 slim/resnet50v2_i64.pb
 MODELLIST
 
-if [ "$TARGET" = "cpu" ]; then
-    #
-else
 # Run models that require MIGX driver
-MIGX=${MIGX:="/src/rocm-migraphx/tools/migx/build/migx"}
-${MIGX} --glue=MRPC --gluefile=../../datasets/glue/MRPC.tst --onnx ${SAVED_MODELS}/huggingface-transformers/bert_mrpc8.onnx --perf_report > bert_mrpc8.out
+${MIGX} $TARGETOPT --glue=MRPC --gluefile=../../datasets/glue/MRPC.tst --onnx ${SAVED_MODELS}/huggingface-transformers/bert_mrpc8.onnx --perf_report > bert_mrpc8.out
 time=`grep 'Total time' bert_mrpc8.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
 echo "bert-mrpc-onnx,8,$time" |  tee -a results.csv
-${MIGX} --glue=MRPC --gluefile=../../datasets/glue/MRPC.tst --tfpb ${SAVED_MODELS}/tf-misc/bert_mrpc1.pb --perf_report > bert_mrpc1.out
+${MIGX} $TARGETOPT --glue=MRPC --gluefile=../../datasets/glue/MRPC.tst --tfpb ${SAVED_MODELS}/tf-misc/bert_mrpc1.pb --perf_report > bert_mrpc1.out
 time=`grep 'Total time' bert_mrpc1.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
 echo "bert-mrpc-tf,1,$time" |  tee -a results.csv
-${MIGX} --zero_input --onnx $SAVED_MODELS/pytorch-examples/wlang_gru.onnx --perf_report --argname=input.1 > wlang_gru.out
+${MIGX} $TARGETOPT --zero_input --onnx $SAVED_MODELS/pytorch-examples/wlang_gru.onnx --perf_report --argname=input.1 > wlang_gru.out
 time=`grep 'Total time' wlang_gru.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
 echo "pytorchexamples-wlang-gru,1,$time" |  tee -a results.csv
-${MIGX} --zero_input --onnx $SAVED_MODELS/pytorch-examples/wlang_lstm.onnx --perf_report --argname=input.1 > wlang_lstm.out
+${MIGX} $TARGETOPT --zero_input --onnx $SAVED_MODELS/pytorch-examples/wlang_lstm.onnx --perf_report --argname=input.1 > wlang_lstm.out
 time=`grep 'Total time' wlang_lstm.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
 echo "pytorchexamples-wlang-lstm,1,$time" | tee -a results.csv
-fi
 
 # Run models with batch size 1
 while read tag batch savefile extra
