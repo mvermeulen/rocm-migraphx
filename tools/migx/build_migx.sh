@@ -22,7 +22,7 @@ if [ -d /src/AMDMIGraphX/build-cpu ]; then
     mkdir build-cpu
     cd build-cpu
     
-    cmake -DCMAKE_CXX_COMPILER=clang++ -DMIGRAPHX_BUILD=/src/AMDMIGraphX/build-cpu -DCMAKE_CXX_COMPILER=/optrocm/llvm/bin/clang++ CXXFLAGS="-I/usr/local/include" ..
+    cmake -DCMAKE_CXX_COMPILER=clang++ -DMIGRAPHX_BUILD=/src/AMDMIGraphX/build-cpu -DCMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-I/usr/local/include" ..
 
     make
 fi
