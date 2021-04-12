@@ -12,3 +12,18 @@ else
     cmake -DCMAKE_CXX_COMPILER=/opt/rocm/bin/hcc CXXFLAGS="-I/usr/local/include" ..
 fi
 make
+
+cd ..
+
+if [ -d /src/AMDMIGraphX/build-cpu ]; then
+    if [ -d build-cpu ]; then
+	rm -rf build-cpu
+    fi
+    mkdir build-cpu
+    cd build-cpu
+    
+    cmake -DCMAKE_CXX_COMPILER=clang++ -DMIGRAPHX_BUILD=/src/AMDMIGraphX/build-cpu -DCMAKE_CXX_COMPILER=/optrocm/llvm/bin/clang++ CXXFLAGS="-I/usr/local/include" ..
+
+    make
+fi
+
