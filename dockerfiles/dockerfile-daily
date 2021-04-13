@@ -3,6 +3,7 @@ FROM $DOCKERBASE
 RUN cd /src/AMDMIGraphX && git pull
 ENV DEBIAN_FRONTEND=noninteractive
 RUN cd /src/AMDMIGraphX && /src/rocm-migraphx/scripts/build_migraphx.sh
+RUN cd /src/AMDMIGraphX && /src/rocm-migraphx/scripts/build_migraphx_cpu.sh
 # Add pre-tuned db
 COPY miopen-rocm41 /root/.config/miopen/
 # Build the migx driver
