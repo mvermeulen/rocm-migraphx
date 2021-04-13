@@ -14,4 +14,5 @@ COPY half.hpp /usr/local/include/half.hpp
 # RUN sed -i -e 's/hcc::hccrt;hcc::hc_am//g' /opt/rocm/hip/lib/cmake/hip/hip-targets-release.cmake
 ENV LD_LIBRARY_PATH=/usr/local/lib:
 RUN cd /src/rocm-migraphx/scripts && ./build_migraphx.sh
+RUN cd /src/rocm-migraphx/scripts && ./build_migraphx_cpu.sh
 RUN cd /src/rocm-migraphx/tools/migx && ./build_migx.sh
