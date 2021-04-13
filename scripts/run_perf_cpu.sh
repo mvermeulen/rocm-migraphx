@@ -47,7 +47,10 @@ slim-mobilenet               64 slim/mobilenet_i64.pb
 MODELLIST
 
 # Run models that require MIGX driver
+${MIGX} $TARGETOPT --glue=MRPC --gluefile=../../datasets/glue/MRPC.tst --onnx ${SAVED_MODELS}/huggingface-transformers/bert_mrpc8.onnx --perf_report > bert_mrpc8.out
+time=`grep 'Total time' bert_mrpc8.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
 echo "bert-mrpc-onnx,8,$time" |  tee -a results.csv
+
 ${MIGX} $TARGETOPT --glue=MRPC --gluefile=../../datasets/glue/MRPC.tst --tfpb ${SAVED_MODELS}/tf-misc/bert_mrpc1.pb --perf_report > bert_mrpc1.out
 time=`grep 'Total time' bert_mrpc1.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
 echo "bert-mrpc-tf,1,$time" |  tee -a results.csv
