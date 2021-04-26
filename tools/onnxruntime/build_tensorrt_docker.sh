@@ -1,4 +1,5 @@
 #!/bin/bash
+CACHE=${CACHE:="--no-cache"}
 DATESTAMP=`date '+%Y%m%d'`
 if [ ! -f onnxruntime/dockerfiles/Dockerfile.tensorrt ]; then
     echo "onnxruntime/dockerfiles/Dockerfile.tensorrt is missing"
@@ -17,4 +18,4 @@ echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.tensorrt-ort
 echo "ENV EXPROVIDER=tensorrt" >> Dockerfile.tensorrt-ort
 cd ..
 
-docker build --no-cache -f dockerfiles/Dockerfile.tensorrt-ort -t ort:tensorrt-$DATESTAMP .
+docker build ${CACHE} -f dockerfiles/Dockerfile.tensorrt-ort -t ort:tensorrt-$DATESTAMP .

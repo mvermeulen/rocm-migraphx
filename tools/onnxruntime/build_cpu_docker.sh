@@ -1,4 +1,5 @@
 #!/bin/bash
+CACHE=${CACHE:="--no-cache"}
 DATESTAMP=`date '+%Y%m%d'`
 if [ ! -f onnxruntime/dockerfiles/Dockerfile.source ]; then
     echo "onnxruntime/dockerfiles/Dockerfile.source is missing"
@@ -17,4 +18,4 @@ echo "RUN apt-get install -y time bc" >> Dockerfile.source-ort
 echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.source-ort
 echo "ENV EXPROVIDER=cpu" >> Dockerfile.source-ort
 cd ..
-docker build --no-cache -f dockerfiles/Dockerfile.source-ort -t ort:cpu-$DATESTAMP .
+docker build ${CACHE} -f dockerfiles/Dockerfile.source-ort -t ort:cpu-$DATESTAMP .

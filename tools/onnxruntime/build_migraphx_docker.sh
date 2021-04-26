@@ -1,4 +1,5 @@
 #!/bin/bash
+CACHE=${CACHE:="--no-cache"}
 DATESTAMP=`date '+%Y%m%d'`
 if [ ! -f onnxruntime/dockerfiles/Dockerfile.migraphx ]; then
     echo "onnxruntime/dockerfiles/Dockerfile.migraphx is missing"
@@ -16,4 +17,4 @@ echo "COPY gfx906_60.HIP.2_6_0_8145-rocm-rel-3.7-20-c16087a4.ufdb.txt miopen_1.0
 echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.migraphx-rocm37
 echo "ENV EXPROVIDER=migraphx" >> Dockerfile.migraphx-rocm37
 
-docker build --no-cache -f Dockerfile.migraphx-rocm37 -t ort:migraphx-rocm37-$DATESTAMP .
+docker build ${CACHE} -f Dockerfile.migraphx-rocm37 -t ort:migraphx-rocm37-$DATESTAMP .

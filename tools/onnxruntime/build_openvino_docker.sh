@@ -1,4 +1,5 @@
 #!/bin/bash
+CACHE=${CACHE:="--no-cache"}
 DATESTAMP=`date '+%Y%m%d'`
 if [ ! -f onnxruntime/dockerfiles/Dockerfile.openvino ]; then
     echo "onnxruntime/dockerfiles/Dockerfile.openvino is missing"
@@ -16,4 +17,4 @@ echo "ENV EXPROVIDER=openvino" >> Dockerfile.openvino-ort
 echo "RUN env LD_LIBRARY_PATH= apt-get install -y linux-tools-5.4.0-54-generic linux-cloud-tools-5.4.0-54-generic linux-tools-generic linux-cloud-tools-generic" >> Dockerfile.openvino-ort
 cd ..
 
-docker build --no-cache -f dockerfiles/Dockerfile.openvino-ort -t ort:openvino-$DATESTAMP .
+docker build ${CACHE} -f dockerfiles/Dockerfile.openvino-ort -t ort:openvino-$DATESTAMP .
