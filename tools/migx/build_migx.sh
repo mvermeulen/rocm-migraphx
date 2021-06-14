@@ -7,7 +7,7 @@ fi
 mkdir build
 cd build
 if [ -f /opt/rocm/llvm/bin/clang++ ]; then
-    cmake -DCMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-I/usr/local/include" ..
+    env CXXFLAGS="-I/usr/local/inlcude -Wl,-allow-shlib-undefined" cmake -DCMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ ..
 else
     cmake -DCMAKE_CXX_COMPILER=/opt/rocm/bin/hcc CXXFLAGS="-I/usr/local/include" ..
 fi

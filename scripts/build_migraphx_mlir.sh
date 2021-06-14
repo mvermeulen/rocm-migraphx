@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # build migraphx in docker container
-env USE_RBUILD=${USE_RBUILD:="0"}
+env USE_RBUILD=${USE_RBUILD:="1"}
 cd /src/AMDMIGraphX
 if [ "$USE_RBUILD" = "0" ]; then
     if [ -d build ]; then
@@ -11,7 +11,7 @@ if [ "$USE_RBUILD" = "0" ]; then
     cd build
     # workaround for hip packaging in docker
     if [ -f '/opt/rocm/llvm/bin/clang++' ]; then
-	env CXX=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-O3" cmake ..    
+	env CXX=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-O3" cmake -DMIGRAPHX_ENABLE_MLIR=ON ..    
     else
 	echo "Missing clang++"
 	exit 1
@@ -24,6 +24,6 @@ if [ "$USE_RBUILD" = "0" ]; then
     make -j4
 else
     pip3 install https://github.com/RadeonOpenCompute/rbuild/archive/master.tar.gz
-    rbuild build -d depend -B build --cxx=/opt/rocm/llvm/bin/clang++
+    rbuild build -d depend -B build -DMIGRAPHX_ENABLE_MLIR=ON --cxx=/opt/rocm/llvm/bin/clang++
 fi
 
