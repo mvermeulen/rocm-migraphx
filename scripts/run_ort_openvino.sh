@@ -1,5 +1,5 @@
 #!/bin/bash
-DOCKER=${DOCKER:="ort:openvino-20210517"}
+DOCKER=${DOCKER:="ort:openvino-20210613"}
 
 if [ -d /extra ]; then
     EXTRAMOUNT="-v /extra:/extra"
