@@ -7,7 +7,7 @@ fi
 mkdir build
 cd build
 if [ -f /opt/rocm/llvm/bin/clang++ ]; then
-    env CXXFLAGS="-I/usr/local/inlcude -Wl,-allow-shlib-undefined" cmake -DCMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ ..
+    env CXXFLAGS="-Wl,-allow-shlib-undefined" cmake -DCMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ ..
 else
     cmake -DCMAKE_CXX_COMPILER=/opt/rocm/bin/hcc CXXFLAGS="-I/usr/local/include" ..
 fi
@@ -22,7 +22,7 @@ if [ -d /src/AMDMIGraphX/build-cpu ]; then
     mkdir build-cpu
     cd build-cpu
     
-    cmake -DCMAKE_CXX_COMPILER=clang++ -DMIGRAPHX_BUILD=/src/AMDMIGraphX/build-cpu -DCMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-I/usr/local/include" ..
+    env CXXFLAGS="-Wl,-allow-shlib-undefined" cmake -DCMAKE_CXX_COMPILER=clang++ -DMIGRAPHX_BUILD=/src/AMDMIGraphX/build-cpu -DCMAKE_CXX_COMPILER=/opt/rocm/llvm/bin/clang++ ..
 
     make
 fi
