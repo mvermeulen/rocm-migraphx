@@ -21,5 +21,5 @@ DOCKERFILE=dockerfile.`date '+%Y-%m-%d'`
 sed -e "s?ROCM_RELEASE?${ROCM_RELEASE}?g" \
     -e "s?ROCM_BASE?${ROCM_BASE}?g" dockerfile > $DOCKERFILE
 
-docker build -t rocm-migraphx:${ROCM_RELEASE} -f $DOCKERFILE \
+docker build --no-cache -t rocm-migraphx:${ROCM_RELEASE} -f $DOCKERFILE \
        .
