@@ -1,4 +1,4 @@
 #!/bin/bash
-DOCKER=${DOCKER:="ort:cuda-20210712"}
+DOCKER=${DOCKER:="ort:cuda-20210719"}
 
 docker run -e TZ=America/Chicago --gpus all --network=host -v /home/mev:/home/mev ${DOCKER} env EXPROVIDER=cuda /home/mev/source/rocm-migraphx/scripts/run_ort_mev.sh
