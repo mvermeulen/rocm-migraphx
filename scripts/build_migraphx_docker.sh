@@ -24,4 +24,8 @@ sed -e "s?ROCM_RELEASE?${ROCM_RELEASE}?g" \
     -e "s?BUILD_NAVI_CHOICE?${BUILD_NAVI}?g" \
     -e "s?ROCM_BASE?${ROCM_BASE}?g" dockerfile > $DOCKERFILE
 
-docker build --no-cache -t rocm-migraphx:${ROCM_RELEASE} -f $DOCKERFILE .
+if [ "$BUILD_NAVI" = "0" ]; then
+    docker build --no-cache -t rocm-migraphx:${ROCM_RELEASE} -f $DOCKERFILE .
+else
+    docker build --no-cache -t rocm-migraphx:${ROCM_RELEASE}n -f $DOCKERFILE .
+fi

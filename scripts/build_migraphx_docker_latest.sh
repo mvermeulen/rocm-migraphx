@@ -1,7 +1,14 @@
 #!/bin/bash
 set -x
 DATESTAMP=`date '+%Y%m%d'`
-BASE=${BASE:="rocm-migraphx:4.3"}
+BUILD_NAVI=${BUILD_NAVI:="0"}
+
+if [ "$BUILD_NAVI" = "0" ]; then
+    BASE=${BASE:="rocm-migraphx:4.3"}
+else
+    BASE=${BASE:="rocm-migraphx:4.3n"}
+fi
+
 MIOPENTUNE=${MIOPENTUNE:="miopen-rocm43"}
 
 if [ `id -u` != 0 ]; then
@@ -9,4 +16,9 @@ if [ `id -u` != 0 ]; then
     exit 0
 fi
 cd ../dockerfiles
-docker build -t rocm-migraphx:${DATESTAMP} --no-cache --build-arg DOCKERBASE=${BASE} --build-arg MIOPENTUNE=${MIOPENTUNE} -f ../dockerfiles/dockerfile-daily .
+if [ "$BUILD_NAVI" = "0" ]; then
+    docker build -t rocm-migraphx:${DATESTAMP} --no-cache --build-arg DOCKERBASE=${BASE} --build-arg MIOPENTUNE=${MIOPENTUNE} -f ../dockerfiles/dockerfile-daily .
+else
+    docker build -t rocm-migraphx:${DATESTAMP}n --no-cache --build-arg DOCKERBASE=${BASE} --build-arg MIOPENTUNE=${MIOPENTUNE} -f ../dockerfiles/dockerfile-daily .
+fi
+
