@@ -6,6 +6,11 @@ IMAGENET=${IMAGENET:="../datasets/imagenet"}
 TEST_RESULTDIR=${TEST_RESULTDIR:="../test-results"}
 MODELDIR=${MODELDIR:="../saved-models"}
 
+if [ "$BUILD_NAVI" = "1" ]; then
+    export MIGRAPHX_DISABLE_MIOPEN_FUSION=1
+fi
+
+
 testdir=${TEST_RESULTDIR}/imagenet-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
 
