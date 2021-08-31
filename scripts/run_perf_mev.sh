@@ -7,6 +7,11 @@ AMDMIGRAPHX=${AMDMIGRAPHX:="/src/AMDMIGraphX"}
 TARGETOPT=""
 MIGX=${MIGX:="/src/rocm-migraphx/tools/migx/build/migx"}
 
+if [ "$BUILD_NAVI" = "1" ]; then
+    export MIGRAPHX_DISABLE_MIOPEN_FUSION=1
+fi
+
+
 if [ "$DRIVER" = "" ]; then
     if [ "$TARGET" = "cpu" ]; then
 	DRIVER=${DRIVER:="${AMDMIGRAPHX}/build-cpu/bin/driver"}
