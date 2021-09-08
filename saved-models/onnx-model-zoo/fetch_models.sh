@@ -5,7 +5,7 @@ do
 	wget $location
     fi
 done <<MODELLIST
-bertsquad-10.onnx	https://github.com/onnx/models/blob/master/text/machine_comprehension/bert-squad/model/bertsquad-10.onnx
+bertsquad-10.onnx	https://github.com/onnx/models/raw/master/text/machine_comprehension/bert-squad/model/bertsquad-10.onnx
 roberta-base-11.onnx	https://github.com/onnx/models/blob/master/text/machine_comprehension/roberta/model/roberta-base-11.onnx
 t5-encoder-12.onnx	https://github.com/onnx/models/blob/master/text/machine_comprehension/t5/model/t5-encoder-12.onnx
 yolov4.onnx		https://github.com/onnx/models/blob/master/vision/object_detection_segmentation/yolov4/model/yolov4.onnx
