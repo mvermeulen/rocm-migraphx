@@ -10,7 +10,7 @@ if [ `id -u` != 0 ]; then
     exit 0
 fi
 cd onnxruntime/dockerfiles
-sed 's?&& rm -rf onnxruntime??g' Dockerfile.openvino > Dockerfile.openvino-ort
+sed -e 's?&& rm -rf onnxruntime??g' -e 's?USER ${BUILD_USER}??g' Dockerfile.openvino > Dockerfile.openvino-ort
 echo "RUN apt-get install -y time bc" >> Dockerfile.openvino-ort
 echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.openvino-ort
 echo "ENV EXPROVIDER=openvino" >> Dockerfile.openvino-ort
