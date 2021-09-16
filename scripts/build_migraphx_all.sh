@@ -12,7 +12,7 @@ if [ "$USE_RBUILD" = "0" ]; then
     cd build
     # workaround for hip packaging in docker
     if [ -f '/opt/rocm/llvm/bin/clang++' ]; then
-	env CXX=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-O3" -DAMDGPU_TARGETS="gfx906;gfx908;gfx90a" -DGPU_TARGETS="gfx906;gfx908;gfx90a" cmake ..
+	env CXX=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-O3" cmake -DAMDGPU_TARGETS="gfx906;gfx908;gfx90a" -DGPU_TARGETS="gfx906;gfx908;gfx90a" ..
     else
 	echo "Missing clang++"
 	exit 1
