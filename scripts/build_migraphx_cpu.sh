@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # check for dnnl dependency and build if necessary
+CMAKEFLAGS=${CMAKEFLAGS}
 if [ ! -d /src/oneDNN ]; then
     apt update && apt install -y libomp-dev
     cd /src
@@ -24,7 +25,7 @@ mkdir build-cpu
 cd build-cpu
 # workaround for hip packaging in docker
 if [ -f '/opt/rocm/llvm/bin/clang++' ]; then
-    env CXX=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-O3" cmake -DMIGRAPHX_ENABLE_CPU=On ..    
+    env CXX=/opt/rocm/llvm/bin/clang++ CXXFLAGS="-O3" cmake -DMIGRAPHX_ENABLE_CPU=On $CMAKEFLAGS ..    
 fi
 
 if [ "$LD_LIBRARY_PATH" = "" ]; then
