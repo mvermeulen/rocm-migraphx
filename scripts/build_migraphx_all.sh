@@ -2,7 +2,7 @@
 #
 # build migraphx in docker container
 CMAKEFLAGS=${CMAKEFLAGS:=""}
-
+USE_RBUILD=0
 cd /src/AMDMIGraphX
 if [ "$USE_RBUILD" = "0" ]; then
     if [ -d build ]; then
