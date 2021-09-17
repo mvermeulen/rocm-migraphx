@@ -730,6 +730,9 @@ int main(int argc,char *const argv[],char *const envp[]){
 	  result = resarg[0];
 #endif
 	}
+	if (is_verbose){
+	  std::cout << imagefile << ": ";
+	}
 	if (result.get_shape().elements() == 1001){
 	  image_top5(((float *) result.data())+1, top5);
 	} else {
