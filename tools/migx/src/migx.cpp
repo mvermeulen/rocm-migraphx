@@ -732,6 +732,11 @@ int main(int argc,char *const argv[],char *const envp[]){
 	  result = resarg[0];
 #endif
 	}
+	if (result.get_shape().elements() == 1001){
+	  image_top5(((float *) result.data())+1, top5);
+	} else {
+	  image_top5((float *) result.data(), top5);
+	}	
 	istop1 = istop5 = 0;
 	if (top5[0] == expected_result){ ntop1++; istop1 = 1; }
 	if (top5[0] == expected_result ||
@@ -741,13 +746,9 @@ int main(int argc,char *const argv[],char *const envp[]){
 	    top5[4] == expected_result){ ntop5++; istop5 = 1; }
 
 	if (is_verbose){
-	  std::cout << imagefile << ": " << istop1 << " " << istop5 << " : ";
+	  std::cout << imagefile << ": " << istop1 << " " << istop5 << " : " << std::endl;
 	}
-	if (result.get_shape().elements() == 1001){
-	  image_top5(((float *) result.data())+1, top5);
-	} else {
-	  image_top5((float *) result.data(), top5);
-	}
+
 	if (count % 1000 == 0)
 	  std::cout << count << " top1: " << ntop1 << " top5: " << ntop5 << std::endl;
       }
