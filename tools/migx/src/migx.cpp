@@ -697,6 +697,8 @@ int main(int argc,char *const argv[],char *const envp[]){
       int ntop5 = 0;
       std::string imagefile;
       int expected_result;
+      int istop1 = 0;
+      int istop5 = 0;
       if (chdir(imagenet_dir.c_str()) == -1){
 	std::cerr << migx_program << ": can not change to imagenet dir: " << imagenet_dir << std::endl;
 	return 1;
@@ -730,20 +732,22 @@ int main(int argc,char *const argv[],char *const envp[]){
 	  result = resarg[0];
 #endif
 	}
+	istop1 = istop5 = 0;
+	if (top5[0] == expected_result){ ntop1++; istop1 = 1; }
+	if (top5[0] == expected_result ||
+	    top5[1] == expected_result ||
+	    top5[2] == expected_result || 
+	    top5[3] == expected_result || 
+	    top5[4] == expected_result){ ntop5++; istop5 = 1; }
+
 	if (is_verbose){
-	  std::cout << imagefile << ": ";
+	  std::cout << imagefile << ": " << istop1 << " " << istop5 << " : ";
 	}
 	if (result.get_shape().elements() == 1001){
 	  image_top5(((float *) result.data())+1, top5);
 	} else {
 	  image_top5((float *) result.data(), top5);
 	}
-	if (top5[0] == expected_result) ntop1++;
-	if (top5[0] == expected_result ||
-	    top5[1] == expected_result ||
-	    top5[2] == expected_result || 
-	    top5[3] == expected_result || 
-	    top5[4] == expected_result) ntop5++;
 	if (count % 1000 == 0)
 	  std::cout << count << " top1: " << ntop1 << " top5: " << ntop5 << std::endl;
       }
