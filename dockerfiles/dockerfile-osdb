@@ -1,5 +1,6 @@
 FROM ROCM_BASE
 ENV DEBIAN_FRONTEND=noninteractive
+ENV BUILD_NAVI=BUILD_NAVI_CHOICE
 RUN apt update && apt install -y git cmake python-pip python3-pip zlib1g-dev unzip autogen autoconf libtool wget
 RUN apt update && apt install -y libnuma-dev
 RUN apt update && apt install -y libopencv-dev
