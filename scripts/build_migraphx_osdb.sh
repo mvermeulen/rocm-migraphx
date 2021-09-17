@@ -19,7 +19,7 @@ DOCKERFILE=dockerfile-osdb.${BUILDNUM}-`date '+%Y-%m-%d'`
 
 # use sed to create updated dockerfile.  Some might work with ARGs but
 # had difficulties with substitutions
-sed -e "s?ROCM_BASE?${ROCM_BASE}?g" -e "s?BUILD_NAVI_CHOICE=${BUILD_NAVI}?g" dockerfile-osdb > $DOCKERFILE
+sed -e "s?ROCM_BASE?${ROCM_BASE}?g" -e "s?BUILD_NAVI_CHOICE?${BUILD_NAVI}?g" dockerfile-osdb > $DOCKERFILE
 
 if [ "$BUILD_NAVI" = "0" ]; then
     docker build -t rocm-migraphx:osdb-${BUILDNUM} -f $DOCKERFILE .
