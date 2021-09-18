@@ -415,7 +415,7 @@ int main(int argc,char *const argv[],char *const envp[]){
     prog.compile(migraphx::ref::target{});
 
   // remove the last "trim=n" instructions, debugging tool with --eval to print out intermediate results
-  if (run_type != run_validate && trim_instructions > 0 && trim_instructions < prog.size()){
+  if (run_type != run_validate && trim_instructions > 0 && trim_instructions < prog.get_main_module()->size()){
     auto prog2 = prog;
     auto mod = prog2.get_main_module();
     // create shorter program removing "trim" instructions in size
