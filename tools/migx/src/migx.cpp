@@ -374,8 +374,7 @@ int main(int argc,char *const argv[],char *const envp[]){
 
   // quantize the program
   if (quantization_type == quantization_fp16){
-    quantize_fp16(prog)
-      ;
+    quantize_fp16(prog);
   } else if (quantization_type == quantization_int8){
 #if 0
     std::vector<migraphx::parameter_map> calibration;
