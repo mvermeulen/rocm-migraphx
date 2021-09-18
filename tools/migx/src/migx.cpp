@@ -78,7 +78,7 @@ std::string usage_message =
   "        --copyarg            copy arguments in and results back (--benchmark only)\n" +
   "        --argname=<name>     set name of model input argument (default 0)\n";
 
-bool is_verbose = false;
+int is_verbose = 0;
 bool is_gpu = true;
 enum model_type { model_unknown, model_onnx, model_tfpb } model_type = model_unknown;
 std::string model_filename;
@@ -155,7 +155,7 @@ int parse_options(int argc,char *const argv[]){
     case 1:
       return 1;
     case 2:
-      is_verbose = true;
+      is_verbose++;
       break;
     case 3:
       is_gpu = true;
@@ -744,9 +744,8 @@ int main(int argc,char *const argv[],char *const envp[]){
 	    top5[2] == expected_result || 
 	    top5[3] == expected_result || 
 	    top5[4] == expected_result){ ntop5++; istop5 = 1; }
-
 	if (is_verbose){
-	  std::cout << imagefile << ": " << istop1 << " " << istop5 << " : " << std::endl;
+	  std::cout << imagefile << ": " << istop1 << " " << istop5 << " " << expected_result << std::endl;
 	}
 
 	if (count % 1000 == 0)

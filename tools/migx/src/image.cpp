@@ -124,7 +124,7 @@ void image_top5(float* array,int *top5){
   top5[2] = sort_array[997].index;
   top5[3] = sort_array[996].index;
   top5[4] = sort_array[995].index;
-  if (is_verbose){
+  if (is_verbose>1){
     std::cout << "Top5" << std::endl;
     std::cout << "\tlabel=" << sort_array[999].index << " value=" << sort_array[999].value << std::endl;
     std::cout << "\tlabel=" << sort_array[998].index << " value=" << sort_array[998].value << std::endl;
