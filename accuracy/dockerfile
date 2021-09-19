@@ -1,0 +1,22 @@
+FROM ROCM_BASE
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && apt install -y git cmake python-pip python3-pip zlib1g-dev unzip autogen autoconf libtool wget
+RUN apt update && apt install -y libnuma-dev rocm-cmake rocm-libs miopen-hip
+RUN apt update && apt install -y libopencv-dev
+RUN mkdir /src
+RUN cd /src && git clone https://github.com/ROCmSoftwarePlatform/AMDMIGraphX
+RUN cd /src && git clone https://github.com/mvermeulen/rocm-migraphx
+RUN cd /src/rocm-migraphx/scripts && ./build_prereqs.sh
+RUN mkdir /src/test-results
+
+COPY half.hpp /usr/local/include/half.hpp
+COPY glue /src/glue
+COPY saved-models /src/saved-models
+COPY imagenet /src/imagenet
+COPY run_imagenet.sh /src/run_imagenet.sh
+COPY run_bertmrpc.sh /src/run_bertmrpc.sh
+
+ENV LD_LIBRARY_PATH=/usr/local/lib:
+RUN cd /src/rocm-migraphx/scripts && ./build_migraphx_all.sh
+RUN cd /src/rocm-migraphx/scripts && ./build_migraphx_cpu.sh
+RUN cd /src/rocm-migraphx/tools/migx && ./build_migx.sh
