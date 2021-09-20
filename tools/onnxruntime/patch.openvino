@@ -1,0 +1,29 @@
+--- onnxruntime/dockerfiles/Dockerfile.openvino	2021-09-20 11:53:10.522344993 -0500
++++ onnxruntime.save/dockerfiles/Dockerfile.openvino	2021-09-20 11:52:18.341983871 -0500
+@@ -40,13 +40,14 @@
+ RUN tar cvf GPL_sources.tar.gz /sources
+ 
+ # Deploy stage
+-FROM openvino/ubuntu18_runtime:${OPENVINO_VERSION}
++#FROM openvino/ubuntu18_runtime:${OPENVINO_VERSION}
+ 
+ ENV DEBIAN_FRONTEND noninteractive
+ USER root
+-COPY --from=builder /home/openvino/onnxruntime/build/Linux/Release/dist/*.whl ./
+-COPY --from=builder /GPL_sources.tar.gz ./
+-RUN python3 -m pip install ./*.whl && rm ./*.whl
++#COPY --from=builder /home/openvino/onnxruntime/build/Linux/Release/dist/*.whl ./
++#COPY --from=builder /GPL_sources.tar.gz ./
++RUN python3 -m pip install /home/openvino/onnxruntime/build/Linux/Release/dist/*.whl
++RUN mkdir /code && ln -s /home/openvino/onnxruntime /code/onnxruntime
+ RUN apt update; apt install -y unattended-upgrades && \
+     unattended-upgrade
+ ARG BUILD_UID=1001
+@@ -55,7 +56,6 @@
+ ENV WORKDIR_PATH /home/${BUILD_USER}
+ WORKDIR ${WORKDIR_PATH}
+ 
+-USER ${BUILD_USER}
+ ENV PATH=${WORKDIR_PATH}/miniconda/bin:${WORKDIR_PATH}/cmake-dir/bin:$PATH
+ ENV IE_PLUGINS_PATH=${INTEL_OPENVINO_DIR}/deployment_tools/inference_engine/lib/intel64
+ ENV LD_LIBRARY_PATH=/opt/intel/opencl:${INTEL_OPENVINO_DIR}/inference_engine/external/gna/lib:${INTEL_OPENVINO_DIR}/deployment_tools/inference_engine/external/mkltiny_lnx/lib:$INTEL_OPENVINO_DIR/deployment_tools/ngraph/lib:${INTEL_OPENVINO_DIR}/deployment_tools/inference_engine/external/omp/lib:${INTEL_OPENVINO_DIR}/deployment_tools/inference_engine/external/tbb/lib:${IE_PLUGINS_PATH}:${LD_LIBRARY_PATH}
