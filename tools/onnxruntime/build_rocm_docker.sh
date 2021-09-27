@@ -9,12 +9,13 @@ if [ `id -u` != 0 ]; then
     echo script should be run as root
     exit 0
 fi
-cp calc-median onnxruntime/dockerfiles
+cp calc-median onnxruntime
 cd onnxruntime/dockerfiles
-cp Dockerfile.rocm Dockerfile.rocm-ort
-sed -e 's/onnxruntime cmake-3.20.3-Linux-x86_64/cmake-3.20.3-Linux-x86_64/g' Dockerfile.rocm > Dockerfile.rocm-ort
+sed -e 's/--parallel//g' Dockerfile.rocm > Dockerfile.rocm-ort
 echo "" >> Dockerfile.rocm-ort
-echo "RUN apt-get install -y time bc" >> Dockerfile.rocm-ort
+echo "RUN apt update && apt-get install -y time bc" >> Dockerfile.rocm-ort
 echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.rocm-ort
 echo "ENV EXPROVIDER=rocm" >> Dockerfile.rocm-ort
-docker build ${CACHE} -f Dockerfile.rocm-ort -t ort:rocm-$DATESTAMP .
+cd ..
+
+docker build ${CACHE} -f dockerfiles/Dockerfile.rocm-ort -t ort:rocm-$DATESTAMP .
