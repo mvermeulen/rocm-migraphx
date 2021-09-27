@@ -11,7 +11,7 @@ if [ `id -u` != 0 ]; then
 fi
 cp calc-median onnxruntime
 cd onnxruntime/dockerfiles
-sed -e 's/--parallel//g' Dockerfile.rocm > Dockerfile.rocm-ort
+sed -e 's/--parallel//g' -e 's/rf onnxruntime/rf/g' Dockerfile.rocm > Dockerfile.rocm-ort
 echo "" >> Dockerfile.rocm-ort
 echo "RUN apt update && apt-get install -y time bc" >> Dockerfile.rocm-ort
 echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.rocm-ort
