@@ -17,4 +17,4 @@ echo "COPY gfx906_60.HIP.2_6_0_8145-rocm-rel-3.7-20-c16087a4.ufdb.txt miopen_1.0
 echo "COPY calc-median /usr/bin/calc-median" >> Dockerfile.migraphx-rocm43
 echo "ENV EXPROVIDER=migraphx" >> Dockerfile.migraphx-rocm43
 
-docker build ${CACHE} --build-arg ONNXRUNTIME_REPO=https://github.com/ROCmSoftwarePlatform/onnxruntime --build-arg ONNXRUNTIME_BRANCH=migraphx_check_hip_func_ret_value -f Dockerfile.migraphx-rocm43 -t ort:migraphx-rocm43-$DATESTAMP .
+docker build ${CACHE} --build-arg ONNXRUNTIME_REPO=https://github.com/ROCmSoftwarePlatform/onnxruntime --build-arg ONNXRUNTIME_BRANCH=amdmigraphx_fix_build_error -f Dockerfile.migraphx-rocm43 -t ort:migraphx-rocm43-$DATESTAMP .
