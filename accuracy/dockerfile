@@ -12,9 +12,11 @@ RUN mkdir /src/test-results
 COPY half.hpp /usr/local/include/half.hpp
 COPY glue /src/glue
 COPY saved-models /src/saved-models
+COPY mnist /src/mnist
 COPY imagenet /src/imagenet
 COPY run_imagenet.sh /src/run_imagenet.sh
 COPY run_bertmrpc.sh /src/run_bertmrpc.sh
+COPY run_mnist.sh /src/run_mnist.sh
 
 ENV LD_LIBRARY_PATH=/usr/local/lib:
 RUN cd /src/rocm-migraphx/scripts && ./build_migraphx_all.sh
