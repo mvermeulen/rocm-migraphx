@@ -3,7 +3,7 @@ RUN sed -e s/debian/ROCM_RELEASE/g /etc/apt/sources.list.d/rocm.list > /etc/apt/
 RUN rm /etc/apt/sources.list.d/rocm.list
 ENV DEBIAN_FRONTEND=noninteractive
 ENV BUILD_NAVI=BUILD_NAVI_CHOICE
-RUN apt update && apt install -y git cmake python-pip python3-pip zlib1g-dev unzip autogen autoconf libtool wget
+RUN apt update && apt install -y git cmake python-pip python3-dev python3-pip zlib1g-dev unzip autogen autoconf libtool wget
 RUN apt update && apt install -y libnuma-dev rocm-cmake rocm-libs miopen-hip
 RUN apt update && apt install -y libopencv-dev
 RUN mkdir /src
