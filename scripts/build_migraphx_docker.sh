@@ -5,7 +5,7 @@
 set -x
 #
 # Parameters
-ROCM_RELEASE=${ROCM_RELEASE:="4.3"}
+ROCM_RELEASE=${ROCM_RELEASE:="4.5"}
 ROCM_BASE=${ROCM_BASE:="rocm/dev-ubuntu-18.04:${ROCM_RELEASE}"}
 BUILD_NAVI=${BUILD_NAVI:="0"}
 
