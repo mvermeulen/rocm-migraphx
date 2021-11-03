@@ -7,7 +7,7 @@ set -x
 # Parameters
 DATESTAMP=`date '+%Y%m%d'`
 TAG=${NAME:="accuracy-${DATESTAMP}"}
-ROCM_BASE=${ROCM_BASE:="rocm/dev-ubuntu-18.04:4.5-rc4-complete"}
+ROCM_BASE=${ROCM_BASE:="rocm/dev-ubuntu-18.04:4.5-complete"}
 
 if [ `id -u` != 0 ]; then
     echo script should be run as root
