@@ -4,12 +4,12 @@ DATESTAMP=`date '+%Y%m%d'`
 BUILD_NAVI=${BUILD_NAVI:="0"}
 
 if [ "$BUILD_NAVI" = "0" ]; then
-    BASE=${BASE:="rocm-migraphx:4.3"}
+    BASE=${BASE:="rocm-migraphx:4.5"}
 else
-    BASE=${BASE:="rocm-migraphx:4.3n"}
+    BASE=${BASE:="rocm-migraphx:4.5n"}
 fi
 
-MIOPENTUNE=${MIOPENTUNE:="miopen-rocm43"}
+MIOPENTUNE=${MIOPENTUNE:="miopen-rocm45"}
 
 if [ `id -u` != 0 ]; then
     echo script should be run as root
