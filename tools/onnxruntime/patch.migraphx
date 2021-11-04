@@ -1,11 +1,8 @@
 --- onnxruntime.orig/dockerfiles/Dockerfile.migraphx	2021-11-04 11:50:57.867199267 -0500
-+++ onnxruntime.save/dockerfiles/Dockerfile.migraphx	2021-11-04 10:25:32.038645166 -0500
-@@ -5,10 +5,10 @@
- # Dockerfile to run ONNXRuntime with MIGraphX integration
- #--------------------------------------------------------------------------
++++ onnxruntime/dockerfiles/Dockerfile.migraphx	2021-11-04 12:16:23.252173570 -0500
+@@ -7,8 +7,8 @@
  
--FROM ubuntu:18.04
-+FROM ubuntu:16.04
+ FROM ubuntu:18.04
  
 -ARG ONNXRUNTIME_REPO=https://github.com/Microsoft/onnxruntime
 -ARG ONNXRUNTIME_BRANCH=master
@@ -43,7 +40,7 @@
  RUN mkdir -p /migraphx
  RUN cd /migraphx && git clone --depth=1 --branch migraphx_for_ort https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
 -RUN cd /migraphx && rbuild package --cxx /opt/rocm-4.2.0/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
-+RUN cd /migraphx && rbuild package --cxx /opt/rocm/llvm/bin/hcc -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
++RUN cd /migraphx && rbuild package --cxx /opt/rocm-4.5.0/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
  RUN dpkg -i /migraphx/build/*.deb
  RUN rm -rf /migraphx
  
