@@ -1,5 +1,5 @@
 --- onnxruntime.orig/dockerfiles/Dockerfile.migraphx	2021-11-04 15:55:32.284131071 -0500
-+++ onnxruntime/dockerfiles/Dockerfile.migraphx	2021-11-04 16:06:36.502054564 -0500
++++ onnxruntime/dockerfiles/Dockerfile.migraphx	2021-11-04 16:35:10.801301471 -0500
 @@ -7,8 +7,8 @@
  
  FROM ubuntu:18.04
@@ -20,6 +20,15 @@
    sh -c 'echo deb [arch=amd64] http://repo.radeon.com/rocm/apt/4.2/ xenial main > /etc/apt/sources.list.d/rocm.list'
  
  RUN apt-get update &&\
+@@ -38,7 +38,7 @@
+ 
+ # Install MIGraphX from source
+ RUN mkdir -p /migraphx
+-RUN cd /migraphx && git clone --depth=1 --branch migraphx_for_ort https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
++RUN cd /migraphx && git clone --depth=1 --branch develop https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
+ RUN cd /migraphx && rbuild package --cxx /opt/rocm-4.2.0/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
+ RUN dpkg -i /migraphx/build/*.deb
+ RUN rm -rf /migraphx
 @@ -52,4 +52,4 @@
      /bin/sh ./build.sh --config Release --build_wheel --update --build --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=$(cat ./VERSION_NUMBER) --use_migraphx &&\
      pip install /code/onnxruntime/build/Linux/Release/dist/*.whl &&\
