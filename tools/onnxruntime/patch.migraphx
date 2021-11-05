@@ -1,5 +1,5 @@
 --- onnxruntime.orig/dockerfiles/Dockerfile.migraphx	2021-11-04 15:55:32.284131071 -0500
-+++ onnxruntime/dockerfiles/Dockerfile.migraphx	2021-11-04 16:52:12.578580869 -0500
++++ onnxruntime/dockerfiles/Dockerfile.migraphx	2021-11-04 16:55:22.964322859 -0500
 @@ -7,8 +7,8 @@
  
  FROM ubuntu:18.04
