@@ -1,5 +1,5 @@
---- onnxruntime.orig/dockerfiles/Dockerfile.migraphx	2021-11-04 15:55:32.284131071 -0500
-+++ onnxruntime/dockerfiles/Dockerfile.migraphx	2021-11-04 16:55:22.964322859 -0500
+--- onnxruntime.orig/dockerfiles/Dockerfile.migraphx	2021-11-08 08:59:31.784935315 -0600
++++ onnxruntime/dockerfiles/Dockerfile.migraphx	2021-11-08 08:54:55.528006150 -0600
 @@ -7,8 +7,8 @@
  
  FROM ubuntu:18.04
@@ -18,7 +18,7 @@
 -  curl -sL http://repo.radeon.com/rocm/apt/debian/rocm.gpg.key | apt-key add - && \
 -  sh -c 'echo deb [arch=amd64] http://repo.radeon.com/rocm/apt/4.2/ xenial main > /etc/apt/sources.list.d/rocm.list'
 +  curl -sL http://repo.radeon.com/rocm/rocm.gpg.key | apt-key add - && \
-+  sh -c 'echo deb [arch=amd64] http://repo.radeon.com/rocm/apt/4.3.1/ xenial main > /etc/apt/sources.list.d/rocm.list'
++  sh -c 'echo deb [arch=amd64] http://repo.radeon.com/rocm/apt/4.5/ ubuntu main > /etc/apt/sources.list.d/rocm.list'
  
  RUN apt-get update &&\
      apt-get install -y sudo git bash build-essential rocm-dev libpython3.6-dev python3-pip miopen-hip \
@@ -29,7 +29,7 @@
 -RUN cd /migraphx && git clone --depth=1 --branch migraphx_for_ort https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
 -RUN cd /migraphx && rbuild package --cxx /opt/rocm-4.2.0/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
 +RUN cd /migraphx && git clone --depth=1 --branch develop https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
-+RUN cd /migraphx && rbuild package --cxx /opt/rocm-4.3.1/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
++RUN cd /migraphx && rbuild package --cxx /opt/rocm-4.5/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
  RUN dpkg -i /migraphx/build/*.deb
  RUN rm -rf /migraphx
  
