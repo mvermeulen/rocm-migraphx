@@ -1,5 +1,5 @@
 --- onnxruntime.orig/dockerfiles/Dockerfile.migraphx	2021-11-08 08:59:31.784935315 -0600
-+++ onnxruntime/dockerfiles/Dockerfile.migraphx	2021-11-08 08:54:55.528006150 -0600
++++ onnxruntime/dockerfiles/Dockerfile.migraphx	2021-11-08 09:29:36.891426848 -0600
 @@ -7,8 +7,8 @@
  
  FROM ubuntu:18.04
@@ -29,7 +29,7 @@
 -RUN cd /migraphx && git clone --depth=1 --branch migraphx_for_ort https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
 -RUN cd /migraphx && rbuild package --cxx /opt/rocm-4.2.0/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
 +RUN cd /migraphx && git clone --depth=1 --branch develop https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
-+RUN cd /migraphx && rbuild package --cxx /opt/rocm-4.5/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
++RUN cd /migraphx && rbuild package --cxx /opt/rocm-4.5.0/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
  RUN dpkg -i /migraphx/build/*.deb
  RUN rm -rf /migraphx
  
