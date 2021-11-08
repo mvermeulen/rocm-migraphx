@@ -13,6 +13,7 @@ testdir=ort-${EXPROVIDER}-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
 cd $testdir
 echo $EXPROVIDER > exprovider.txt
+ls /opt > opt.txt
 
 while read testcase
 do
