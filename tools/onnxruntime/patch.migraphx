@@ -1,5 +1,5 @@
 --- onnxruntime.orig/dockerfiles/Dockerfile.migraphx	2021-11-08 08:59:31.784935315 -0600
-+++ onnxruntime/dockerfiles/Dockerfile.migraphx	2021-11-08 09:29:36.891426848 -0600
++++ onnxruntime/dockerfiles/Dockerfile.migraphx	2021-11-08 10:53:19.566023259 -0600
 @@ -7,8 +7,8 @@
  
  FROM ubuntu:18.04
@@ -11,7 +11,7 @@
  ENV DEBIAN_FRONTEND noninteractive
  ENV MIGRAPHX_DISABLE_FAST_GELU=1
  
-@@ -20,8 +20,8 @@
+@@ -20,11 +20,11 @@
  
  # Install rocm
  RUN apt-get update && apt-get install -y gnupg2 --no-install-recommends curl && \
@@ -21,7 +21,11 @@
 +  sh -c 'echo deb [arch=amd64] http://repo.radeon.com/rocm/apt/4.5/ ubuntu main > /etc/apt/sources.list.d/rocm.list'
  
  RUN apt-get update &&\
-     apt-get install -y sudo git bash build-essential rocm-dev libpython3.6-dev python3-pip miopen-hip \
+-    apt-get install -y sudo git bash build-essential rocm-dev libpython3.6-dev python3-pip miopen-hip \
++    apt-get install -y sudo git bash build-essential rocm-dev libpython3.6-dev python3-pip miopen-hip libnuma-dev \
+     rocblas half aria2
+ 
+ RUN aria2c -q -d /tmp -o cmake-3.21.0-linux-x86_64.tar.gz \
 @@ -38,8 +38,8 @@
  
  # Install MIGraphX from source
