@@ -10,4 +10,4 @@ COPY miopen-rocm45 /root/.config/miopen/
 RUN cd /src/rocm-migraphx/tools/migx && git pull && ./build_migx.sh
 RUN pip3 install onnx==1.7.0
 # Build CPU version
-RUN /src/rocm-migraphx/scripts/build_migraphx_cpu.sh
+# RUN /src/rocm-migraphx/scripts/build_migraphx_cpu.sh
