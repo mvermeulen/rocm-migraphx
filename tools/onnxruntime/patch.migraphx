@@ -1,42 +1,14 @@
---- onnxruntime.orig/dockerfiles/Dockerfile.migraphx	2021-11-08 08:59:31.784935315 -0600
-+++ onnxruntime/dockerfiles/Dockerfile.migraphx	2021-11-08 10:53:19.566023259 -0600
-@@ -7,8 +7,8 @@
- 
- FROM ubuntu:18.04
- 
--ARG ONNXRUNTIME_REPO=https://github.com/Microsoft/onnxruntime
--ARG ONNXRUNTIME_BRANCH=master
-+ARG ONNXRUNTIME_REPO=https://github.com/ROCmSoftwarePlatform/onnxruntime
-+ARG ONNXRUNTIME_BRANCH=migraphx_check_hip_func_ret_value
- ENV DEBIAN_FRONTEND noninteractive
- ENV MIGRAPHX_DISABLE_FAST_GELU=1
- 
-@@ -20,11 +20,11 @@
- 
- # Install rocm
- RUN apt-get update && apt-get install -y gnupg2 --no-install-recommends curl && \
--  curl -sL http://repo.radeon.com/rocm/apt/debian/rocm.gpg.key | apt-key add - && \
--  sh -c 'echo deb [arch=amd64] http://repo.radeon.com/rocm/apt/4.2/ xenial main > /etc/apt/sources.list.d/rocm.list'
-+  curl -sL http://repo.radeon.com/rocm/rocm.gpg.key | apt-key add - && \
-+  sh -c 'echo deb [arch=amd64] http://repo.radeon.com/rocm/apt/4.5/ ubuntu main > /etc/apt/sources.list.d/rocm.list'
- 
- RUN apt-get update &&\
--    apt-get install -y sudo git bash build-essential rocm-dev libpython3.6-dev python3-pip miopen-hip \
-+    apt-get install -y sudo git bash build-essential rocm-dev libpython3.6-dev python3-pip miopen-hip libnuma-dev \
-     rocblas half aria2
- 
- RUN aria2c -q -d /tmp -o cmake-3.21.0-linux-x86_64.tar.gz \
-@@ -38,8 +38,8 @@
+--- onnxruntime/dockerfiles/Dockerfile.migraphx	2022-01-17 07:19:22.542253069 -0600
++++ onnxruntime.save/dockerfiles/Dockerfile.migraphx	2022-01-17 07:19:10.578212501 -0600
+@@ -38,7 +38,7 @@
  
  # Install MIGraphX from source
  RUN mkdir -p /migraphx
 -RUN cd /migraphx && git clone --depth=1 --branch migraphx_for_ort https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
--RUN cd /migraphx && rbuild package --cxx /opt/rocm-4.2.0/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
 +RUN cd /migraphx && git clone --depth=1 --branch develop https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
-+RUN cd /migraphx && rbuild package --cxx /opt/rocm-4.5.0/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
+ RUN cd /migraphx && rbuild package --cxx /opt/rocm-4.5.0/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src/ -DPYTHON_EXECUTABLE=/usr/bin/python3
  RUN dpkg -i /migraphx/build/*.deb
  RUN rm -rf /migraphx
- 
 @@ -52,4 +52,4 @@
      /bin/sh ./build.sh --config Release --build_wheel --update --build --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=$(cat ./VERSION_NUMBER) --use_migraphx &&\
      pip install /code/onnxruntime/build/Linux/Release/dist/*.whl &&\
