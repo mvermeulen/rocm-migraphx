@@ -1,5 +1,5 @@
 #!/bin/bash
-DOCKER=${DOCKER:="rocm-migraphx:20220110"}
+DOCKER=${DOCKER:="rocm-migraphx:20220117"}
 
 if [ `id -u` != 0 ]; then
     echo script should be run as root
