@@ -27,10 +27,10 @@ done 2>&1 | tee WORKDIR/pretune.log
 
 echo "Performing tuning"
 export MIOPEN_FIND_ENFORCE=4
-cat CONVOLUTIONS | while read line
+cat CONVOLUTIONS | sed -e 's?-S 0?-S -1?g' | while read line
 do
     pushd /opt/rocm/miopen
-    $line -S -1
+    $line
     popd
 done 2>&1 | tee WORKDIR/tune.log
 
