@@ -30,7 +30,7 @@ export MIOPEN_FIND_ENFORCE=4
 cat CONVOLUTIONS | sed -e 's?-S 0?-S -1?g' | while read line
 do
     pushd /opt/rocm/miopen
-    $line
+    $line -s 1
     popd
 done 2>&1 | tee WORKDIR/tune.log
 
