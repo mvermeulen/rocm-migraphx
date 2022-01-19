@@ -18,3 +18,6 @@ Recipes for poor man's tuning of MIOpen for MIGraphX with a docker
    is necessary.  See ../scripts/run_ort_migraphx.sh as an example.
 
 2. Harvest the MIOpen convolution operators into a script.
+
+   process_logfile.sh - is an example script that does this for all *stderr files
+                        it gets passed.  The output is saved in convolutions.log
