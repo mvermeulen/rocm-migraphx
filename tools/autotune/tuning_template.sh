@@ -32,7 +32,7 @@ cat CONVOLUTIONS | while read line
 do
     echo $line
     pushd /opt/rocm/miopen
-    $line
+    $line -S -1
     popd
 done 2>&1 | tee WORKDIR/tune.log
 

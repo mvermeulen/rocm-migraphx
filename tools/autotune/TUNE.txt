@@ -11,7 +11,11 @@ Recipes for poor man's tuning of MIOpen for MIGraphX with a docker
          not log fused convolutions.
 
    Make sure stderr files are captured somewhere since this is where the
-   logfiles go.
+   logfiles go.  One example of recording this with MIGraphX driver for resnet50
+   is as follows:
+
+   env MIOPEN_ENABLE_LOGGING_CMD=1 MIGRAPHX_DISABLE_MIOPEN_FUSION=1 \
+      migraphx-driver perf resnet50i1.onnx 1> resnet50.stdout 2> resnet50.stderr
 
    As a practical example, passing "-e MIOPEN_ENABLE_LOGGING_CMD=1" and
    "-e MIGRAPHX_DISABLE_MIOPEN_FUSION=1" on docker runs seems to do what

@@ -12,4 +12,4 @@ chmod 755 $TMPDIR/runtune.sh
 
 docker run --device=/dev/kfd --device=/dev/dri --network=host --group-add=video -v $TMPDIR:$TMPDIR -v /home/mev:/home/mev -e HOSTDIR=$TMPDIR ${DOCKERIMAGE} $TMPDIR/runtune.sh
 
-printf "results are in $TMPDIR"
+printf "results are in $TMPDIR\n"
