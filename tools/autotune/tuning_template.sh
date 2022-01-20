@@ -35,7 +35,7 @@ do
 done 2>&1 | tee WORKDIR/tune.log
 
 echo "Measuring after tuning"
-export MIOPEN_FIND_ENFORCE=0
+unset MIOPEN_FIND_ENFORCE
 cat CONVOLUTIONS | while read line
 do
     pushd /opt/rocm/miopen
