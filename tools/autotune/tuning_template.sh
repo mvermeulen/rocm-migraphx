@@ -18,7 +18,7 @@ else
 fi
 
 echo "Measuring before tuning"
-cat CONVOLUTIONS | while read line
+cat CONVOLUTIONS | sed -e 's?-s 0?-S -1?g' | while read line
 do
     pushd /opt/rocm/miopen
     $line
@@ -36,7 +36,7 @@ done 2>&1 | tee WORKDIR/tune.log
 
 echo "Measuring after tuning"
 unset MIOPEN_FIND_ENFORCE
-cat CONVOLUTIONS | while read line
+cat CONVOLUTIONS | sed -e 's?-s 0?-S -1?g' | while read line
 do
     pushd /opt/rocm/miopen
     $line
@@ -45,5 +45,8 @@ done 2>&1 | tee WORKDIR/posttune.log
 
 fgrep stats pretune.log  | sort -r -u | awk '{ $1=""; print $0 }' > pretune.csv
 fgrep stats posttune.log | sort -r -u | awk '{ $1=""; print $0 }' > posttune.csv
+
+cd $MIOPEN_USER_DB
+/root/dumpdb.sh
 
 cp -r $MIOPEN_USER_DB WORKDIR
