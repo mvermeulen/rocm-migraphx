@@ -11,6 +11,7 @@ if [ ! `grep -q "20.04" /etc/issue` ]; then
     add-apt-repository -y ppa:deadsnakes/ppa
     apt update
     apt install -y python3.6-dev
+    apt install -y python3.8-dev
 fi
 cd /src
 git clone https://github.com/pybind/pybind11
