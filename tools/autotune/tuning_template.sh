@@ -47,6 +47,6 @@ fgrep stats pretune.log  | sort -r -u | awk '{ $1=""; print $0 }' > pretune.csv
 fgrep stats posttune.log | sort -r -u | awk '{ $1=""; print $0 }' > posttune.csv
 
 cd $MIOPEN_USER_DB
-/root/dumpdb.sh
+/root/dumpdb.sh *.udb
 
 cp -r $MIOPEN_USER_DB WORKDIR
