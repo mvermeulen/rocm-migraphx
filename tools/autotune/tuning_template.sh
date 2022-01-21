@@ -5,16 +5,16 @@ cd WORKDIR
 
 lines=`wc -l CONVOLUTIONS`
 
-printf "Running tuning docker to create MIOpen db\n"
-printf "\tWorking directory\tWORKDIR\n"
-printf "\tInput file       \tCONVOLUTIONS\n"
-printf "\tNumber of convolutions to tune: $lines\n"
+printf "Running tuning docker to create MIOpen db\n"  | tee manifest.txt
+printf "\tWorking directory\tWORKDIR\n"               | tee -a manifest.txt
+printf "\tInput file       \tCONVOLUTIONS\n"          | tee -a manifest.txt
+printf "\tNumber of convolutions to tune: $lines\n"   | tee -a manifest.txt
 
 if [ -d $MIOPEN_USER_DB ]; then
-    printf "$MIOPEN_USER_DB is present\n"
-    ls -l $MIOPEN_USER_DB
+    printf "$MIOPEN_USER_DB is present\n"             | tee -a manifest.txt
+    ls -l $MIOPEN_USER_DB                             | tee -a manifest.txt
 else
-    printf "$MIOPEN_USER_DB is not present\n"
+    printf "$MIOPEN_USER_DB is not present\n"         | tee -a manifest.txt
     
 fi
 
