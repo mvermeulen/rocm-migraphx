@@ -18,7 +18,7 @@ else
 fi
 
 echo "Measuring before tuning"
-cat CONVOLUTIONS | sed -e 's?-s 0?-S -1?g' | while read line
+cat CONVOLUTIONS | sed -e 's?-S 0?-S -1?g' | while read line
 do
     pushd /opt/rocm/miopen
     $line
@@ -36,7 +36,7 @@ done 2>&1 | tee WORKDIR/tune.log
 
 echo "Measuring after tuning"
 unset MIOPEN_FIND_ENFORCE
-cat CONVOLUTIONS | sed -e 's?-s 0?-S -1?g' | while read line
+cat CONVOLUTIONS | sed -e 's?-S 0?-S -1?g' | while read line
 do
     pushd /opt/rocm/miopen
     $line
