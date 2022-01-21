@@ -7,6 +7,7 @@ lines=`wc -l CONVOLUTIONS`
 
 printf "Running tuning docker to create MIOpen db\n"
 printf "\tWorking directory\tWORKDIR\n"
+printf "\tInput file       \tCONVOLUTIONS\n"
 printf "\tNumber of convolutions to tune: $lines\n"
 
 if [ -d $MIOPEN_USER_DB ]; then
