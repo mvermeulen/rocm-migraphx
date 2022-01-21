@@ -1,5 +1,6 @@
 #!/bin/bash
 DOCKERFILE=${DOCKERFILE:="Dockerfile.tuning"}
-DOCKERIMAGE=${DOCKERIMAGE:="rocm-tuning:latest"}
+DOCKERBASE=${DOCKERBASE:="rocm/dev-ubuntu-18.04:5.0-rc2"}
+DOCKERIMAGE=${DOCKERIMAGE:="rocm-tuning:18.04-5.0-rc2"}
 
-docker build -f ${DOCKERFILE} -t ${DOCKERIMAGE} .
+docker build -f ${DOCKERFILE} --build-arg base_image=${DOCKERBASE} -t ${DOCKERIMAGE} .
