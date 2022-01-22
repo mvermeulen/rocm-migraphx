@@ -5,6 +5,9 @@ cd WORKDIR
 
 lines=`wc -l CONVOLUTIONS`
 
+export MIOPEN_FIND_MODE=1
+export MIOPEN_LOG_LEVEL=5
+
 printf "Running tuning docker to create MIOpen db\n"  | tee manifest.txt
 printf "\tWorking directory\tWORKDIR\n"               | tee -a manifest.txt
 printf "\tInput file       \tCONVOLUTIONS\n"          | tee -a manifest.txt
@@ -24,7 +27,7 @@ do
     pushd /opt/rocm/miopen
     $line
     popd
-done 2>&1 | tee WORKDIR/pretune.log
+done 2>WORKDIR/pretune.err | tee WORKDIR/pretune.log
 
 echo "Performing tuning"
 export MIOPEN_FIND_ENFORCE=4
@@ -33,7 +36,7 @@ do
     pushd /opt/rocm/miopen
     $line -s 1
     popd
-done 2>&1 | tee WORKDIR/tune.log
+done 2>WORKDIR/tune.err | tee WORKDIR/tune.log
 
 echo "Measuring after tuning"
 unset MIOPEN_FIND_ENFORCE
@@ -42,7 +45,7 @@ do
     pushd /opt/rocm/miopen
     $line
     popd
-done 2>&1 | tee WORKDIR/posttune.log
+done 2>WORKDIR/posttune.err | tee WORKDIR/posttune.log
 
 fgrep stats pretune.log  | sort -r -u | awk '{ $1=""; print $0 }' > pretune.csv
 fgrep stats posttune.log | sort -r -u | awk '{ $1=""; print $0 }' > posttune.csv
