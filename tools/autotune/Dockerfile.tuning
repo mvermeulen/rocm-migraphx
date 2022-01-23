@@ -3,4 +3,5 @@ FROM ${base_image}
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && apt install -y sqlite3 sqlitebrowser
 COPY dumpdb.sh /root/dumpdb.sh
+COPY lookup_db /root/lookup_db
 WORKDIR /root
