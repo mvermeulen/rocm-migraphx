@@ -20,6 +20,14 @@ do
     $line /opt/rocm/miopen/share/miopen/db/gfx906*.db /root/.config/miopen/*.udb
 done 2>&1 | tee WORKDIR/pretune.db.log
 
+echo "Measuring before tuning"
+cat CONVOLUTIONS | sed -e 's?-S 0?-S -1?g' | while read line
+do
+    pushd /opt/rocm/miopen
+    $line
+    popd
+done 2>WORKDIR/pretune.err | tee WORKDIR/pretune.log
+
 echo "Running before tuning"
 /src/AMDMIGraphX/build/bin/driver perf ONNX_FILE 1>pretune.perf_report.out 2>pretune.perf_report.err
 
@@ -32,6 +40,15 @@ do
     echo $line
     $line /opt/rocm/miopen/share/miopen/db/gfx906*.db /root/.config/miopen/*.udb
 done 2>&1 | tee WORKDIR/posttune.db.log
+
+echo "Measuring after tuning"
+unset MIOPEN_FIND_ENFORCE
+cat CONVOLUTIONS | sed -e 's?-S 0?-S -1?g' | while read line
+do
+    pushd /opt/rocm/miopen
+    $line
+    popd
+done 2>WORKDIR/posttune.err | tee WORKDIR/posttune.log
 
 echo "Running after tuning"
 /src/AMDMIGraphX/build/bin/driver perf ONNX_FILE 1>posttune.perf_report.out 2>posttune.perf_report.err
