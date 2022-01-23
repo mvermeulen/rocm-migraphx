@@ -21,6 +21,13 @@ else
     
 fi
 
+echo "Dumping database entries"
+cat CONVOLUTIONS | sed -e 's?./bin/MIOpenDriver conv??g' | while read line
+do
+    echo $line
+    /root/lookup_db $line /opt/rocm/miopen/share/miopen/db/gfx906_60.db /root/.config/miopen/*.udb
+done 2>&1 | tee WORKDIR/pretune.db.log
+
 echo "Measuring before tuning"
 cat CONVOLUTIONS | sed -e 's?-S 0?-S -1?g' | while read line
 do
@@ -37,6 +44,13 @@ do
     $line -s 1
     popd
 done 2>WORKDIR/tune.err | tee WORKDIR/tune.log
+
+echo "Dumping database entries"
+cat CONVOLUTIONS | sed -e 's?./bin/MIOpenDriver conv??g' | while read line
+do
+    echo $line
+    /root/lookup_db $line /opt/rocm/miopen/share/miopen/db/gfx906_60.db /root/.config/miopen/*.udb
+done 2>&1 | tee WORKDIR/posttune.db.log
 
 echo "Measuring after tuning"
 unset MIOPEN_FIND_ENFORCE
