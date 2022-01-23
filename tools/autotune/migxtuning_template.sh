@@ -6,6 +6,7 @@ cd WORKDIR
 printf "Running tuning docker to create MIGraphX tuned db\n" | tee manifest.txt
 printf "\tWorking directory\tWORKDIR\n"                      | tee -a manifest.txt
 printf "\tONNX file\tONNX_FILE\n"                            | tee -a manifest.txt
+printf "\tFUSION setting\tFUSION_SETTING\n"                  | tee -a manifest.txt
 
 if [ -d $MIOPEN_USER_DB ]; then
     printf "$MIOPEN_USER_DB is present, saving away\n"       | tee -a manifest.txt
@@ -23,7 +24,7 @@ echo "Running before tuning"
 /src/AMDMIGraphX/build/bin/driver perf ONNX_FILE 1>pretune.perf_report.out 2>pretune.perf_report.err
 
 echo "Tuning without fusions"
-env MIOPEN_FIND_ENFORCE=4 MIGRAPHX_DISABLE_MIOPEN_FUSION=1 /src/AMDMIGraphX/build/bin/driver/perf ONNX_FILE 1>tune.perf_report.out 2>tune.perf_report.err
+env MIOPEN_FIND_ENFORCE=4 FUSION_SETTING /src/AMDMIGraphX/build/bin/driver/perf ONNX_FILE 1>tune.perf_report.out 2>tune.perf_report.err
 
 echo "Dumping database entries"
 cat CONVOLUTIONS | sed -e 's?./bin/MIOpenDriver conv?./lookup_db?g' | while read line
@@ -39,4 +40,11 @@ pushd $MIOPEN_USER_DB
 /root/dumpdb.sh *.udb
 popd
 
-cp -r $MIOPEN_USER_DB WORKDIR/miopen
+mv $MIOPEN_USER_DB WORKDIR/miopen
+
+pushd $MIOPEN_USER_DB
+/root/dumpdb.sh *.udb
+popd
+
+mv $MIOPEN_USER_DB WORKDIR/miopen
+
