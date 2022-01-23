@@ -1,5 +1,5 @@
---- onnxruntime/dockerfiles/Dockerfile.openvino	2021-09-20 11:53:10.522344993 -0500
-+++ onnxruntime.save/dockerfiles/Dockerfile.openvino	2021-09-20 11:52:18.341983871 -0500
+--- onnxruntime/dockerfiles/Dockerfile.openvino	2022-01-23 08:27:59.345523908 -0600
++++ onnxruntime.save/dockerfiles/Dockerfile.openvino	2022-01-16 09:29:27.081530547 -0600
 @@ -40,13 +40,14 @@
  RUN tar cvf GPL_sources.tar.gz /sources
  
