@@ -22,10 +22,10 @@ else
 fi
 
 echo "Dumping database entries"
-cat CONVOLUTIONS | sed -e 's?./bin/MIOpenDriver conv??g' | while read line
+cat CONVOLUTIONS | sed -e 's?./bin/MIOpenDriver conv?/root/lookup_db?g' | while read line
 do
     echo $line
-    /root/lookup_db $line /opt/rocm/miopen/share/miopen/db/gfx906_60.db /root/.config/miopen/*.udb
+    $line /opt/rocm/miopen/share/miopen/db/gfx906*.db /root/.config/miopen/*.udb
 done 2>&1 | tee WORKDIR/pretune.db.log
 
 echo "Measuring before tuning"
@@ -46,10 +46,10 @@ do
 done 2>WORKDIR/tune.err | tee WORKDIR/tune.log
 
 echo "Dumping database entries"
-cat CONVOLUTIONS | sed -e 's?./bin/MIOpenDriver conv??g' | while read line
+cat CONVOLUTIONS | sed -e 's?./bin/MIOpenDriver conv?/root/lookup_db?g' | while read line
 do
     echo $line
-    /root/lookup_db $line /opt/rocm/miopen/share/miopen/db/gfx906_60.db /root/.config/miopen/*.udb
+    $line /opt/rocm/miopen/share/miopen/db/gfx906*.db /root/.config/miopen/*.udb
 done 2>&1 | tee WORKDIR/posttune.db.log
 
 echo "Measuring after tuning"
