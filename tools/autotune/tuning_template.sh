@@ -38,12 +38,16 @@ done 2>WORKDIR/pretune.err | tee WORKDIR/pretune.log
 
 echo "Performing tuning"
 export MIOPEN_FIND_ENFORCE=4
+echo "Tuning started" | tee -a manifest.txt
+date '+%s' | tee -a manifest.txt
 cat CONVOLUTIONS | sed -e 's?-S 0?-S -1?g' | while read line
 do
     pushd /opt/rocm/miopen
     $line -s 1
     popd
 done 2>WORKDIR/tune.err | tee WORKDIR/tune.log
+echo "Tuning finished" | tee -a manifest.txt
+date '+%s' | tee -a manifest.txt
 
 echo "Dumping database entries"
 cat CONVOLUTIONS | sed -e 's?./bin/MIOpenDriver conv?/root/lookup_db?g' | while read line

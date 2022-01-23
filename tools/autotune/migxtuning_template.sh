@@ -32,7 +32,11 @@ echo "Running before tuning"
 /src/AMDMIGraphX/build/bin/driver perf ONNX_FILE 1>pretune.perf_report.out 2>pretune.perf_report.err
 
 echo "Tuning without fusions"
+echo "Tuning started" | tee -a manifest.txt
+date '+%s'            | tee -a manifest.txt
 env MIOPEN_FIND_ENFORCE=4 FUSION_SETTING /src/AMDMIGraphX/build/bin/driver perf ONNX_FILE 1>tune.perf_report.out 2>tune.perf_report.err
+echo "Tuning finished" | tee -a manifest.txt
+date '+%s'             | tee -a manifest.txt
 
 echo "Dumping database entries"
 cat CONVOLUTIONS | sed -e 's?./bin/MIOpenDriver conv?./lookup_db?g' | while read line
