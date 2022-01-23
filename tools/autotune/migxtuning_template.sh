@@ -24,7 +24,7 @@ echo "Running before tuning"
 /src/AMDMIGraphX/build/bin/driver perf ONNX_FILE 1>pretune.perf_report.out 2>pretune.perf_report.err
 
 echo "Tuning without fusions"
-env MIOPEN_FIND_ENFORCE=4 FUSION_SETTING /src/AMDMIGraphX/build/bin/driver/perf ONNX_FILE 1>tune.perf_report.out 2>tune.perf_report.err
+env MIOPEN_FIND_ENFORCE=4 FUSION_SETTING /src/AMDMIGraphX/build/bin/driver perf ONNX_FILE 1>tune.perf_report.out 2>tune.perf_report.err
 
 echo "Dumping database entries"
 cat CONVOLUTIONS | sed -e 's?./bin/MIOpenDriver conv?./lookup_db?g' | while read line
@@ -34,17 +34,10 @@ do
 done 2>&1 | tee WORKDIR/posttune.db.log
 
 echo "Running after tuning"
-/src/AMDMIGraphX/build/bin/driver perf ONNX_FILE 1>pretune.perf_report.out 2>pretune.perf_report.err
+/src/AMDMIGraphX/build/bin/driver perf ONNX_FILE 1>posttune.perf_report.out 2>posttune.perf_report.err
 
 pushd $MIOPEN_USER_DB
 /root/dumpdb.sh *.udb
 popd
 
 mv $MIOPEN_USER_DB WORKDIR/miopen
-
-pushd $MIOPEN_USER_DB
-/root/dumpdb.sh *.udb
-popd
-
-mv $MIOPEN_USER_DB WORKDIR/miopen
-
