@@ -17,6 +17,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+int verbose=2;
+char *label = NULL;
+
 // name:value pairs used for db lookups
 struct name_value {
   char *name;
@@ -34,16 +37,59 @@ void db_error(char *format,...){
   va_end(ap);
 }
 
-int last_id;
+
 int callback(void *cmd, int argc, char **argv, char **colname){
   int i;
-  int save_id = 0;
-  if (!strcmp(cmd,"save_id")) save_id = 1;
   for (i=0;i<argc;i++){
-    if (save_id && !strcmp(colname[i],"id")) last_id = atoi(argv[i]);
     printf("\t%s = %s\n",colname[i],argv[i]? argv[i]:"NULL");
   }
   printf("\n");
+  return 0;
+}
+
+int last_id;
+int callback_config(void *cmd, int argc, char **argv, char **colname){
+  int i;
+  int save_id = 0;
+  for (i=0;i<argc;i++){
+    if (!strcmp(colname[i],"id")){
+      last_id = atoi(argv[i]);
+      if ((verbose == 0) || (verbose == 1)){
+	if (label != NULL) printf("%s",label);
+	printf("config = %s\n",argv[i]?argv[i]:"NULL");
+      } else {
+	printf("\t%s = %s\n",colname[i],argv[i]?argv[i]:"NULL");
+      }
+    }
+  }
+  for (i=0;i<argc;i++){
+    if (!strcmp(colname[i],"id")) continue;
+    if (verbose >= 1){
+      printf("\t%s = %s\n",colname[i],argv[i]? argv[i]:"NULL");
+    }
+  }
+  if (verbose >= 1) printf("\n");
+  return 0;
+}
+
+int callback_perfdb(void *cmd, int argc, char **argv, char **colname){
+  int i;
+  char *solver=NULL;
+  char *params=NULL;
+  if (verbose == 0){
+    for (i=0;i<argc;i++){
+      if (!strcmp(colname[i],"solver")) solver = argv[i];
+      if (!strcmp(colname[i],"params")) params = argv[i];
+    }
+    if ((solver != NULL) && (params != NULL)){
+      printf("\t%s : %s\n",solver,params);
+    }
+  } else {
+    for (i=0;i<argc;i++){
+      printf("\t%s = %s\n",colname[i],argv[i]? argv[i]:"NULL");
+    }
+    printf("\n");
+  }
   return 0;
 }
 
@@ -136,7 +182,8 @@ void db_lookup(int nfield,struct name_value **fieldlist){
 
   strcpy(buffer,"SELECT COUNT(*) FROM config WHERE ");
   strcat(buffer,sql_buffer);
-  printf("sql = %s\n",buffer);
+  if (verbose >= 2)
+    printf("sql = %s\n",buffer);
   result = sqlite3_prepare_v2(db_handle,buffer,-1,&res,0);
   if (result != SQLITE_OK){
     db_error("Unable to query database:\n\tsql = %s\n\terror = %s\n",buffer,sqlite3_errmsg(db_handle));
@@ -144,7 +191,8 @@ void db_lookup(int nfield,struct name_value **fieldlist){
   }
   result = sqlite3_step(res);
   if (result = SQLITE_ROW){
-    printf("\t%s config entries\n",sqlite3_column_text(res,0));
+    if (verbose >= 2)
+      printf("\t%s config entries\n",sqlite3_column_text(res,0));
     count = atoi(sqlite3_column_text(res,0));
   }
   sqlite3_finalize(res);
@@ -155,15 +203,17 @@ void db_lookup(int nfield,struct name_value **fieldlist){
   }
   strcpy(buffer,"SELECT * FROM config WHERE ");
   strcat(buffer,sql_buffer);
-  printf("sql = %s\n",buffer);
-  result = sqlite3_exec(db_handle,buffer,callback,"save_id",&err_msg);
+  if (verbose >=2 )
+    printf("sql = %s\n",buffer);
+  result = sqlite3_exec(db_handle,buffer,callback_config,0,&err_msg);
   if (result != SQLITE_OK){
     db_error("Unable to query database:\n\tsql=%s\n\terror = %s\n",buffer,sqlite3_errmsg(db_handle));
     return;
   }
-  sprintf(buffer,"SELECT * FROM perf_db WHERE config = '%d'",last_id);
-  printf("sql = %s\n",buffer);
-  result = sqlite3_exec(db_handle,buffer,callback,"perf_db",&err_msg);
+  sprintf(buffer,"SELECT * FROM perf_db WHERE config = '%d' ORDER BY solver",last_id);
+  if (verbose >= 2)
+    printf("sql = %s\n",buffer);
+  result = sqlite3_exec(db_handle,buffer,callback_perfdb,0,&err_msg);
   if (result != SQLITE_OK){
     db_error("Unable to query database:\n\tsql=%s\n\terror = %s\n",buffer,sqlite3_errmsg(db_handle));
     return;
@@ -172,7 +222,8 @@ void db_lookup(int nfield,struct name_value **fieldlist){
 
 void db_open(char *dbfile){
   int result;
-  printf("Opening %s\n",dbfile);
+  if (verbose >= 1)
+    printf("Opening %s\n",dbfile);
   if ((result = sqlite3_open_v2(dbfile,&db_handle,SQLITE_OPEN_READONLY,NULL)) != SQLITE_OK){
     db_error("Unable to open database: %s\n\terror = %s\n",dbfile,sqlite3_errmsg(db_handle));
   }
@@ -228,14 +279,22 @@ void db_close(void){
 }
 
 #if TEST_DRIVER
-
 int main(int argc,char **argv){
   int opt;
   int num;
   int i;
   int nfield = 0;
+  char *p;
+  
   struct stat statbuf;
   struct name_value **field_values = calloc(argc,sizeof(struct name_value *));
+  if ((p = getenv("VERBOSE")) != NULL){
+    int value;
+    if (sscanf(p,"%d",&value) == 1){ verbose = value; }
+  }
+  if ((p = getenv("LABEL")) != NULL){
+    label = strdup(p);
+  }
   while ((opt = getopt(argc,argv,"c:F:g:H:j:k:l:m:n:p:q:s:S:t:u:v:W:x:y:!:@:$:#:^:")) != -1){
     switch(opt){
     case 'c':
@@ -379,7 +438,11 @@ int main(int argc,char **argv){
   for (i=optind;i<argc;i++){
     if (stat(argv[i],&statbuf) == 0){
       db_open(argv[i]);
-      db_info();
+      if (verbose >= 2){
+	db_info();
+      } else {
+	printf("%s\n",argv[i]);
+      }
       db_lookup(nfield,field_values);
       db_close();      
     } else {

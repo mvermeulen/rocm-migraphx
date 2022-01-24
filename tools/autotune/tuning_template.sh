@@ -22,10 +22,11 @@ else
 fi
 
 echo "Dumping database entries"
+count=0
 cat CONVOLUTIONS | sed -e 's?./bin/MIOpenDriver conv?/root/lookup_db?g' | while read line
 do
-    echo $line
-    $line /opt/rocm/miopen/share/miopen/db/gfx906*.db /root/.config/miopen/*.udb
+    count=$(( count + 1 ))
+    env LABEL="conv ${count}: " $line /opt/rocm/miopen/share/miopen/db/gfx906*.db /root/.config/miopen/*.udb
 done 2>&1 | tee WORKDIR/pretune.db.log
 
 echo "Measuring before tuning"
@@ -50,10 +51,11 @@ echo "Tuning finished" | tee -a manifest.txt
 date '+%s' | tee -a manifest.txt
 
 echo "Dumping database entries"
+count=0
 cat CONVOLUTIONS | sed -e 's?./bin/MIOpenDriver conv?/root/lookup_db?g' | while read line
 do
-    echo $line
-    $line /opt/rocm/miopen/share/miopen/db/gfx906*.db /root/.config/miopen/*.udb
+    count=$(( count + 1))
+    env LABEL="conv ${count}: " $line /opt/rocm/miopen/share/miopen/db/gfx906*.db /root/.config/miopen/*.udb
 done 2>&1 | tee WORKDIR/posttune.db.log
 
 echo "Measuring after tuning"
