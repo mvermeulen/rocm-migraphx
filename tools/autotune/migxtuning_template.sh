@@ -3,6 +3,8 @@ MIOPEN_USER_DB=/root/.config/miopen
 
 cd WORKDIR
 
+export VERBOSE=0
+
 printf "Running tuning docker to create MIGraphX tuned db\n" | tee manifest.txt
 printf "\tWorking directory\tWORKDIR\n"                      | tee -a manifest.txt
 printf "\tONNX file\tONNX_FILE\n"                            | tee -a manifest.txt

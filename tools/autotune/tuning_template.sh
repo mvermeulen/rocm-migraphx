@@ -7,6 +7,7 @@ lines=`wc -l CONVOLUTIONS`
 
 export MIOPEN_FIND_MODE=1
 export MIOPEN_LOG_LEVEL=5
+export VERBOSE=0
 
 printf "Running tuning docker to create MIOpen db\n"  | tee manifest.txt
 printf "\tWorking directory\tWORKDIR\n"               | tee -a manifest.txt
