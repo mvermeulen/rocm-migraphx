@@ -1,6 +1,7 @@
 ARG DOCKERBASE=rocm-migraphx:4.5
+ARG BRANCH=develop
 FROM $DOCKERBASE
-RUN cd /src/AMDMIGraphX && git pull && git checkout $BRANCH
+RUN cd /src/AMDMIGraphX && git pull && git checkout ${BRANCH}
 ENV DEBIAN_FRONTEND=noninteractive
 RUN cd /src/AMDMIGraphX && /src/rocm-migraphx/scripts/build_migraphx.sh
 RUN cd /src/AMDMIGraphX && /src/rocm-migraphx/scripts/build_migraphx_cpu.sh
