@@ -1,5 +1,5 @@
 #!/bin/bash
-DOCKER=${DOCKER:="ort:migraphx-rocm45-20220124"}
+DOCKER=${DOCKER:="ort:migraphx-rocm45-20220131"}
 LOG_MIOPEN=${LOG_MIOPEN:="0"}
 
 if [ "$LOG_MIOPEN" != "0" ]; then
