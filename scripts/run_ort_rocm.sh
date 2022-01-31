@@ -1,4 +1,5 @@
 #!/bin/bash
-DOCKER=${DOCKER:="ort:rocm-20220124"}
+ONNXRUNNER=${ONNXRUNNER:="/workspace/github/onnxruntime/build/Release/onnx_test_runner"}
+DOCKER=${DOCKER:="mevermeulen/ort:rocm-20220126"}
 
-docker run -e TZ=America/Chicago --gpus all --network=host -v /home/mev:/home/mev ${DOCKER} env EXPROVIDER=rocm /home/mev/source/rocm-migraphx/scripts/run_ort_mev.sh
+docker run -e TZ=America/Chicago --gpus all --network=host -v /home/mev:/home/mev ${DOCKER} env EXPROVIDER=rocm ONNXRUNNER=${ONNXRUNNER} /home/mev/source/rocm-migraphx/scripts/run_ort_mev.sh
