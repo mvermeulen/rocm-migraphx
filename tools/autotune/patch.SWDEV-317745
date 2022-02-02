@@ -1,6 +1,6 @@
---- src/hip/hip_build_utils.cpp	2022-02-01 07:29:51.960614320 -0600
-+++ src/hip/hip_build_utils.fixed	2022-02-01 07:31:33.155486686 -0600
-@@ -191,7 +191,7 @@ static boost::filesystem::path HipBuildI
+--- hip_build_utils.cpp	2022-02-01 09:22:09.048963369 -0600
++++ hip_build_utils.cpp.patched	2022-02-01 09:19:14.295761216 -0600
+@@ -191,7 +191,7 @@
      }
      else if(IsHipClangCompiler())
      {

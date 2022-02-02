@@ -1,0 +1,4 @@
+ARG base_image=ubuntu:18.04
+FROM ${base_image}
+COPY build_miopen.sh /root/build_miopen.sh
+RUN /root/build_miopen.sh
