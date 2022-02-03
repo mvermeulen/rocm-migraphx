@@ -1,22 +1,32 @@
 #
 # Dockerfile for building MIOpen
 #
-# By default uses ubuntu:18.04 but can be built on top of another docker using
+# By default uses rocm/dev-ubuntu-18.04 but can be built on top of another docker image using
 #    --build-arg base_image=xxx
+# Note however that the base image does need llvm and hip installed.
+#
 # By default builds from release branch release/rocm-rel-5.0 but can change with
 #    --build-arg release=yyy
-# By default does not install, but can install by setting install_prefix with
+#
+# By default installs in default location, but can install by setting install_prefix with
 #    --build-arg install_prefix=zzz
-# or
-#    --build-arg install_prefix=default
+# or not install using
+#    --build-arg install_prefix=""
 #
 #
-ARG base_image=ubuntu:18.04
+ARG base_image=rocm/dev-ubuntu-18.04:4.5.2
 ARG release="release/rocm-rel-5.0"
-ARG install_prefix=""
+ARG install_prefix=default
 
+FROM ${base_image}
 ENV RELEASE=${release}
 ENV INSTALL_PREFIX=${install_prefix}
-FROM ${base_image}
-COPY build_miopen.sh /root/build_miopen.sh
-RUN /root/build_miopen.sh
+ENV DEBIAN_FRONTEND=noninteractive
+COPY build_miopen.sh build_miopen_prereq.sh build_miopen_source.sh build_miopen_deps.sh build_miopen_build.sh /root/
+
+WORKDIR /root
+RUN ./build_miopen_prereq.sh
+RUN ./build_miopen_source.sh
+RUN ./build_miopen_deps.sh
+RUN ./build_miopen_build.sh
+
