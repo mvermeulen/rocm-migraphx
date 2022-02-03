@@ -10,7 +10,8 @@ apt update && apt install -y python3-venv aria2 python3-pip
 pip3 install wheel
 
 NEED_CMAKE=0
-if [ `which cmake \> /dev/null` ]; then
+cmake_count=`which cmake | wc -l`
+if [ "$cmake_count" == 0 ]; then
     NEED_CMAKE=1
 else
     version=`cmake --version | head -1 | awk '{ print $3 }'`
@@ -47,11 +48,18 @@ if [ -f /usr/local/include/half.hpp ]; then rm /usr/local/include/half.hpp; fi
 cmake -P install_Deps.cmake
 mkdir build
 cd build
-if [ "$INSTALLPREFIX" != "" ]; then
+if [ "$INSTALL_PREFIX" != "" ]; then
     env CXX=/opt/rocm/llvm/bin/clang++ cmake -DMIOPEN_BACKEND=HIP -DCMAKE_PREFIX_PATH="/opt/rocm/hip" ..
+    make
+    make MIOpenDriver
+elif [ "$INSTALL_PREFIX" == "default" ]; then
+    env CXX=/opt/rocm/llvm/bin/clang++ cmake -DMIOPEN_BACKEND=HIP -DCMAKE_PREFIX_PATH="/opt/rocm/hip" ..
+    make
+    make MIOpenDriver
+    make install
 else
-    env CXX=/opt/rocm/llvm/bin/clang++ cmake -DMIOPEN_BACKEND=HIP -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" -DCMAKE_PREFIX_PATH="/opt/rocm/hip" ..
+    env CXX=/opt/rocm/llvm/bin/clang++ cmake -DMIOPEN_BACKEND=HIP -DCMAKE_PREFIX_PATH="/opt/rocm/hip" -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" ..
+    make
+    make MIOpenDriver
+    make install
 fi
-
-make
-make MIOpenDriver
