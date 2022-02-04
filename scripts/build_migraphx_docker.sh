@@ -8,7 +8,7 @@ set -x
 ROCM_RELEASE=${ROCM_RELEASE:="4.5"}
 ROCM_BASE=${ROCM_BASE:="rocm/dev-ubuntu-18.04:${ROCM_RELEASE}"}
 BUILD_NAVI=${BUILD_NAVI:="0"}
-
+DOCKERIMAGE=${DOCKERIMAGE:="rocm-migraphx:${ROCM_RELEASE}"}
 
 if [ `id -u` != 0 ]; then
     echo script should be run as root
@@ -22,4 +22,4 @@ DOCKERFILE=dockerfile.`date '+%Y-%m-%d'`
 # had difficulties with substitutions
 sed -e "s?ROCM_RELEASE?${ROCM_RELEASE}?g" dockerfile > $DOCKERFILE
 
-docker build --build-arg build_name=${BUILD_NAVI} --build-arg base_image=${ROM_BASE} --no-cache -t rocm-migraphx:${ROCM_RELEASE} -f $DOCKERFILE .
+docker build --build-arg build_name=${BUILD_NAVI} --build-arg base_image=${ROCM_BASE} --no-cache -t $DOCKERIMAGE -f $DOCKERFILE .
