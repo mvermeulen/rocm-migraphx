@@ -7,7 +7,11 @@ CFLAGS=-g
 HIPCCFLAGS=-D__HIP_PLATFORM_AMD__ -fPIC
 LDFLAGS=-lsqlite3
 
+tuneinfo:	lookup_db
+	ln lookup_db tuneinfo
+
 lookup_db:	lookup_db.o hipinfo.o
+	-rm tuneinfo
 	$(HIPCC) -o lookup_db lookup_db.o hipinfo.o $(LDFLAGS)
 
 lookup_db.o:	lookup_db.c
@@ -20,4 +24,4 @@ clean:
 	-rm *.o *~
 
 clobber:	clean
-	-rm lookup_db
+	-rm lookup_db tuneinfo

@@ -1,6 +1,7 @@
 /*
  * hipinfo.c - look up database information and other information on hip platform
  */
+#include <string.h>
 #include "hip/hip_runtime.h"
 
 char *get_architecture(void){
@@ -18,6 +19,7 @@ char *get_architecture(void){
       fprintf(stderr,"unable to call hipGetDeviceProperties(%d): %s\n",i,hipGetErrorString(result));
       return NULL;
     }
-    return props.gcnArchName;
+    return strdup(props.gcnArchName);
   }
+  return NULL;
 }

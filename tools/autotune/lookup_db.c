@@ -285,6 +285,7 @@ int main(int argc,char **argv){
   int opt;
   int num;
   int i;
+  int len;
   int nfield = 0;
   char *p;
   
@@ -297,6 +298,14 @@ int main(int argc,char **argv){
   if ((p = getenv("LABEL")) != NULL){
     label = strdup(p);
   }
+  len = strlen(argv[0]);
+  if ((len >= 8) && (!strncmp(&argv[0][len-8],"tuneinfo",8))){
+    printf("tuneinfo not implemented\n");
+    return 0;
+  } else {
+    printf("%s\n",argv[0]);
+  }
+  
   while ((opt = getopt(argc,argv,"c:F:g:H:j:k:l:m:n:p:q:s:S:t:u:v:W:x:y:!:@:$:#:^:")) != -1){
     switch(opt){
     case 'c':
@@ -443,7 +452,6 @@ int main(int argc,char **argv){
     char buffer[1024];
     FILE *fp;
     if ((arch = get_architecture()) != NULL){
-      arch = strdup(arch);
       if (p = strchr(arch,':')) *p = '\000';
 
       sprintf(buffer,"find /opt/rocm/miopen/share/miopen/db -name *%s* -exec file {} \\; | grep SQLite | awk 'BEGIN { FS=\":\" } ; { print $1 }' ",arch);
