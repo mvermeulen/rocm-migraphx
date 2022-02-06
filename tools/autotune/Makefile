@@ -2,11 +2,19 @@
 # Makefile for tuning db tools
 #
 CC=gcc
+HIPCC=/opt/rocm/hip/bin/hipcc
 CFLAGS=-g
+HIPCCFLAGS=-D__HIP_PLATFORM_AMD__ -fPIC
 LDFLAGS=-lsqlite3
 
-lookup_db:	lookup_db.o
-	$(CC) -o lookup_db $(CFLAGS) -DTEST_DRIVER=1 lookup_db.c $(LDFLAGS)
+lookup_db:	lookup_db.o hipinfo.o
+	$(HIPCC) -o lookup_db lookup_db.o hipinfo.o $(LDFLAGS)
+
+lookup_db.o:	lookup_db.c
+	$(CC) -c $(CFLAGS) -DTEST_DRIVER=1 lookup_db.c
+
+hipinfo.o:	hipinfo.c
+	$(HIPCC) -c $(CFLAGS) $(HIPCCFLAGS) hipinfo.c	
 
 clean:
 	-rm *.o *~

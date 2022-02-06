@@ -17,6 +17,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+extern char *get_architecture(void);
+
 int verbose=2;
 char *label = NULL;
 
@@ -435,18 +437,67 @@ int main(int argc,char **argv){
     }
     
   }
-  for (i=optind;i<argc;i++){
-    if (stat(argv[i],&statbuf) == 0){
-      db_open(argv[i]);
-      if (verbose >= 2){
-	db_info();
-      } else {
-	printf("%s\n",argv[i]);
+  if (optind == argc){
+    // no db given, see if we can look them up
+    char *arch,*p;
+    char buffer[1024];
+    FILE *fp;
+    if ((arch = get_architecture()) != NULL){
+      arch = strdup(arch);
+      if (p = strchr(arch,':')) *p = '\000';
+
+      sprintf(buffer,"find /opt/rocm/miopen/share/miopen/db -name *%s* -exec file {} \\; | grep SQLite | awk 'BEGIN { FS=\":\" } ; { print $1 }' ",arch);
+      if ((fp = popen(buffer,"r")) != NULL){
+	while (fgets(buffer,sizeof(buffer),fp)){
+	  if (p = strchr(buffer,'\n')) *p = '\000';
+
+	  if (stat(buffer,&statbuf) == 0){
+	    db_open(buffer);
+	    if (verbose >= 2){
+	      db_info();
+	    } else {
+	      printf("%s\n",buffer);
+	    }
+	    db_lookup(nfield,field_values);
+	    db_close();
+	  } else {
+	    printf("Unable to open database: %s\n",buffer);
+	  }
+	}
       }
-      db_lookup(nfield,field_values);
-      db_close();      
-    } else {
-      printf("Database %s does not exist\n",argv[i]);
+      sprintf(buffer,"find %s/.config/miopen -name *%s* -exec file {} \\; | grep SQLite | awk 'BEGIN { FS=\":\" } ; { print $1 }' ",getenv("HOME"),arch);
+      if ((fp = popen(buffer,"r")) != NULL){
+	while (fgets(buffer,sizeof(buffer),fp)){
+	  if (p = strchr(buffer,'\n')) *p = '\000';	  
+	  if (stat(buffer,&statbuf) == 0){
+	    db_open(buffer);
+	    if (verbose >= 2){
+	      db_info();
+	    } else {
+	      printf("%s\n",buffer);
+	    }
+	    db_lookup(nfield,field_values);
+	    db_close();
+	  } else {
+	    printf("Unable to open database: %s\n",buffer);
+	  }	
+	}
+      }
+    }
+  } else {
+    for (i=optind;i<argc;i++){
+      if (stat(argv[i],&statbuf) == 0){
+	db_open(argv[i]);
+	if (verbose >= 2){
+	  db_info();
+	} else {
+	  printf("%s\n",argv[i]);
+	}
+	db_lookup(nfield,field_values);
+	db_close();      
+      } else {
+	printf("Database %s does not exist\n",argv[i]);
+      }
     }
   }
 }
