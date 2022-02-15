@@ -1,6 +1,8 @@
-ARG base_image="rocm/dev-ubuntu-20.04:5.0-complete"
+ARG base_image="rocm/dev-ubuntu-20.04:4.5.2-complete"
 FROM ${base_image}
 ENV DEBIAN_FRONTEND noninteractive
+
+ARG branch="develop"
 
 WORKDIR /workspace
 
@@ -10,6 +12,16 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
 RUN apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main"
 RUN apt update && apt install -y cmake
 
+# build MIGraphX
+RUN apt install -y half
+RUN pip3 install https://github.com/RadeonOpenCompute/rbuild/archive/master.tar.gz
+RUN mkdir migraphx
+RUN cd migraphx && git clone --depth=1 --branch ${branch} https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
+RUN cd migraphx && rbuild package --cxx /opt/rocm/llvm/bin/clang++ -d deps -B build -S /workspace/migraphx/src -DPYTHON_EXECUTABLE=/usr/bin/python3
+RUN cd migraphx/build && dpkg -i *.deb
+
 # build ONNX runtime wheel package
+COPY patch.enable_gfx1030 /workspace
+RUN patch onnxruntime/cmake/onnxruntime_providers.cmake < patch.enable_gfx1030
 RUN git clone --recursive https://github.com/microsoft/onnxruntime
-RUN cd onnxruntime && ./build.sh --build_shared_lib --parallel --build_wheel
+RUN cd onnxruntime && ./build.sh --parallel --use_rocm --rocm_home /opt/rocm-4.5.2 --use_migraphx
