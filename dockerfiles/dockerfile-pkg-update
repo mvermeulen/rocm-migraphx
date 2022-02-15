@@ -1,0 +1,9 @@
+#
+# build MIGraphX packages updated from existing line
+ARG update_image="migraphx:develop"
+FROM ${update_image}
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN cd /migraphx/src && git pull
+RUN cd /migraphx && rbuild package --cxx /opt/rocm/llvm/bin/clang++ -d /migraphx/deps -B /migraphx/build -S /migraphx/src -DPYTHON_EXECUTABLE=/usr/bin/python3
