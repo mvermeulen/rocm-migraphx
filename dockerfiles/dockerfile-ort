@@ -1,4 +1,4 @@
-ARG base_image="rocm/dev-ubuntu-20.04:4.5.2-complete"
+ARG base_image="rocm/pytorch:rocm4.5.2_ubuntu18.04_py3.8_pytorch_1.10.0"
 FROM ${base_image}
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -26,4 +26,4 @@ RUN git clone --recursive https://github.com/microsoft/onnxruntime
 RUN patch onnxruntime/cmake/onnxruntime_providers.cmake < patch.enable_gfx1030
 RUN cd onnxruntime && ./build.sh --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=`cat ./VERSION_NUMBER` --config Release --skip_tests --build_wheel --use_migraphx --use_rocm --rocm_version=4.5.2 --rocm_home /opt/rocm
 RUN pip3 install /workspace/onnxruntime/build/Linux/Release/dist/*.whl
-RUN pip3 install psutil onnx coloredlogs torch packaging transformers sympy
+RUN pip3 install psutil onnx coloredlogs packaging transformers sympy
