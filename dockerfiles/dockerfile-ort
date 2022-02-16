@@ -24,6 +24,4 @@ RUN cd migraphx/build && dpkg -i *.deb
 COPY patch.enable_gfx1030 /workspace
 RUN git clone --recursive https://github.com/microsoft/onnxruntime
 RUN patch onnxruntime/cmake/onnxruntime_providers.cmake < patch.enable_gfx1030
-RUN cd onnxruntime && ./build.sh --parallel --build-wheel
-# RUN cd onnxruntime && ./build.sh --parallel --use_migraphx --build-wheel
-# RUN cd onnxruntime && ./build.sh --parallel --use_rocm --rocm_home /opt/rocm-4.5.2
+RUN cd onnxruntime && ./build.sh --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=`cat ./VERSION_NUMBER` --config Release --skip_tests --build_wheel --use_migraphx --use_rocm --rocm_version=4.5.2 --rocm_home /opt/rocm
