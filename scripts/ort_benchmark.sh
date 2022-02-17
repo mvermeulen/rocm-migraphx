@@ -13,3 +13,4 @@
 
 # This fails (based on develop and migraphx_for_ort)
 #python3 benchmark.py -g -o no_opt -b  1 2 4 8 16 -m bert-base-cased --sequence_length 128 --precision fp16 --provider migraphx
+#python3 benchmark.py -g -o no_opt -b  1 2 4 8 16 -m bert-base-uncased --sequence_length 128 --precision fp16 --provider migraphx
