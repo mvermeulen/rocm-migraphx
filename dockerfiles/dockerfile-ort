@@ -2,7 +2,7 @@ ARG base_image="rocm/pytorch:rocm4.5.2_ubuntu18.04_py3.8_pytorch_1.10.0"
 FROM ${base_image}
 ENV DEBIAN_FRONTEND noninteractive
 
-ARG branch="develop"
+ARG branch="branch_for_ort"
 
 WORKDIR /workspace
 
