@@ -1,4 +1,9 @@
 ARG base_image="rocm/pytorch:rocm4.5.2_ubuntu18.04_py3.8_pytorch_1.10.0"
+
+# rocblas-bench alternative - use following docker as a base and pip3 install torch line (after the FROM)
+#ARG base_image="rocm/pytorch:rocm4.5.2_ubuntu18.04_py3.8_pytorch_1.10.0"
+#RUN pip3 install --pre torch -f https://download.pytorch.org/whl/nightly/rocm4.5.2/torch_nightly.html
+
 FROM ${base_image}
 ENV DEBIAN_FRONTEND noninteractive
 
