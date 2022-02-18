@@ -3,9 +3,6 @@
 # This works
 #python3 benchmark.py -g -o no_opt -b  1 2 4 8 16 -m bert-base-cased --sequence_length 128 --precision fp16 --provider rocm
 #python3 benchmark.py -g -o no_opt -b  1 2 4 8 16 -m bert-base-cased --sequence_length 128 --precision fp32 --provider rocm
-
-# This fails
-#python3 benchmark.py -g -o by_ort -b  1 2 4 8 16 -m bert-base-cased --sequence_length 128 --precision fp16 --provider rocm
 #python3 benchmark.py -g           -b  1 2 4 8 16 -m bert-base-cased --sequence_length 128 --precision fp16 --provider rocm
 
 # This fails
