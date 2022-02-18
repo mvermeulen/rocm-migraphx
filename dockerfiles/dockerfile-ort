@@ -29,3 +29,4 @@ RUN pip3 install /workspace/onnxruntime/build/Linux/Release/dist/*.whl
 
 # install pre-reqs for running benchmarks
 RUN pip3 install psutil onnx coloredlogs packaging transformers sympy
+RUN pip3 install -U numpy
