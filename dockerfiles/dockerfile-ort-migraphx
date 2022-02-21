@@ -1,4 +1,4 @@
-ARG base_image="rocm/pytorch:rocm4.5.2_ubuntu18.04_py3.8_pytorch_1.10.0"
+ARG base_image="rocm/dev-ubuntu-20.04:4.5.2-complete"
 FROM ${base_image}
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -14,7 +14,9 @@ RUN apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) m
 RUN apt update && apt install -y cmake
 
 # build MIGraphX
-RUN apt install -y half
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+RUN apt install -y half miopen-hip
 RUN pip3 install https://github.com/RadeonOpenCompute/rbuild/archive/master.tar.gz
 RUN mkdir migraphx
 RUN cd migraphx && git clone --depth=1 --branch ${branch} https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
