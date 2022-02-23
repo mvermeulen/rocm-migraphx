@@ -19,3 +19,5 @@ bert-base-cased 16 128 fp16
 gpt2 1 128 fp16
 gpt2 16 128 fp16
 BMARK_LIST
+
+cat *.csv > ort-results.csv
