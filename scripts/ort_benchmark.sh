@@ -1,13 +1,21 @@
 #!/bin/bash
+set -x
+TEST_RESULTDIR=${TEST_RESULTDIR:="/home/mev/source/rocm-migraphx/test-results"}
+EXEDIR=${EXEDIR:="/workspace/onnxruntime/onnxruntime/python/tools/transformers"}
 
-# This works
-#python3 benchmark.py -g -o no_opt -b  1 2 4 8 16 -m bert-base-cased --sequence_length 128 --precision fp16 --provider rocm
-#python3 benchmark.py -g -o no_opt -b  1 2 4 8 16 -m bert-base-cased --sequence_length 128 --precision fp32 --provider rocm
-#python3 benchmark.py -g           -b  1 2 4 8 16 -m bert-base-cased --sequence_length 128 --precision fp16 --provider rocm
+testdir=${TEST_RESULTDIR}/onnxruntime-`date '+%Y-%m-%d-%H-%M'`
+mkdir $testdir
 
-# This fails
-#python3 profiler.py -g -m onnx_models/bert_base_cased_1.onnx -b 1 -s 128 -g --provider rocm
-
-# This fails (based on develop and migraphx_for_ort)
-#python3 benchmark.py -g -o no_opt -b  1 2 4 8 16 -m bert-base-cased --sequence_length 128 --precision fp16 --provider migraphx
-#python3 benchmark.py -g -o no_opt -b  1 2 4 8 16 -m bert-base-uncased --sequence_length 128 --precision fp16 --provider migraphx
+cd ${EXEDIR}
+while read model batch sequence precision
+do
+    tag="${model}-b${batch}-s${sequence}-p${precision}-rocm"
+    python3 benchmark.py -g -b $batch -m $model --sequence_length $sequence --precision $precision --provider rocm --result_csv $testdir/${tag}-summary.csv --detail_csv $testdir/${tag}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+    tag="${model}-b${batch}-s${sequence}-p${precision}-migraphx"
+    python3 benchmark.py -o no_opt -g -b $batch -m $model --sequence_length $sequence --precision $precision --provider migraphx --result_csv $testdir/${tag}-summary.csv --detail_csv $testdir/${tag}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+done <<BMARK_LIST
+bert-base-cased 1 128 fp16
+bert-base-cased 16 128 fp16
+gpt2 1 128 fp16
+gpt2 16 128 fp16
+BMARK_LIST
