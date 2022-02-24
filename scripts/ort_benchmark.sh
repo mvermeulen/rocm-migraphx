@@ -22,7 +22,8 @@ do
 	tag="${model}-b${batch}-s${sequence}-${precision}-cpu"		
 	python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e cpu --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err	
     fi
-    
+    sort -u $testdir/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
+    sort -u $testdir/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
 done <<BMARK_LIST
 bert-base-cased 1 128 fp16
 bert-base-cased 16 128 fp16
@@ -31,5 +32,3 @@ bert-base-cased 16 128 fp32
 gpt2 1 128 fp16
 gpt2 16 128 fp16
 BMARK_LIST
-
-cat *.csv > ort-results.csv
