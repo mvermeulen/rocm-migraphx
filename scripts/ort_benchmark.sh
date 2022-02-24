@@ -9,13 +9,23 @@ mkdir $testdir
 cd ${EXEDIR}
 while read model batch sequence precision
 do
-    tag="${model}-b${batch}-s${sequence}-p${precision}-rocm"
-    python3 benchmark.py -g -b $batch -m $model --sequence_length $sequence --precision $precision --provider rocm --result_csv $testdir/${tag}-summary.csv --detail_csv $testdir/${tag}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
-    tag="${model}-b${batch}-s${sequence}-p${precision}-migraphx"
-    python3 benchmark.py -o no_opt -g -b $batch -m $model --sequence_length $sequence --precision $precision --provider migraphx --result_csv $testdir/${tag}-summary.csv --detail_csv $testdir/${tag}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+    file="${model}-b${batch}-s${sequence}-${precision}"
+    tag="${model}-b${batch}-s${sequence}-${precision}-rocm"
+    python3 benchmark.py -g -b $batch -m $model --sequence_length $sequence --precision $precision --provider rocm --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+    tag="${model}-b${batch}-s${sequence}-${precision}-migraphx"
+    python3 benchmark.py -o no_opt -g -b $batch -m $model --sequence_length $sequence --precision $precision --provider migraphx --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+    if [ "$precision" = "fp32" ]; then
+	tag="${model}-b${batch}-s${sequence}-${precision}-torch"	
+	python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e torch --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+	tag="${model}-b${batch}-s${sequence}-${precision}-cpu"		
+	python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e cpu --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err	
+    fi
+    
 done <<BMARK_LIST
 bert-base-cased 1 128 fp16
 bert-base-cased 16 128 fp16
+bert-base-cased 1 128 fp32
+bert-base-cased 16 128 fp32
 gpt2 1 128 fp16
 gpt2 16 128 fp16
 BMARK_LIST
