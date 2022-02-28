@@ -4,7 +4,7 @@ project (MIGraphX_driver)
 set (MIGRAPHX_FOLDER /src/AMDMIGraphX)
 set (MIGRAPHX_BUILD ${MIGRAPHX_FOLDER}/build)
 #set (CMAKE_CXX_COMPILER /opt/rocm/bin/hcc)
-set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_STANDARD 17)
 set (MIOPEN_LIBS /opt/rocm/miopen/lib)
 set (HIP_LIBS /opt/rocm/hip/lib)
 
