@@ -14,10 +14,12 @@ RUN apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) m
 RUN apt update && apt install -y cmake
 
 # build MIGraphX
+COPY patch.disable_migraphx_doc /workspace
 RUN apt install -y half
 RUN pip3 install https://github.com/RadeonOpenCompute/rbuild/archive/master.tar.gz
 RUN mkdir /workspace/migraphx
 RUN cd /workspace/migraphx && git clone --depth=1 --branch ${branch} https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
+RUN cd migraphx && patch -N src/CMakeLists.txt < ../patch.disable_migraphx_doc || true
 RUN cd /workspace/migraphx && rbuild package --cxx /opt/rocm/llvm/bin/clang++ -d /workspace/migraphx/deps -B build -S /workspace/migraphx/src -DPYTHON_EXECUTABLE=/usr/bin/python3
 RUN cd /workspace/migraphx/build && dpkg -i *.deb
 
