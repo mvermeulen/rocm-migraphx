@@ -25,12 +25,12 @@ do
     sort -u $testdir/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
     sort -u $testdir/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
 done <<BMARK_LIST
-bert-base-cased 16 128 fp16
-bert-large-uncased 16 128 fp16
 bert-base-cased 1 128 fp16
-bert-base-cased 16 128 fp16
 bert-base-cased 1 128 fp32
-bert-base-cased 16 128 fp32
-gpt2 1 128 fp16
-gpt2 16 128 fp16
+bert-base-cased 1 128 fp16
+bert-base-cased 1 128 fp32
+bert-large-uncased 1 128 fp16
+bert-large-uncased 1 128 fp32
+bert-large-uncased 1 128 fp16
+bert-large-uncased 1 128 fp32
 BMARK_LIST
