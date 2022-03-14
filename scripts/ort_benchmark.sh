@@ -5,7 +5,9 @@ EXEDIR=${EXEDIR:="/workspace/onnxruntime/onnxruntime/python/tools/transformers"}
 
 testdir=${TEST_RESULTDIR}/onnxruntime-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
-
+pushd /workspace/migraphx/src
+git log > $testdir/commit.txt
+popd
 cd ${EXEDIR}
 while read model batch sequence precision
 do
