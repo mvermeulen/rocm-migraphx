@@ -48,11 +48,20 @@ BMARK_LIST
 sort -ru ${testdir}/summary.csv > ${testdir}/results.csv
 
 cd ${MICROBENCH}
-while read provider precision
+while read bmark provider precision
 do
-    python3 benchmark.py --provider ${provider} --precision ${precision}
+    python3 ${bmark}.py --provider ${provider} --precision ${precision}
 done 1>${testdir}/microbench.out 2>${testdir}/microbench.err <<BMARK_LIST
-rocm fp16
-rocm fp32
-cpu fp32
+attention rocm fp16
+attention rocm fp32
+attention cpu fp32
+fast_gelu rocm fp16
+fast_gelu rocm fp32
+fast_gelu cpu fp32
+matmul rocm fp16
+matmul rocm fp32
+matmul cpu fp32
+skip_layer_norm rocm fp16
+skip_layer_norm rocm fp32
+skip_layer_norm fp32
 BMARK_LIST
