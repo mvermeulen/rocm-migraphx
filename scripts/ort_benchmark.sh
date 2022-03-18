@@ -2,6 +2,7 @@
 set -x
 TEST_RESULTDIR=${TEST_RESULTDIR:="/home/mev/source/rocm-migraphx/test-results"}
 EXEDIR=${EXEDIR:="/workspace/onnxruntime/onnxruntime/python/tools/transformers"}
+MICROBENCH=${MICROBENCH:="/workspace/onnxruntime/onnxruntime/python/tools/microbench"}
 
 testdir=${TEST_RESULTDIR}/onnxruntime-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
@@ -46,3 +47,12 @@ roberta-base 1 128 fp32
 BMARK_LIST
 sort -ru ${testdir}/summary.csv > ${testdir}/results.csv
 
+cd ${MICROBENCH}
+while read provider precision
+do
+    python3 benchmark.py --provider ${provider} --precision ${precision}
+done 1>${testdir}/microbench.out 2>${testdir}/microbench.err <<BMARK_LIST
+rocm fp16
+rocm fp32
+cpu fp32
+BMARK_LIST
