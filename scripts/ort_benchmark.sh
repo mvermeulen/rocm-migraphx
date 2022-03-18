@@ -29,10 +29,8 @@ do
 done <<BMARK_LIST
 bert-base-cased 1 128 fp16
 bert-base-cased 1 128 fp32
-bert-base-cased 1 128 fp16
-bert-base-cased 1 128 fp32
 bert-large-uncased 1 128 fp16
 bert-large-uncased 1 128 fp32
-bert-large-uncased 1 128 fp16
-bert-large-uncased 1 128 fp32
+distilgpt2 1 128 fp16
+distilgpt2 1 128 fp32
 BMARK_LIST
