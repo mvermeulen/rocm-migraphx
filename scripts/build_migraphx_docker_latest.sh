@@ -6,12 +6,12 @@ BRANCH=${BRANCH:="develop"}
 DOCKERIMAGE=${DOCKERIMAGE:="rocm-migraphx:$DATESTAMP"}
 
 if [ "$BUILD_NAVI" = "0" ]; then
-    BASE=${BASE:="rocm-migraphx:5.0"}
+    BASE=${BASE:="rocm-migraphx:5.1"}
 else
-    BASE=${BASE:="rocm-migraphx:5.0n"}
+    BASE=${BASE:="rocm-migraphx:5.1n"}
 fi
 
-MIOPENTUNE=${MIOPENTUNE:="miopen-rocm50"}
+MIOPENTUNE=${MIOPENTUNE:="miopen-rocm51"}
 
 if [ `id -u` != 0 ]; then
     echo script should be run as root
