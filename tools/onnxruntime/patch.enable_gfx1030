@@ -1,0 +1,10 @@
+--- onnxruntime.old/cmake/onnxruntime_providers.cmake	2022-02-15 17:31:50.335421282 -0600
++++ onnxruntime/cmake/onnxruntime_providers.cmake	2022-02-15 17:28:23.482528851 -0600
+@@ -1215,6 +1215,7 @@
+   list(APPEND HIP_CLANG_FLAGS -fno-gpu-rdc)
+ 
+   # Generate GPU code for GFX9 Generation
++  list(APPEND HIP_CLANG_FLAGS --amdgpu-target=gfx1030)
+   list(APPEND HIP_CLANG_FLAGS --amdgpu-target=gfx906 --amdgpu-target=gfx908)
+   if (ROCM_VERSION_DEV_INT GREATER_EQUAL 50000)
+     list(APPEND HIP_CLANG_FLAGS --amdgpu-target=gfx90a)

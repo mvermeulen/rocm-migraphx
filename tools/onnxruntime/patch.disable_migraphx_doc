@@ -1,0 +1,11 @@
+--- src.orig/CMakeLists.txt	2022-03-01 18:02:47.617997422 -0600
++++ src/CMakeLists.txt	2022-03-01 18:03:48.747843879 -0600
+@@ -234,7 +234,7 @@
+ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
+ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+ add_subdirectory(src)
+-add_subdirectory(doc)
++#add_subdirectory(doc)
+ add_subdirectory(test)
+ add_subdirectory(tools)
+ 
