@@ -7,7 +7,7 @@ ARG build_type="Release"
 WORKDIR /workspace
 
 # pre-requisites
-RUN apt update && apt install -y git wget software-properties-common lsb-release ca-certificates build-essential python3-dev python3-numpy python3-setuptools python3-wheel python3-pip
+RUN apt update && apt install -y git wget python software-properties-common lsb-release ca-certificates build-essential python3-dev python3-numpy python3-setuptools python3-wheel python3-pip
 RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
 RUN apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main"
 RUN apt update && apt install -y cmake time
