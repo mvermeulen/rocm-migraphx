@@ -13,32 +13,33 @@ case $EXEPROVIDER in
 	cat /proc/cpuinfo  $testdir/cpu.txt
 	PRECISION="fp32"
 	OPTFLAGS=""
-    ;;
+	;;
     tensorrt)
 	cat /proc/cpuinfo  $testdir/cpu.txt	
 	nvidia-smi -q > $testdir/nvidia.txt
 	PRECISION="fp16"	
 	OPTFLAGS=""
-    ;;
+	;;
     cuda)
 	cat /proc/cpuinfo  $testdir/cpu.txt	
 	nvidia-smi -q > $testdir/nvidia.txt
 	PRECISION="fp16"	
 	OPTFLAGS=""
-    ;;
+	;;
     migraphx)
 	cat /proc/cpuinfo  $testdir/cpu.txt	
 	export TOKENIZERS_PARALLELISM=false
 	rocminfo > $testdir/rocminfo.txt
 	PRECISION="fp16"
 	OPTFLAGS="--disable_gelu --disable_layer_norm --disable_attention --disable_skip_layer_norm --disable_embed_layer_norm --disable_bias_skip_layer_norm --disable_bias_gelu"
-    ;;
+	;;
     rocm)
 	cat /proc/cpuinfo  $testdir/cpu.txt	
 	rocminfo > $testdir/rocminfo.txt
 	PRECISION="fp16"	
 	OPTFLAGS=""
-    ;;
+	;;
+esac
 popd
 cd ${EXEDIR}
 touch ${testdir}/summary.csv
