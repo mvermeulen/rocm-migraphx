@@ -54,3 +54,5 @@ python benchmark.py -g -m bert-large-uncased --sequence_length 32 384 --batch_si
 echo "\n***** distilgpt2 migraphx\n" >> $testdir/dashboard.out
 echo "\n***** distilgpt2 migraphx\n" >> $testdir/dashboard.err
 python benchmark.py -g -m distilgpt2 --model_class AutoModelForCausalLM --sequence_length 32 384 --batch_sizes 1 8 --provider=${EXEPROVIDER} -p ${PRECISION} ${OPTFLAGS} --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
+
+cp dashboard.csv ${EXEPROVIDER}.csv
