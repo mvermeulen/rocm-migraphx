@@ -6,7 +6,7 @@ EXEDIR=${EXEDIR:="/workspace/onnxruntime/onnxruntime/python/tools/transformers"}
 
 testdir=${TEST_RESULTDIR}/onnxruntime-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
-pushd /workspace/migraphx/src
+pushd $testdir
 git log > $testdir/commit.txt
 case $EXEPROVIDER in
     cpu)
