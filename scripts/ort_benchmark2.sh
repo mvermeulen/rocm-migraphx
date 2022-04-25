@@ -25,6 +25,10 @@ python benchmark.py -g -m bert-base-cased --sequence_length 16 32 64 128 256 384
 python benchmark.py -g -m bert-base-cased --sequence_length 16 32 64 128 256 384 512 --batch_sizes 64 --provider=migraphx -p fp16 --disable_gelu --disable_layer_norm --disable_attention --disable_skip_layer_norm --disable_embed_layer_norm --disable_bias_skip_layer_norm --disable_bias_gelu --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
 python benchmark.py -g -m bert-base-cased --sequence_length 16 32 64 128 256 384 512 --batch_sizes 128 --provider=migraphx -p fp16 --disable_gelu --disable_layer_norm --disable_attention --disable_skip_layer_norm --disable_embed_layer_norm --disable_bias_skip_layer_norm --disable_bias_gelu --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
 python benchmark.py -g -m bert-base-cased --sequence_length 16 32 64 128 256 384 512 --batch_sizes 256 --provider=migraphx -p fp16 --disable_gelu --disable_layer_norm --disable_attention --disable_skip_layer_norm --disable_embed_layer_norm --disable_bias_skip_layer_norm --disable_bias_gelu --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
+
+# clear the cached optimized models
+rm ./onnx_models/*gpu*
+
 echo "\n***** bert-base-cased rocm\n" >> $testdir/dashboard.out
 echo "\n***** bert-base-cased rocm\n" >> $testdir/dashboard.err
 python benchmark.py -g -m bert-base-cased --sequence_length 16 32 64 128 256 384 512 --batch_sizes 1 --provider=rocm -p fp16 --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
