@@ -162,9 +162,9 @@ def vgg():
     vgg19()
 
 resnet()
-#inception()
+inception()
 # squeezenet gives me errors when trying to export
-#squeezenet()
-#alexnet()
-#densenet()
-#vgg()
+squeezenet()
+alexnet()
+densenet()
+vgg()

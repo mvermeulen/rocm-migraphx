@@ -61,40 +61,18 @@ cadene-resnext64x4           16 cadene/resnext101_64x4di16.onnx
 slim-mobilenet               64 slim/mobilenet_i64.pb
 slim-nasnetalarge            64 slim/nasnet_i64.pb
 slim-resnet50v2              64 slim/resnet50v2_i64.pb
-MODELLIST
+bert-mrpc-onnx                8 huggingface-transformers/bert_mrpc8.onnx --fill1 input.1 --fill1 input.3 --onnx
+bert-mrpc-tf                  1 tf-misc/bert_mrpc1.pb --fill1 input_ids_1 --fill1 segment_ids_1 --fill1 input_mask_1 --tf
+pytorch-examples-wlang-gru    1 pytorch-examples/wlang_gru.onnx --fill0 input.1 --onnx
+pytorch-examples-wlang-lstm   1 pytorch-examples/wlang_lstm.onnx --fill0 input.1 --onnx
+torchvision-resnet50_1        1 torchvision/resnet50i1.onnx
+torchvision-inceptionv3_1     1 torchvision/inceptioni1.onnx
+torchvision-vgg16_1           1 torchvision/vgg16i1.onnx
+cadene-dpn92_1                1 cadene/dpn92i1.onnx
+cadene-resnext101_1           1 cadene/resnext101_64x4di1.onnx
+slim-vgg16_1                  1 slim/vgg16_i1.pb
+slim-mobilenet_1              1 slim/mobilenet_i1.pb
+slim-inceptionv4_1            1 slim/inceptionv4_i1.pb
+onnx-taau-downsample	      1 onnx-misc/taau_low_res_downsample_d2s_for_infer_time_fp16_opset11.onnx --input-dim @inputs 1 1920 1080 8
 
-# Run models that require MIGX driver
-${MIGX} $TARGETOPT --glue=MRPC --gluefile=../../datasets/glue/MRPC.tst --onnx ${SAVED_MODELS}/huggingface-transformers/bert_mrpc8.onnx --perf_report > bert_mrpc8.out
-time=`grep 'Total time' bert_mrpc8.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
-echo "bert-mrpc-onnx,8,$time" |  tee -a results.csv
-${MIGX} $TARGETOPT --glue=MRPC --gluefile=../../datasets/glue/MRPC.tst --tfpb ${SAVED_MODELS}/tf-misc/bert_mrpc1.pb --perf_report > bert_mrpc1.out
-time=`grep 'Total time' bert_mrpc1.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
-echo "bert-mrpc-tf,1,$time" |  tee -a results.csv
-${MIGX} $TARGETOPT --zero_input --onnx $SAVED_MODELS/pytorch-examples/wlang_gru.onnx --perf_report --argname=input.1 > wlang_gru.out
-time=`grep 'Total time' wlang_gru.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
-echo "pytorchexamples-wlang-gru,1,$time" |  tee -a results.csv
-${MIGX} $TARGETOPT --zero_input --onnx $SAVED_MODELS/pytorch-examples/wlang_lstm.onnx --perf_report --argname=input.1 > wlang_lstm.out
-time=`grep 'Total time' wlang_lstm.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
-echo "pytorchexamples-wlang-lstm,1,$time" | tee -a results.csv
-
-# Run models with batch size 1
-while read tag batch savefile extra
-do
-    if [ "$tag" == "#" ]; then
-	continue
-    fi
-    $DRIVER perf $TARGETOPT $SAVED_MODELS/$savefile $extra > ${tag}.out 2> ${tag}.err
-    time=`grep 'Total time' ${tag}.out | awk '{ print $3 }' | sed s/ms//g` >/dev/null 2>&1
-    echo $tag,$batch,$time | tee -a results.csv
-done <<MODELLIST
-torchvision-resnet50_1         1 torchvision/resnet50i1.onnx
-torchvision-inceptionv3_1      1 torchvision/inceptioni1.onnx
-torchvision-vgg16_1            1 torchvision/vgg16i1.onnx
-cadene-dpn92_1                 1 cadene/dpn92i1.onnx
-cadene-resnext101_1            1 cadene/resnext101_64x4di1.onnx
-slim-vgg16_1                   1 slim/vgg16_i1.pb
-slim-mobilenet_1               1 slim/mobilenet_i1.pb
-slim-inceptionv4_1             1 slim/inceptionv4_i1.pb
-onnx-taau-downsample	       1 onnx-misc/taau_low_res_downsample_d2s_for_infer_time_fp16_opset11.onnx --input-dim @inputs 1 1920 1080 8
-# mlperf-3dunet		       1 onnx-misc/224_224_160.onnx
 MODELLIST
