@@ -2,8 +2,10 @@
 set -x
 DOCKERFILE=${DOCKERFILE:="dockerfile-ort"}
 PARALLEL=${PARALLEL:="0"}
+HTEC=${HTEC:="0"}
 DATESTAMP=`date '+%Y%m%d'`
 CACHE=${CACHE:="--no-cache"}
+BUILDARGS=""
 
 if [ `id -u` != 0 ]; then
     echo script should be run as root
@@ -15,7 +17,9 @@ if [ "$PARALLEL" == "0" ]; then
     sed -e 's/--parallel//g' $DOCKERFILE > ${DOCKERFILE}s
     DOCKERFILE=${DOCKERFILE}s
 fi
+if [ "$HTEC" != "0" ]; then
+    BUILDARGS="$BUILDARGS --build-arg ort_repository=https://github.com/amd-benchmarks/onnxruntime"
+fi
 
-
-docker build ${CACHE} -f $DOCKERFILE -t ort:${DATESTAMP} .
+docker build ${CACHE} ${BUILDARGS} -f $DOCKERFILE -t ort:${DATESTAMP} .
 
