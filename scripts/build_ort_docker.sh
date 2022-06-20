@@ -18,7 +18,7 @@ if [ "$PARALLEL" == "0" ]; then
     DOCKERFILE=${DOCKERFILE}s
 fi
 if [ "$HTEC" != "0" ]; then
-    BUILDARGS="$BUILDARGS --build-arg ort_repository=https://github.com/amd-benchmarks/onnxruntime"
+    BUILDARGS="$BUILDARGS --build-arg ort_repository=https://github.com/amd-benchmarks/onnxruntime --build-arg ort_branch=f0e983bXS"
 fi
 
 docker build ${CACHE} ${BUILDARGS} -f $DOCKERFILE -t ort:${DATESTAMP} .
