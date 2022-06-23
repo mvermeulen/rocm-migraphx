@@ -1,0 +1,39 @@
+ARG base_image="rocm/pytorch:rocm4.5.2_ubuntu18.04_py3.8_pytorch_1.10.0"
+FROM ${base_image}
+ENV DEBIAN_FRONTEND noninteractive
+ENV TOKENIZERS_PARALLELISM=false
+ARG branch="branch_for_ort"
+ARG build_type="Release"
+ARG ort_repository="https://github.com/microsoft/onnxruntime"
+ARG ort_branch="master"
+
+WORKDIR /workspace
+
+# pre-requisites
+RUN apt update && apt install -y git wget software-properties-common lsb-release python3-dev python3-numpy python3-setuptools python3-wheel python3-pip
+RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+RUN apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main"
+RUN apt update && apt install -y cmake time
+
+# build MIGraphX
+COPY patch.disable_migraphx_doc /workspace
+RUN apt install -y half
+RUN pip3 install https://github.com/RadeonOpenCompute/rbuild/archive/master.tar.gz
+RUN mkdir /workspace/migraphx
+RUN cd /workspace/migraphx && git clone --depth=1 --branch ${branch} https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
+RUN cd migraphx && patch -N src/CMakeLists.txt < ../patch.disable_migraphx_doc || true
+RUN cd /workspace/migraphx && rbuild package --cxx /opt/rocm/llvm/bin/clang++ -d /workspace/migraphx/deps -B build -S /workspace/migraphx/src -DPYTHON_EXECUTABLE=/usr/bin/python3
+RUN cd /workspace/migraphx/build && dpkg -i *.deb
+
+# build ONNX runtime wheel package
+COPY patch.enable_gfx1030 /workspace
+RUN git clone --recursive ${ort_repository}
+RUN cd onnxruntime && git checkout ${ort_branch}
+RUN patch onnxruntime/cmake/onnxruntime_providers.cmake < patch.enable_gfx1030
+RUN cd onnxruntime && ./build.sh --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=`cat ./VERSION_NUMBER` --config $build_type --skip_tests --build_wheel --use_migraphx --use_rocm --rocm_version=4.5.2 --rocm_home /opt/rocm
+RUN pip3 install /workspace/onnxruntime/build/Linux/$build_type/dist/*.whl
+RUN pip3 install psutil onnx coloredlogs torch packaging transformers sympy
+RUN pip3 install -U numpy
+
+# add ort_test
+RUN git clone https://github.com/scxiao/ort_test
