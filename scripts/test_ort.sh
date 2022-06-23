@@ -8,13 +8,17 @@
 #
 #    git clone https://github.com/scxiao/ort_test /workspace/ort_test
 #
+# 2. ONNX runtime inference examples installed
+#
+#    git clone https://github.com/microsoft/onnxruntime-inference-examples /workspace/onnxruntime-inference-examples
+#
 # 2. Python environment installed
 #
 #    pip3 install onnx
 #    pip3 install onnxruntime-rocm
 #
 # 3. MIGraphX built and installed as an execution provider for ONNX runtime
-#
+
 PYTHON_DRIVER=${PYTHON_DRIVER:="/workspace/ort_test/python/run_onnx/test_run_onnx.py"}
 MODELDIR=${MODELDIR:="/home/mev/source/rocm-migraphx/saved-models/onnxruntime"}
 TEST_RESULTDIR=${TEST_RESULTDIR:="/home/mev/source/rocm-migraphx/test-results"}
