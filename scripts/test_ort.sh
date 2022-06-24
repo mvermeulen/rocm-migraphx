@@ -28,11 +28,13 @@ TEST_RESULTDIR=${TEST_RESULTDIR:="/home/mev/source/rocm-migraphx/test-results"}
 testdir=${TEST_RESULTDIR}/ort_test-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
 
-while read tag model
+while read tag model options
 do
     echo $model
-    python3 ${PYTHON_DRIVER} ${MODELDIR}/$model 1>$testdir/$tag.out 2>$testdir/$tag.err
+    python3 ${PYTHON_DRIVER} ${MODELDIR}/$model $options 1>$testdir/$tag.out 2>$testdir/$tag.err
+    python3 ${PYTHON_DRIVER} ${MODELDIR}/$model $options 1>$testdir/$tag.out 2>$testdir/$tag.err
 done <<MODELLIST
-resnet50 opset11/tf_resnet_v2_50/model.onnx     
+resnet50      opset11/tf_resnet_v2_50/model.onnx     
+resnet50-int8 opset11/tf_resnet_v2_50/model.onnx --quantize
 MODELLIST
 
