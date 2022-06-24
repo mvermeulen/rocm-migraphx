@@ -6,6 +6,8 @@
 #
 # 1. Testing script added
 #
+#    git clone https://github.com/mvermeulen/ort_test /workspace/ort_test
+#       a clone from 
 #    git clone https://github.com/scxiao/ort_test /workspace/ort_test
 #
 # 2. ONNX runtime inference examples installed
