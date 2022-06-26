@@ -39,5 +39,5 @@ RUN pip3 install -U numpy
 RUN git clone https://github.com/microsoft/onnxruntime-inference-examples
 
 # add ort_test
-RUN git clone https://github.com/scxiao/ort_test
+RUN git clone https://github.com/mvermeulen/ort_test
 
