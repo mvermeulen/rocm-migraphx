@@ -2,6 +2,7 @@ ARG base_image="rocm/pytorch:rocm4.5.2_ubuntu18.04_py3.8_pytorch_1.10.0"
 FROM ${base_image}
 ENV DEBIAN_FRONTEND noninteractive
 ENV TOKENIZERS_PARALLELISM=false
+ENV ROC_USE_FGS_KERNARG=1
 ARG branch="branch_for_ort"
 ARG build_type="Release"
 ARG ort_repository="https://github.com/microsoft/onnxruntime"
