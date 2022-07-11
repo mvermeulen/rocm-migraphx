@@ -11,7 +11,7 @@ else
     BASE=${BASE:="rocm-migraphx:5.2n"}
 fi
 
-MIOPENTUNE=${MIOPENTUNE:="miopen-rocm51"}
+MIOPENTUNE=${MIOPENTUNE:="miopen-rocm52"}
 
 if [ `id -u` != 0 ]; then
     echo script should be run as root
