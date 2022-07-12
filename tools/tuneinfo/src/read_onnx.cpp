@@ -6,17 +6,25 @@
 #include <string>
 #include "cpp-interface/onnx.proto3.pb.h"
 
-void read_onnx_file(char *file){
+int read_onnx_file(char *file){
+  onnx::ModelProto model;
+  std::fstream input(file,std::ios::in | std::ios::binary);
+  if (!model.ParseFromIstream(&input)){
+    std::cerr << "Failed to parse ONNX model" << std::endl;
+    return 1;
+  }
+  return 0;
 }
 
 #if TEST_DRIVER
 int main(int argc,char *argv[]){
-  //  GOOGLE_PROTOBUF_VERIFY_VERSION;
+  int result;
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
   if (argc != 2){
     std::cerr << "Usage: " << argv[0] << " <ONNX file>" << std::endl;
     return 1;
   }
-  read_onnx_file(argv[1]);
-  return 0;
+  result = read_onnx_file(argv[1]);
+  return result;
 }
 #endif
