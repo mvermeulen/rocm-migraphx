@@ -24,7 +24,7 @@ cpp-interface/%.pb.o:	cpp-interface/%.pb.cc
 	$(CXX) -o $@ -c $<
 
 clean:
-	-rm onnx.proto3 cpp-interface/onnx.proto3.* *~
+	-rm onnx.proto3 cpp-interface/onnx.proto3.* *.o *~
 
 clobber:	clean
 	-rm read_onnx
