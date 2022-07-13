@@ -300,7 +300,7 @@ int main(int argc,char *argv[]){
     std::cerr << "Usage: " << argv[0] << " <ONNX file>" << std::endl;
     return 1;
   }
-  result = read_onnx_file(argv[1],1,1);
+  result = read_onnx_file(argv[1],1,0);
   return result;
 }
 #endif
