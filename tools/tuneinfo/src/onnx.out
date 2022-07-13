@@ -1,0 +1,1644 @@
+ONNX spec:
+https://github.com/onnx/onnx/blob/main/docs/Operators.md#Conv
+	auto_pad  - not set
+	dilations - dilation value along each spatial access of the filter
+	group     - number of groups input channels and output channels are divided
+	kernel_shape - shape of the convolution kernel
+	pads      - padding for beginning and ending along each spatial axis
+	X         - input tensor from previous layer (NxCxHxW)
+	W	  - Weight tensor is M x C/group x kH x kW
+	B	  - optional 1D bias to be added
+	Y	  - output data tensor; output dimensions are functions of the kernel
+		    size, stride size and pad lengths
+
+ONNX:
+
+input = input.1->float[1,3,224,224]
+conv1.weight: float[64,3,7,7]
+
+{
+	op    : Conv
+	input : input.1 conv1.weight
+	output: 321
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [7,7]
+	pads: [3,3,3,3]
+	strides: [2,2]
+}
+
+Calculating:
+output height = (input height + padding height top + padding height bottom - kernel height)/(stride height)+1
+output width = (input width + padding width top + padding width bottom - kernel width)/(stride width)+1
+
+(224 + 3 + 3 - 7)/2 + 1 = 112
+
+batch carries across?
+feature maps (M) = weights?
+
+List the "output type" of each node; calculate the output
+
+MIGraphX:
+input.1 = @param:input.1 -> float_type, {1, 3, 224, 224}, {150528, 50176, 224, 1}
+main:@2 = hip::hip_copy_literal[id=main:@literal:2] -> float_type, {64, 3, 7, 7}, {147, 49, 7, 1}
+main:@3 = load[offset=0,end=3211264](main:@1) -> float_type, {1, 64, 112, 112}, {802816, 12544, 112, 1}
+main:@4 = load[offset=0,end=0](main:@1) -> int8_type, {0}, {1}
+main:@6 = gpu::convolution[padding={3, 3, 3, 3},stride={2, 2},dilation={1, 1},group=1,padding_mode=0,solution_id=7](input.1,main:@2,main:@4,main:@3) -> float_type, {1, 64, 112, 112}, {802816, 12544, 112, 1}
+
+MIOpen:
+MIOpen(HIP): Command [LogCmdConvolution] ./bin/MIOpenDriver conv -n 1 -c 3 -H 224 -W 224 -k 64 \
+-y 7 -x 7 -p 3 -q 3 -u 2 -v 2 -l 1 -j 1 -m conv -g 1 -F 1 -t 1 -S 0
+
+============================================================================
+ONNX file information: /home/mev/source/rocm-migraphx/saved-models/torchvision/resnet50i1.onnx
+    Producer Name:    pytorch
+    Producer Version: 1.3
+    Domain:           
+    Doc String:       
+    IR version:       4
+    Model version:    0
+    Opset: 
+	domain =  version = 9
+    Metadata: 
+    Graph: 
+	name =       torch-jit-export
+	doc string = 
+	# inputs =   1
+	input = input.1->float[1,3,224,224]
+	# outputs =  1
+	output = 495->float[1,1000]
+	# initializers = 320
+	bn1.bias: float[64]
+	bn1.num_batches_tracked: int64[]
+	bn1.running_mean: float[64]
+	bn1.running_var: float[64]
+	bn1.weight: float[64]
+	conv1.weight: float[64,3,7,7]
+	fc.bias: float[1000]
+	fc.weight: float[1000,2048]
+	layer1.0.bn1.bias: float[64]
+	layer1.0.bn1.num_batches_tracked: int64[]
+	layer1.0.bn1.running_mean: float[64]
+	layer1.0.bn1.running_var: float[64]
+	layer1.0.bn1.weight: float[64]
+	layer1.0.bn2.bias: float[64]
+	layer1.0.bn2.num_batches_tracked: int64[]
+	layer1.0.bn2.running_mean: float[64]
+	layer1.0.bn2.running_var: float[64]
+	layer1.0.bn2.weight: float[64]
+	layer1.0.bn3.bias: float[256]
+	layer1.0.bn3.num_batches_tracked: int64[]
+	layer1.0.bn3.running_mean: float[256]
+	layer1.0.bn3.running_var: float[256]
+	layer1.0.bn3.weight: float[256]
+	layer1.0.conv1.weight: float[64,64,1,1]
+	layer1.0.conv2.weight: float[64,64,3,3]
+	layer1.0.conv3.weight: float[256,64,1,1]
+	layer1.0.downsample.0.weight: float[256,64,1,1]
+	layer1.0.downsample.1.bias: float[256]
+	layer1.0.downsample.1.num_batches_tracked: int64[]
+	layer1.0.downsample.1.running_mean: float[256]
+	layer1.0.downsample.1.running_var: float[256]
+	layer1.0.downsample.1.weight: float[256]
+	layer1.1.bn1.bias: float[64]
+	layer1.1.bn1.num_batches_tracked: int64[]
+	layer1.1.bn1.running_mean: float[64]
+	layer1.1.bn1.running_var: float[64]
+	layer1.1.bn1.weight: float[64]
+	layer1.1.bn2.bias: float[64]
+	layer1.1.bn2.num_batches_tracked: int64[]
+	layer1.1.bn2.running_mean: float[64]
+	layer1.1.bn2.running_var: float[64]
+	layer1.1.bn2.weight: float[64]
+	layer1.1.bn3.bias: float[256]
+	layer1.1.bn3.num_batches_tracked: int64[]
+	layer1.1.bn3.running_mean: float[256]
+	layer1.1.bn3.running_var: float[256]
+	layer1.1.bn3.weight: float[256]
+	layer1.1.conv1.weight: float[64,256,1,1]
+	layer1.1.conv2.weight: float[64,64,3,3]
+	layer1.1.conv3.weight: float[256,64,1,1]
+	layer1.2.bn1.bias: float[64]
+	layer1.2.bn1.num_batches_tracked: int64[]
+	layer1.2.bn1.running_mean: float[64]
+	layer1.2.bn1.running_var: float[64]
+	layer1.2.bn1.weight: float[64]
+	layer1.2.bn2.bias: float[64]
+	layer1.2.bn2.num_batches_tracked: int64[]
+	layer1.2.bn2.running_mean: float[64]
+	layer1.2.bn2.running_var: float[64]
+	layer1.2.bn2.weight: float[64]
+	layer1.2.bn3.bias: float[256]
+	layer1.2.bn3.num_batches_tracked: int64[]
+	layer1.2.bn3.running_mean: float[256]
+	layer1.2.bn3.running_var: float[256]
+	layer1.2.bn3.weight: float[256]
+	layer1.2.conv1.weight: float[64,256,1,1]
+	layer1.2.conv2.weight: float[64,64,3,3]
+	layer1.2.conv3.weight: float[256,64,1,1]
+	layer2.0.bn1.bias: float[128]
+	layer2.0.bn1.num_batches_tracked: int64[]
+	layer2.0.bn1.running_mean: float[128]
+	layer2.0.bn1.running_var: float[128]
+	layer2.0.bn1.weight: float[128]
+	layer2.0.bn2.bias: float[128]
+	layer2.0.bn2.num_batches_tracked: int64[]
+	layer2.0.bn2.running_mean: float[128]
+	layer2.0.bn2.running_var: float[128]
+	layer2.0.bn2.weight: float[128]
+	layer2.0.bn3.bias: float[512]
+	layer2.0.bn3.num_batches_tracked: int64[]
+	layer2.0.bn3.running_mean: float[512]
+	layer2.0.bn3.running_var: float[512]
+	layer2.0.bn3.weight: float[512]
+	layer2.0.conv1.weight: float[128,256,1,1]
+	layer2.0.conv2.weight: float[128,128,3,3]
+	layer2.0.conv3.weight: float[512,128,1,1]
+	layer2.0.downsample.0.weight: float[512,256,1,1]
+	layer2.0.downsample.1.bias: float[512]
+	layer2.0.downsample.1.num_batches_tracked: int64[]
+	layer2.0.downsample.1.running_mean: float[512]
+	layer2.0.downsample.1.running_var: float[512]
+	layer2.0.downsample.1.weight: float[512]
+	layer2.1.bn1.bias: float[128]
+	layer2.1.bn1.num_batches_tracked: int64[]
+	layer2.1.bn1.running_mean: float[128]
+	layer2.1.bn1.running_var: float[128]
+	layer2.1.bn1.weight: float[128]
+	layer2.1.bn2.bias: float[128]
+	layer2.1.bn2.num_batches_tracked: int64[]
+	layer2.1.bn2.running_mean: float[128]
+	layer2.1.bn2.running_var: float[128]
+	layer2.1.bn2.weight: float[128]
+	layer2.1.bn3.bias: float[512]
+	layer2.1.bn3.num_batches_tracked: int64[]
+	layer2.1.bn3.running_mean: float[512]
+	layer2.1.bn3.running_var: float[512]
+	layer2.1.bn3.weight: float[512]
+	layer2.1.conv1.weight: float[128,512,1,1]
+	layer2.1.conv2.weight: float[128,128,3,3]
+	layer2.1.conv3.weight: float[512,128,1,1]
+	layer2.2.bn1.bias: float[128]
+	layer2.2.bn1.num_batches_tracked: int64[]
+	layer2.2.bn1.running_mean: float[128]
+	layer2.2.bn1.running_var: float[128]
+	layer2.2.bn1.weight: float[128]
+	layer2.2.bn2.bias: float[128]
+	layer2.2.bn2.num_batches_tracked: int64[]
+	layer2.2.bn2.running_mean: float[128]
+	layer2.2.bn2.running_var: float[128]
+	layer2.2.bn2.weight: float[128]
+	layer2.2.bn3.bias: float[512]
+	layer2.2.bn3.num_batches_tracked: int64[]
+	layer2.2.bn3.running_mean: float[512]
+	layer2.2.bn3.running_var: float[512]
+	layer2.2.bn3.weight: float[512]
+	layer2.2.conv1.weight: float[128,512,1,1]
+	layer2.2.conv2.weight: float[128,128,3,3]
+	layer2.2.conv3.weight: float[512,128,1,1]
+	layer2.3.bn1.bias: float[128]
+	layer2.3.bn1.num_batches_tracked: int64[]
+	layer2.3.bn1.running_mean: float[128]
+	layer2.3.bn1.running_var: float[128]
+	layer2.3.bn1.weight: float[128]
+	layer2.3.bn2.bias: float[128]
+	layer2.3.bn2.num_batches_tracked: int64[]
+	layer2.3.bn2.running_mean: float[128]
+	layer2.3.bn2.running_var: float[128]
+	layer2.3.bn2.weight: float[128]
+	layer2.3.bn3.bias: float[512]
+	layer2.3.bn3.num_batches_tracked: int64[]
+	layer2.3.bn3.running_mean: float[512]
+	layer2.3.bn3.running_var: float[512]
+	layer2.3.bn3.weight: float[512]
+	layer2.3.conv1.weight: float[128,512,1,1]
+	layer2.3.conv2.weight: float[128,128,3,3]
+	layer2.3.conv3.weight: float[512,128,1,1]
+	layer3.0.bn1.bias: float[256]
+	layer3.0.bn1.num_batches_tracked: int64[]
+	layer3.0.bn1.running_mean: float[256]
+	layer3.0.bn1.running_var: float[256]
+	layer3.0.bn1.weight: float[256]
+	layer3.0.bn2.bias: float[256]
+	layer3.0.bn2.num_batches_tracked: int64[]
+	layer3.0.bn2.running_mean: float[256]
+	layer3.0.bn2.running_var: float[256]
+	layer3.0.bn2.weight: float[256]
+	layer3.0.bn3.bias: float[1024]
+	layer3.0.bn3.num_batches_tracked: int64[]
+	layer3.0.bn3.running_mean: float[1024]
+	layer3.0.bn3.running_var: float[1024]
+	layer3.0.bn3.weight: float[1024]
+	layer3.0.conv1.weight: float[256,512,1,1]
+	layer3.0.conv2.weight: float[256,256,3,3]
+	layer3.0.conv3.weight: float[1024,256,1,1]
+	layer3.0.downsample.0.weight: float[1024,512,1,1]
+	layer3.0.downsample.1.bias: float[1024]
+	layer3.0.downsample.1.num_batches_tracked: int64[]
+	layer3.0.downsample.1.running_mean: float[1024]
+	layer3.0.downsample.1.running_var: float[1024]
+	layer3.0.downsample.1.weight: float[1024]
+	layer3.1.bn1.bias: float[256]
+	layer3.1.bn1.num_batches_tracked: int64[]
+	layer3.1.bn1.running_mean: float[256]
+	layer3.1.bn1.running_var: float[256]
+	layer3.1.bn1.weight: float[256]
+	layer3.1.bn2.bias: float[256]
+	layer3.1.bn2.num_batches_tracked: int64[]
+	layer3.1.bn2.running_mean: float[256]
+	layer3.1.bn2.running_var: float[256]
+	layer3.1.bn2.weight: float[256]
+	layer3.1.bn3.bias: float[1024]
+	layer3.1.bn3.num_batches_tracked: int64[]
+	layer3.1.bn3.running_mean: float[1024]
+	layer3.1.bn3.running_var: float[1024]
+	layer3.1.bn3.weight: float[1024]
+	layer3.1.conv1.weight: float[256,1024,1,1]
+	layer3.1.conv2.weight: float[256,256,3,3]
+	layer3.1.conv3.weight: float[1024,256,1,1]
+	layer3.2.bn1.bias: float[256]
+	layer3.2.bn1.num_batches_tracked: int64[]
+	layer3.2.bn1.running_mean: float[256]
+	layer3.2.bn1.running_var: float[256]
+	layer3.2.bn1.weight: float[256]
+	layer3.2.bn2.bias: float[256]
+	layer3.2.bn2.num_batches_tracked: int64[]
+	layer3.2.bn2.running_mean: float[256]
+	layer3.2.bn2.running_var: float[256]
+	layer3.2.bn2.weight: float[256]
+	layer3.2.bn3.bias: float[1024]
+	layer3.2.bn3.num_batches_tracked: int64[]
+	layer3.2.bn3.running_mean: float[1024]
+	layer3.2.bn3.running_var: float[1024]
+	layer3.2.bn3.weight: float[1024]
+	layer3.2.conv1.weight: float[256,1024,1,1]
+	layer3.2.conv2.weight: float[256,256,3,3]
+	layer3.2.conv3.weight: float[1024,256,1,1]
+	layer3.3.bn1.bias: float[256]
+	layer3.3.bn1.num_batches_tracked: int64[]
+	layer3.3.bn1.running_mean: float[256]
+	layer3.3.bn1.running_var: float[256]
+	layer3.3.bn1.weight: float[256]
+	layer3.3.bn2.bias: float[256]
+	layer3.3.bn2.num_batches_tracked: int64[]
+	layer3.3.bn2.running_mean: float[256]
+	layer3.3.bn2.running_var: float[256]
+	layer3.3.bn2.weight: float[256]
+	layer3.3.bn3.bias: float[1024]
+	layer3.3.bn3.num_batches_tracked: int64[]
+	layer3.3.bn3.running_mean: float[1024]
+	layer3.3.bn3.running_var: float[1024]
+	layer3.3.bn3.weight: float[1024]
+	layer3.3.conv1.weight: float[256,1024,1,1]
+	layer3.3.conv2.weight: float[256,256,3,3]
+	layer3.3.conv3.weight: float[1024,256,1,1]
+	layer3.4.bn1.bias: float[256]
+	layer3.4.bn1.num_batches_tracked: int64[]
+	layer3.4.bn1.running_mean: float[256]
+	layer3.4.bn1.running_var: float[256]
+	layer3.4.bn1.weight: float[256]
+	layer3.4.bn2.bias: float[256]
+	layer3.4.bn2.num_batches_tracked: int64[]
+	layer3.4.bn2.running_mean: float[256]
+	layer3.4.bn2.running_var: float[256]
+	layer3.4.bn2.weight: float[256]
+	layer3.4.bn3.bias: float[1024]
+	layer3.4.bn3.num_batches_tracked: int64[]
+	layer3.4.bn3.running_mean: float[1024]
+	layer3.4.bn3.running_var: float[1024]
+	layer3.4.bn3.weight: float[1024]
+	layer3.4.conv1.weight: float[256,1024,1,1]
+	layer3.4.conv2.weight: float[256,256,3,3]
+	layer3.4.conv3.weight: float[1024,256,1,1]
+	layer3.5.bn1.bias: float[256]
+	layer3.5.bn1.num_batches_tracked: int64[]
+	layer3.5.bn1.running_mean: float[256]
+	layer3.5.bn1.running_var: float[256]
+	layer3.5.bn1.weight: float[256]
+	layer3.5.bn2.bias: float[256]
+	layer3.5.bn2.num_batches_tracked: int64[]
+	layer3.5.bn2.running_mean: float[256]
+	layer3.5.bn2.running_var: float[256]
+	layer3.5.bn2.weight: float[256]
+	layer3.5.bn3.bias: float[1024]
+	layer3.5.bn3.num_batches_tracked: int64[]
+	layer3.5.bn3.running_mean: float[1024]
+	layer3.5.bn3.running_var: float[1024]
+	layer3.5.bn3.weight: float[1024]
+	layer3.5.conv1.weight: float[256,1024,1,1]
+	layer3.5.conv2.weight: float[256,256,3,3]
+	layer3.5.conv3.weight: float[1024,256,1,1]
+	layer4.0.bn1.bias: float[512]
+	layer4.0.bn1.num_batches_tracked: int64[]
+	layer4.0.bn1.running_mean: float[512]
+	layer4.0.bn1.running_var: float[512]
+	layer4.0.bn1.weight: float[512]
+	layer4.0.bn2.bias: float[512]
+	layer4.0.bn2.num_batches_tracked: int64[]
+	layer4.0.bn2.running_mean: float[512]
+	layer4.0.bn2.running_var: float[512]
+	layer4.0.bn2.weight: float[512]
+	layer4.0.bn3.bias: float[2048]
+	layer4.0.bn3.num_batches_tracked: int64[]
+	layer4.0.bn3.running_mean: float[2048]
+	layer4.0.bn3.running_var: float[2048]
+	layer4.0.bn3.weight: float[2048]
+	layer4.0.conv1.weight: float[512,1024,1,1]
+	layer4.0.conv2.weight: float[512,512,3,3]
+	layer4.0.conv3.weight: float[2048,512,1,1]
+	layer4.0.downsample.0.weight: float[2048,1024,1,1]
+	layer4.0.downsample.1.bias: float[2048]
+	layer4.0.downsample.1.num_batches_tracked: int64[]
+	layer4.0.downsample.1.running_mean: float[2048]
+	layer4.0.downsample.1.running_var: float[2048]
+	layer4.0.downsample.1.weight: float[2048]
+	layer4.1.bn1.bias: float[512]
+	layer4.1.bn1.num_batches_tracked: int64[]
+	layer4.1.bn1.running_mean: float[512]
+	layer4.1.bn1.running_var: float[512]
+	layer4.1.bn1.weight: float[512]
+	layer4.1.bn2.bias: float[512]
+	layer4.1.bn2.num_batches_tracked: int64[]
+	layer4.1.bn2.running_mean: float[512]
+	layer4.1.bn2.running_var: float[512]
+	layer4.1.bn2.weight: float[512]
+	layer4.1.bn3.bias: float[2048]
+	layer4.1.bn3.num_batches_tracked: int64[]
+	layer4.1.bn3.running_mean: float[2048]
+	layer4.1.bn3.running_var: float[2048]
+	layer4.1.bn3.weight: float[2048]
+	layer4.1.conv1.weight: float[512,2048,1,1]
+	layer4.1.conv2.weight: float[512,512,3,3]
+	layer4.1.conv3.weight: float[2048,512,1,1]
+	layer4.2.bn1.bias: float[512]
+	layer4.2.bn1.num_batches_tracked: int64[]
+	layer4.2.bn1.running_mean: float[512]
+	layer4.2.bn1.running_var: float[512]
+	layer4.2.bn1.weight: float[512]
+	layer4.2.bn2.bias: float[512]
+	layer4.2.bn2.num_batches_tracked: int64[]
+	layer4.2.bn2.running_mean: float[512]
+	layer4.2.bn2.running_var: float[512]
+	layer4.2.bn2.weight: float[512]
+	layer4.2.bn3.bias: float[2048]
+	layer4.2.bn3.num_batches_tracked: int64[]
+	layer4.2.bn3.running_mean: float[2048]
+	layer4.2.bn3.running_var: float[2048]
+	layer4.2.bn3.weight: float[2048]
+	layer4.2.conv1.weight: float[512,2048,1,1]
+	layer4.2.conv2.weight: float[512,512,3,3]
+	layer4.2.conv3.weight: float[2048,512,1,1]
+    Nodes: 
+{
+	op    : Conv
+	input : input.1 conv1.weight
+	output: 321
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [7,7]
+	pads: [3,3,3,3]
+	strides: [2,2]
+}
+{
+	op    : BatchNormalization
+	input : 321 bn1.weight bn1.bias bn1.running_mean bn1.running_var
+	output: 322
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 322
+	output: 323
+}
+{
+	op    : MaxPool
+	input : 323
+	output: 324
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [2,2]
+}
+{
+	op    : Conv
+	input : 324 layer1.0.conv1.weight
+	output: 325
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 325 layer1.0.bn1.weight layer1.0.bn1.bias layer1.0.bn1.running_mean layer1.0.bn1.running_var
+	output: 326
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 326
+	output: 327
+}
+{
+	op    : Conv
+	input : 327 layer1.0.conv2.weight
+	output: 328
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 328 layer1.0.bn2.weight layer1.0.bn2.bias layer1.0.bn2.running_mean layer1.0.bn2.running_var
+	output: 329
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 329
+	output: 330
+}
+{
+	op    : Conv
+	input : 330 layer1.0.conv3.weight
+	output: 331
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 331 layer1.0.bn3.weight layer1.0.bn3.bias layer1.0.bn3.running_mean layer1.0.bn3.running_var
+	output: 332
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Conv
+	input : 324 layer1.0.downsample.0.weight
+	output: 333
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 333 layer1.0.downsample.1.weight layer1.0.downsample.1.bias layer1.0.downsample.1.running_mean layer1.0.downsample.1.running_var
+	output: 334
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 332 334
+	output: 335
+}
+{
+	op    : Relu
+	input : 335
+	output: 336
+}
+{
+	op    : Conv
+	input : 336 layer1.1.conv1.weight
+	output: 337
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 337 layer1.1.bn1.weight layer1.1.bn1.bias layer1.1.bn1.running_mean layer1.1.bn1.running_var
+	output: 338
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 338
+	output: 339
+}
+{
+	op    : Conv
+	input : 339 layer1.1.conv2.weight
+	output: 340
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 340 layer1.1.bn2.weight layer1.1.bn2.bias layer1.1.bn2.running_mean layer1.1.bn2.running_var
+	output: 341
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 341
+	output: 342
+}
+{
+	op    : Conv
+	input : 342 layer1.1.conv3.weight
+	output: 343
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 343 layer1.1.bn3.weight layer1.1.bn3.bias layer1.1.bn3.running_mean layer1.1.bn3.running_var
+	output: 344
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 344 336
+	output: 345
+}
+{
+	op    : Relu
+	input : 345
+	output: 346
+}
+{
+	op    : Conv
+	input : 346 layer1.2.conv1.weight
+	output: 347
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 347 layer1.2.bn1.weight layer1.2.bn1.bias layer1.2.bn1.running_mean layer1.2.bn1.running_var
+	output: 348
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 348
+	output: 349
+}
+{
+	op    : Conv
+	input : 349 layer1.2.conv2.weight
+	output: 350
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 350 layer1.2.bn2.weight layer1.2.bn2.bias layer1.2.bn2.running_mean layer1.2.bn2.running_var
+	output: 351
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 351
+	output: 352
+}
+{
+	op    : Conv
+	input : 352 layer1.2.conv3.weight
+	output: 353
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 353 layer1.2.bn3.weight layer1.2.bn3.bias layer1.2.bn3.running_mean layer1.2.bn3.running_var
+	output: 354
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 354 346
+	output: 355
+}
+{
+	op    : Relu
+	input : 355
+	output: 356
+}
+{
+	op    : Conv
+	input : 356 layer2.0.conv1.weight
+	output: 357
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 357 layer2.0.bn1.weight layer2.0.bn1.bias layer2.0.bn1.running_mean layer2.0.bn1.running_var
+	output: 358
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 358
+	output: 359
+}
+{
+	op    : Conv
+	input : 359 layer2.0.conv2.weight
+	output: 360
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [2,2]
+}
+{
+	op    : BatchNormalization
+	input : 360 layer2.0.bn2.weight layer2.0.bn2.bias layer2.0.bn2.running_mean layer2.0.bn2.running_var
+	output: 361
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 361
+	output: 362
+}
+{
+	op    : Conv
+	input : 362 layer2.0.conv3.weight
+	output: 363
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 363 layer2.0.bn3.weight layer2.0.bn3.bias layer2.0.bn3.running_mean layer2.0.bn3.running_var
+	output: 364
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Conv
+	input : 356 layer2.0.downsample.0.weight
+	output: 365
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [2,2]
+}
+{
+	op    : BatchNormalization
+	input : 365 layer2.0.downsample.1.weight layer2.0.downsample.1.bias layer2.0.downsample.1.running_mean layer2.0.downsample.1.running_var
+	output: 366
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 364 366
+	output: 367
+}
+{
+	op    : Relu
+	input : 367
+	output: 368
+}
+{
+	op    : Conv
+	input : 368 layer2.1.conv1.weight
+	output: 369
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 369 layer2.1.bn1.weight layer2.1.bn1.bias layer2.1.bn1.running_mean layer2.1.bn1.running_var
+	output: 370
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 370
+	output: 371
+}
+{
+	op    : Conv
+	input : 371 layer2.1.conv2.weight
+	output: 372
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 372 layer2.1.bn2.weight layer2.1.bn2.bias layer2.1.bn2.running_mean layer2.1.bn2.running_var
+	output: 373
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 373
+	output: 374
+}
+{
+	op    : Conv
+	input : 374 layer2.1.conv3.weight
+	output: 375
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 375 layer2.1.bn3.weight layer2.1.bn3.bias layer2.1.bn3.running_mean layer2.1.bn3.running_var
+	output: 376
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 376 368
+	output: 377
+}
+{
+	op    : Relu
+	input : 377
+	output: 378
+}
+{
+	op    : Conv
+	input : 378 layer2.2.conv1.weight
+	output: 379
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 379 layer2.2.bn1.weight layer2.2.bn1.bias layer2.2.bn1.running_mean layer2.2.bn1.running_var
+	output: 380
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 380
+	output: 381
+}
+{
+	op    : Conv
+	input : 381 layer2.2.conv2.weight
+	output: 382
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 382 layer2.2.bn2.weight layer2.2.bn2.bias layer2.2.bn2.running_mean layer2.2.bn2.running_var
+	output: 383
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 383
+	output: 384
+}
+{
+	op    : Conv
+	input : 384 layer2.2.conv3.weight
+	output: 385
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 385 layer2.2.bn3.weight layer2.2.bn3.bias layer2.2.bn3.running_mean layer2.2.bn3.running_var
+	output: 386
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 386 378
+	output: 387
+}
+{
+	op    : Relu
+	input : 387
+	output: 388
+}
+{
+	op    : Conv
+	input : 388 layer2.3.conv1.weight
+	output: 389
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 389 layer2.3.bn1.weight layer2.3.bn1.bias layer2.3.bn1.running_mean layer2.3.bn1.running_var
+	output: 390
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 390
+	output: 391
+}
+{
+	op    : Conv
+	input : 391 layer2.3.conv2.weight
+	output: 392
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 392 layer2.3.bn2.weight layer2.3.bn2.bias layer2.3.bn2.running_mean layer2.3.bn2.running_var
+	output: 393
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 393
+	output: 394
+}
+{
+	op    : Conv
+	input : 394 layer2.3.conv3.weight
+	output: 395
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 395 layer2.3.bn3.weight layer2.3.bn3.bias layer2.3.bn3.running_mean layer2.3.bn3.running_var
+	output: 396
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 396 388
+	output: 397
+}
+{
+	op    : Relu
+	input : 397
+	output: 398
+}
+{
+	op    : Conv
+	input : 398 layer3.0.conv1.weight
+	output: 399
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 399 layer3.0.bn1.weight layer3.0.bn1.bias layer3.0.bn1.running_mean layer3.0.bn1.running_var
+	output: 400
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 400
+	output: 401
+}
+{
+	op    : Conv
+	input : 401 layer3.0.conv2.weight
+	output: 402
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [2,2]
+}
+{
+	op    : BatchNormalization
+	input : 402 layer3.0.bn2.weight layer3.0.bn2.bias layer3.0.bn2.running_mean layer3.0.bn2.running_var
+	output: 403
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 403
+	output: 404
+}
+{
+	op    : Conv
+	input : 404 layer3.0.conv3.weight
+	output: 405
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 405 layer3.0.bn3.weight layer3.0.bn3.bias layer3.0.bn3.running_mean layer3.0.bn3.running_var
+	output: 406
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Conv
+	input : 398 layer3.0.downsample.0.weight
+	output: 407
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [2,2]
+}
+{
+	op    : BatchNormalization
+	input : 407 layer3.0.downsample.1.weight layer3.0.downsample.1.bias layer3.0.downsample.1.running_mean layer3.0.downsample.1.running_var
+	output: 408
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 406 408
+	output: 409
+}
+{
+	op    : Relu
+	input : 409
+	output: 410
+}
+{
+	op    : Conv
+	input : 410 layer3.1.conv1.weight
+	output: 411
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 411 layer3.1.bn1.weight layer3.1.bn1.bias layer3.1.bn1.running_mean layer3.1.bn1.running_var
+	output: 412
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 412
+	output: 413
+}
+{
+	op    : Conv
+	input : 413 layer3.1.conv2.weight
+	output: 414
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 414 layer3.1.bn2.weight layer3.1.bn2.bias layer3.1.bn2.running_mean layer3.1.bn2.running_var
+	output: 415
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 415
+	output: 416
+}
+{
+	op    : Conv
+	input : 416 layer3.1.conv3.weight
+	output: 417
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 417 layer3.1.bn3.weight layer3.1.bn3.bias layer3.1.bn3.running_mean layer3.1.bn3.running_var
+	output: 418
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 418 410
+	output: 419
+}
+{
+	op    : Relu
+	input : 419
+	output: 420
+}
+{
+	op    : Conv
+	input : 420 layer3.2.conv1.weight
+	output: 421
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 421 layer3.2.bn1.weight layer3.2.bn1.bias layer3.2.bn1.running_mean layer3.2.bn1.running_var
+	output: 422
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 422
+	output: 423
+}
+{
+	op    : Conv
+	input : 423 layer3.2.conv2.weight
+	output: 424
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 424 layer3.2.bn2.weight layer3.2.bn2.bias layer3.2.bn2.running_mean layer3.2.bn2.running_var
+	output: 425
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 425
+	output: 426
+}
+{
+	op    : Conv
+	input : 426 layer3.2.conv3.weight
+	output: 427
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 427 layer3.2.bn3.weight layer3.2.bn3.bias layer3.2.bn3.running_mean layer3.2.bn3.running_var
+	output: 428
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 428 420
+	output: 429
+}
+{
+	op    : Relu
+	input : 429
+	output: 430
+}
+{
+	op    : Conv
+	input : 430 layer3.3.conv1.weight
+	output: 431
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 431 layer3.3.bn1.weight layer3.3.bn1.bias layer3.3.bn1.running_mean layer3.3.bn1.running_var
+	output: 432
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 432
+	output: 433
+}
+{
+	op    : Conv
+	input : 433 layer3.3.conv2.weight
+	output: 434
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 434 layer3.3.bn2.weight layer3.3.bn2.bias layer3.3.bn2.running_mean layer3.3.bn2.running_var
+	output: 435
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 435
+	output: 436
+}
+{
+	op    : Conv
+	input : 436 layer3.3.conv3.weight
+	output: 437
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 437 layer3.3.bn3.weight layer3.3.bn3.bias layer3.3.bn3.running_mean layer3.3.bn3.running_var
+	output: 438
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 438 430
+	output: 439
+}
+{
+	op    : Relu
+	input : 439
+	output: 440
+}
+{
+	op    : Conv
+	input : 440 layer3.4.conv1.weight
+	output: 441
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 441 layer3.4.bn1.weight layer3.4.bn1.bias layer3.4.bn1.running_mean layer3.4.bn1.running_var
+	output: 442
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 442
+	output: 443
+}
+{
+	op    : Conv
+	input : 443 layer3.4.conv2.weight
+	output: 444
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 444 layer3.4.bn2.weight layer3.4.bn2.bias layer3.4.bn2.running_mean layer3.4.bn2.running_var
+	output: 445
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 445
+	output: 446
+}
+{
+	op    : Conv
+	input : 446 layer3.4.conv3.weight
+	output: 447
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 447 layer3.4.bn3.weight layer3.4.bn3.bias layer3.4.bn3.running_mean layer3.4.bn3.running_var
+	output: 448
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 448 440
+	output: 449
+}
+{
+	op    : Relu
+	input : 449
+	output: 450
+}
+{
+	op    : Conv
+	input : 450 layer3.5.conv1.weight
+	output: 451
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 451 layer3.5.bn1.weight layer3.5.bn1.bias layer3.5.bn1.running_mean layer3.5.bn1.running_var
+	output: 452
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 452
+	output: 453
+}
+{
+	op    : Conv
+	input : 453 layer3.5.conv2.weight
+	output: 454
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 454 layer3.5.bn2.weight layer3.5.bn2.bias layer3.5.bn2.running_mean layer3.5.bn2.running_var
+	output: 455
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 455
+	output: 456
+}
+{
+	op    : Conv
+	input : 456 layer3.5.conv3.weight
+	output: 457
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 457 layer3.5.bn3.weight layer3.5.bn3.bias layer3.5.bn3.running_mean layer3.5.bn3.running_var
+	output: 458
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 458 450
+	output: 459
+}
+{
+	op    : Relu
+	input : 459
+	output: 460
+}
+{
+	op    : Conv
+	input : 460 layer4.0.conv1.weight
+	output: 461
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 461 layer4.0.bn1.weight layer4.0.bn1.bias layer4.0.bn1.running_mean layer4.0.bn1.running_var
+	output: 462
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 462
+	output: 463
+}
+{
+	op    : Conv
+	input : 463 layer4.0.conv2.weight
+	output: 464
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [2,2]
+}
+{
+	op    : BatchNormalization
+	input : 464 layer4.0.bn2.weight layer4.0.bn2.bias layer4.0.bn2.running_mean layer4.0.bn2.running_var
+	output: 465
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 465
+	output: 466
+}
+{
+	op    : Conv
+	input : 466 layer4.0.conv3.weight
+	output: 467
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 467 layer4.0.bn3.weight layer4.0.bn3.bias layer4.0.bn3.running_mean layer4.0.bn3.running_var
+	output: 468
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Conv
+	input : 460 layer4.0.downsample.0.weight
+	output: 469
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [2,2]
+}
+{
+	op    : BatchNormalization
+	input : 469 layer4.0.downsample.1.weight layer4.0.downsample.1.bias layer4.0.downsample.1.running_mean layer4.0.downsample.1.running_var
+	output: 470
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 468 470
+	output: 471
+}
+{
+	op    : Relu
+	input : 471
+	output: 472
+}
+{
+	op    : Conv
+	input : 472 layer4.1.conv1.weight
+	output: 473
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 473 layer4.1.bn1.weight layer4.1.bn1.bias layer4.1.bn1.running_mean layer4.1.bn1.running_var
+	output: 474
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 474
+	output: 475
+}
+{
+	op    : Conv
+	input : 475 layer4.1.conv2.weight
+	output: 476
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 476 layer4.1.bn2.weight layer4.1.bn2.bias layer4.1.bn2.running_mean layer4.1.bn2.running_var
+	output: 477
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 477
+	output: 478
+}
+{
+	op    : Conv
+	input : 478 layer4.1.conv3.weight
+	output: 479
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 479 layer4.1.bn3.weight layer4.1.bn3.bias layer4.1.bn3.running_mean layer4.1.bn3.running_var
+	output: 480
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 480 472
+	output: 481
+}
+{
+	op    : Relu
+	input : 481
+	output: 482
+}
+{
+	op    : Conv
+	input : 482 layer4.2.conv1.weight
+	output: 483
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 483 layer4.2.bn1.weight layer4.2.bn1.bias layer4.2.bn1.running_mean layer4.2.bn1.running_var
+	output: 484
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 484
+	output: 485
+}
+{
+	op    : Conv
+	input : 485 layer4.2.conv2.weight
+	output: 486
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [3,3]
+	pads: [1,1,1,1]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 486 layer4.2.bn2.weight layer4.2.bn2.bias layer4.2.bn2.running_mean layer4.2.bn2.running_var
+	output: 487
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Relu
+	input : 487
+	output: 488
+}
+{
+	op    : Conv
+	input : 488 layer4.2.conv3.weight
+	output: 489
+	dilations: [1,1]
+	group: 1
+	kernel_shape: [1,1]
+	pads: [0,0,0,0]
+	strides: [1,1]
+}
+{
+	op    : BatchNormalization
+	input : 489 layer4.2.bn3.weight layer4.2.bn3.bias layer4.2.bn3.running_mean layer4.2.bn3.running_var
+	output: 490
+	epsilon: 1e-05
+	momentum: 0.9
+}
+{
+	op    : Add
+	input : 490 482
+	output: 491
+}
+{
+	op    : Relu
+	input : 491
+	output: 492
+}
+{
+	op    : GlobalAveragePool
+	input : 492
+	output: 493
+}
+{
+	op    : Flatten
+	input : 493
+	output: 494
+	axis: 1
+}
+{
+	op    : Gemm
+	input : 494 fc.weight fc.bias
+	output: 495
+	alpha: 1
+	beta: 1
+	transB: 1
+}
