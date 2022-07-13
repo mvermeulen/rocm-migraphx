@@ -218,7 +218,7 @@ void print_node(onnx::NodeProto node){
   std::cout << "}" << std::endl;
 }
 
-int read_onnx_file(char *file,int dump_onnx_info=0){
+int read_onnx_file(char *file,int dump_onnx_info=0, int conv_ops_only=0){
   onnx::ModelProto model;
   std::fstream input(file,std::ios::in | std::ios::binary);
   if (!model.ParseFromIstream(&input)){
@@ -284,6 +284,7 @@ int read_onnx_file(char *file,int dump_onnx_info=0){
       }
       std::cout << "    Nodes: " << std::endl;
       for (auto&& node : graph.node()){
+	if ((conv_ops_only) && node.op_type().compare("Conv")) continue;
 	print_node(node);
       }
     }
@@ -299,7 +300,7 @@ int main(int argc,char *argv[]){
     std::cerr << "Usage: " << argv[0] << " <ONNX file>" << std::endl;
     return 1;
   }
-  result = read_onnx_file(argv[1],1);
+  result = read_onnx_file(argv[1],1,1);
   return result;
 }
 #endif
