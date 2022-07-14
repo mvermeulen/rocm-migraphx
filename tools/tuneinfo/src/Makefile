@@ -1,27 +1,29 @@
+# Build for tuneinfo tool
 #
 CXX=g++
 CXXFLAGS=-g
-PROTOLIBS=-L /usr/local/lib -lprotobuf
-PROTOC := $(shell command -v protoc 2>/dev/null)
-PROTOCVERSION := $(shell expr `protoc --version | cut -f2 -d .` \>= 11)
+PROTOLIBS=-L ../external/lib/ -lprotobuf
+PROTOINCLUDE=-I../external/include
+PROTOC=../external/bin/protoc
 
 read_onnx:	read_onnx.cpp cpp-interface/onnx.proto3.pb.h cpp-interface/onnx.proto3.pb.o
-	$(CXX) -o read_onnx $(CXXFLAGS) -DTEST_DRIVER=1 read_onnx.cpp cpp-interface/onnx.proto3.pb.o $(PROTOLIBS)
+	$(CXX) -o read_onnx $(CXXFLAGS) $(PROTOINCLUDE) -DTEST_DRIVER=1 read_onnx.cpp cpp-interface/onnx.proto3.pb.o $(PROTOLIBS)
+
+$(PROTOC):
+	cd ../protobuf
+	./autogen.sh
+	./configure --prefix=`pwd`/../external/ --disable-shared
+	make
+	make install
 
 %.proto3:	../onnx/onnx/$@
 	cp ../onnx/onnx/$@ .
 
-cpp-interface/%.pb.h cpp-interface/%.pb.cc:	%
-ifndef PROTOC
-	$(error "protoc is not available")
-endif
-ifneq "$(PROTOCVERSION)" "1"
-	$(error "protoc is older than 3.11")
-endif
-	protoc --cpp_out=cpp-interface $<
+cpp-interface/%.pb.h cpp-interface/%.pb.cc:	% $(PROTOC)
+	$(PROTOC) --cpp_out=cpp-interface $<
 
 cpp-interface/%.pb.o:	cpp-interface/%.pb.cc
-	$(CXX) -o $@ -c $<
+	$(CXX) -o $@ $(PROTOINCLUDE) -c $<
 
 clean:
 	-rm onnx.proto3 cpp-interface/onnx.proto3.* *.o *~
