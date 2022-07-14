@@ -1,3 +1,6 @@
 [submodule "tools/tuneinfo/onnx"]
 	path = tools/tuneinfo/onnx
 	url = https://github.com/onnx/onnx
+[submodule "tools/tuneinfo/protobuf"]
+	path = tools/tuneinfo/protobuf
+	url = https://github.com/protocolbuffers/protobuf.git
