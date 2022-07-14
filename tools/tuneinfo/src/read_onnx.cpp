@@ -279,6 +279,7 @@ int read_onnx_file(char *file,int dump_onnx_info=0, int conv_ops_only=0){
 	  if (value.has_type()){
 	    std::cout << " ";
 	    print_type(value.type());
+	    std::cout << std::endl;
 	  }
 	}
       }
