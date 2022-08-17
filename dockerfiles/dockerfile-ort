@@ -6,7 +6,7 @@ ENV ROC_USE_FGS_KERNARG=0
 ARG branch="branch_for_ort"
 ARG build_type="Release"
 ARG ort_repository="https://github.com/microsoft/onnxruntime"
-ARG ort_branch="master"
+ARG ort_branch="main"
 
 WORKDIR /workspace
 
