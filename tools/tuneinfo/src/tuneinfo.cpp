@@ -50,7 +50,8 @@ int parse_options(int argc,char *argv[]){
       user_db = optarg;
       break;
     case 4:
-      dump_onnx = 1;
+      if (dump_onnx < 2)
+	dump_onnx++;
       break;
     default:
       return 1;
