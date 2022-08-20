@@ -10,11 +10,8 @@ read_onnx:	read_onnx.cpp cpp-interface/onnx.proto3.pb.h cpp-interface/onnx.proto
 	$(CXX) -o read_onnx $(CXXFLAGS) $(PROTOINCLUDE) -DTEST_DRIVER=1 read_onnx.cpp cpp-interface/onnx.proto3.pb.o $(PROTOLIBS)
 
 $(PROTOC):
-	cd ../protobuf
-	./autogen.sh
-	./configure --prefix=`pwd`/../external/ --disable-shared
-	make
-	make install
+# expects protobuf is checked out at v3.21.5
+	cd ../protobuf && ./autogen.sh && ./configure --prefix=`pwd`/../external/ --disable-shared && make && make install
 
 %.proto3:	../onnx/onnx/$@
 	cp ../onnx/onnx/$@ .

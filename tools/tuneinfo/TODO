@@ -1,0 +1,5 @@
+Items to be done
+----------------
+1. Replace src/Makefile section on building protobuf with proper cmake build
+2. Add external repositories as submodules
+
