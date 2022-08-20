@@ -1,3 +1,5 @@
+System database = /opt/rocm/share/miopen/db/gfx906_60.db
+User database   = /home/mev/.config/miopen/gfx906_60_1.1.0.udb
 ONNX file information: ../resnet50i1_inf.onnx
     Producer Name:    pytorch
     Producer Version: 1.3

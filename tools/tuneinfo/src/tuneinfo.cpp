@@ -124,7 +124,7 @@ int lookup_db_files(){
   return 0;
 }
 
-int read_onnx_file(const char *file,int dump_onnx_info=0, int conv_ops_only=0);
+int read_onnx_file(const char *file,int dump_onnx_info=0, int conv_info=0);
 
 int main(int argc,char *argv[]){
   tuneinfo_program = argv[0];
@@ -141,6 +141,6 @@ int main(int argc,char *argv[]){
       std::cout << "User database   = " << user_db << std::endl;      
     }
   }
-  int result = read_onnx_file(onnx_filename.c_str(),dump_onnx,0);
+  int result = read_onnx_file(onnx_filename.c_str(),dump_onnx,1);
   return 0;
 }
