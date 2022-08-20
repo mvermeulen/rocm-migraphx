@@ -218,13 +218,22 @@ void print_node(onnx::NodeProto node){
   std::cout << "}" << std::endl;
 }
 
-int read_onnx_file(char *file,int dump_onnx_info=0, int conv_ops_only=0){
+int read_onnx_file(const char *file,int dump_onnx_info=0, int conv_ops_only=0){
   onnx::ModelProto model;
   std::fstream input(file,std::ios::in | std::ios::binary);
   if (!model.ParseFromIstream(&input)){
     std::cerr << "Failed to parse ONNX model" << std::endl;
     return 1;
   }
+  if (dump_onnx_info == 0){
+    if (model.has_graph()){
+      onnx::GraphProto graph = model.graph();
+	if (graph.value_info_size() == 0){
+	  std::cerr << "warning: no value info found, may need to perform shape inference" << std::endl;
+	}
+    }
+  }
+  
   if (dump_onnx_info > 0){
     std::cout << "ONNX file information: " << file << std::endl;
     std::cout << "    Producer Name:    " << model.producer_name() << std::endl;

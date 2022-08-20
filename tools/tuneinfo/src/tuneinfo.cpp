@@ -15,6 +15,8 @@ std::string system_db_location = "/opt/rocm/share/miopen/db";
 std::string user_db_location = "";
 std::string system_db;
 std::string user_db;
+std::string onnx_filename;
+int dump_onnx = 0;
 
 std::string tuneinfo_program;
 std::string usage_message =
@@ -22,6 +24,7 @@ std::string usage_message =
   "    where <options list> includes options for\n" +
   "        --systemdb <file>\n" +
   "        --userdb <file>\n" +
+  "        --dumponnx\n" +
   "        --help\n"
   ;
 
@@ -31,7 +34,8 @@ int parse_options(int argc,char *argv[]){
     {
      { "help",     no_argument,       0, 1 },
      { "systemdb", required_argument, 0, 2 },
-     { "userdb",   required_argument, 0, 3 },     
+     { "userdb",   required_argument, 0, 3 },
+     { "dumponnx", no_argument,       0, 4 },
      { 0,         0,                0, 0 }
     };
   
@@ -45,11 +49,16 @@ int parse_options(int argc,char *argv[]){
     case 3:
       user_db = optarg;
       break;
+    case 4:
+      dump_onnx = 1;
+      break;
     default:
       return 1;
     }
   }
-  if (argc < 2){
+  if (optind < argc){
+    onnx_filename = argv[optind];
+  } else {
     std::cerr << tuneinfo_program << ": missing ONNX file" << std::endl;
     return 1;
   }
@@ -114,6 +123,8 @@ int lookup_db_files(){
   return 0;
 }
 
+int read_onnx_file(const char *file,int dump_onnx_info=0, int conv_ops_only=0);
+
 int main(int argc,char *argv[]){
   tuneinfo_program = argv[0];
   if (parse_options(argc,argv)){
@@ -129,5 +140,6 @@ int main(int argc,char *argv[]){
       std::cout << "User database   = " << user_db << std::endl;      
     }
   }
+  int result = read_onnx_file(onnx_filename.c_str(),dump_onnx,0);
   return 0;
 }
