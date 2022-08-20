@@ -1,10 +1,13 @@
 # Build for tuneinfo tool
 #
-CXX=g++
+CXX=hipcc
 CXXFLAGS=-g
 PROTOLIBS=-L ../external/lib/ -lprotobuf
 PROTOINCLUDE=-I../external/include
 PROTOC=../external/bin/protoc
+
+tuneinfo:	tuneinfo.cpp
+	$(CXX) -o tuneinfo $(CXXFLAGS) tuneinfo.cpp
 
 read_onnx:	read_onnx.cpp cpp-interface/onnx.proto3.pb.h cpp-interface/onnx.proto3.pb.o
 	$(CXX) -o read_onnx $(CXXFLAGS) $(PROTOINCLUDE) -DTEST_DRIVER=1 read_onnx.cpp cpp-interface/onnx.proto3.pb.o $(PROTOLIBS)
