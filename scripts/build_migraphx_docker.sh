@@ -20,6 +20,6 @@ cd ../dockerfiles
 DOCKERFILE=dockerfile.`date '+%Y-%m-%d'`
 
 # save away dockerfile used to build
-cp dockerfile2 $DOCKERFILE
+cp dockerfile $DOCKERFILE
 
 docker build --build-arg rocm_release=${ROCM_RELEASE} --build-arg base_image=${ROCM_BASE} ${CACHE} -t $DOCKERIMAGE -f $DOCKERFILE .
