@@ -1,4 +1,4 @@
-ARG base_image="rocm/pytorch:rocm5.2_ubuntu20.04_py3.7_pytorch_1.11.0"
+ARG base_image="rocm/pytorch:rocm5.2.3_ubuntu20.04_py3.7_pytorch_1.11.0"
 FROM ${base_image}
 ENV DEBIAN_FRONTEND noninteractive
 ENV TOKENIZERS_PARALLELISM=false
