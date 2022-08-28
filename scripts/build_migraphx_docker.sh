@@ -5,10 +5,11 @@
 set -x
 #
 # Parameters
-ROCM_RELEASE=${ROCM_RELEASE:="5.2"}
-ROCM_BASE=${ROCM_BASE:="rocm/dev-ubuntu-20.04:${ROCM_RELEASE}"}
-BUILD_NAVI=${BUILD_NAVI:="0"}
+ROCM_RELEASE=${ROCM_RELEASE:="5.2.3"}
+COMPLETE=${COMPLETE:="-complete"}
+ROCM_BASE=${ROCM_BASE:="rocm/dev-ubuntu-20.04:${ROCM_RELEASE}${COMPLETE}"}
 DOCKERIMAGE=${DOCKERIMAGE:="rocm-migraphx:${ROCM_RELEASE}"}
+CACHE=${CACHE:="--no-cache"}
 
 if [ `id -u` != 0 ]; then
     echo script should be run as root
@@ -18,8 +19,7 @@ fi
 cd ../dockerfiles
 DOCKERFILE=dockerfile.`date '+%Y-%m-%d'`
 
-# use sed to create updated dockerfile.  Some might work with ARGs but
-# had difficulties with substitutions
-sed -e "s?ROCM_RELEASE?${ROCM_RELEASE}?g" dockerfile > $DOCKERFILE
+# save away dockerfile used to build
+cp dockerfile2 $DOCKERFILE
 
-docker build --build-arg build_navi=${BUILD_NAVI} --build-arg base_image=${ROCM_BASE} --no-cache -t $DOCKERIMAGE -f $DOCKERFILE .
+docker build --build-arg rocm_release=${ROCM_RELEASE} --build-arg base_image=${ROCM_BASE} ${CACHE} -t $DOCKERIMAGE -f $DOCKERFILE .

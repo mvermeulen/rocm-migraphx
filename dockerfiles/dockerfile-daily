@@ -1,12 +1,11 @@
-ARG DOCKERBASE=rocm-migraphx:5.1
+ARG DOCKERBASE=rocm-migraphx:5.2.3
 FROM $DOCKERBASE
 ARG BRANCH=develop
 RUN cd /src/AMDMIGraphX && git pull && git checkout ${BRANCH}
 ENV DEBIAN_FRONTEND=noninteractive
-RUN cd /src/AMDMIGraphX && /src/rocm-migraphx/scripts/build_migraphx.sh
-RUN cd /src/AMDMIGraphX && /src/rocm-migraphx/scripts/build_migraphx_cpu.sh
+RUN cd /src/AMDMIGraphX && rbuild package --cxx /opt/rocm/llvm/bin/clang++ -d /src/AMDMIGraphX/deps -B /src/AMDMIGraphX/build -DPYTHON_EXECUTABLE=/usr/bin/python3
 # Add pre-tuned db
-COPY miopen-rocm51 /root/.config/miopen/
+COPY miopen-rocm52 /root/.config/miopen/
 # Build the migx driver
 RUN cd /src/rocm-migraphx/tools/migx && git pull && ./build_migx.sh
 RUN pip3 install onnx==1.7.0
