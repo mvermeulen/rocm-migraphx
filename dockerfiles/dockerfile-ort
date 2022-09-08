@@ -29,6 +29,7 @@ RUN cd /workspace/AMDMIGraphX/build && dpkg -i *.deb
 COPY patch.enable_gfx1030 /workspace
 RUN git clone --recursive ${ort_repository}
 RUN cd onnxruntime && git checkout ${ort_branch}
+RUN cd onnxruntime && sed -i 's/Version(torch.__version__) >= Version("1.11.0")/Version(torch.__version__).release >= Version("1.11.0").release/g' onnxruntime/python/tools/transformers/torch_onnx_export_helper.py
 RUN patch onnxruntime/cmake/onnxruntime_providers.cmake < patch.enable_gfx1030
 RUN cd onnxruntime && ./build.sh --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=`cat ./VERSION_NUMBER` --config $build_type --skip_tests --build_wheel --use_migraphx --use_rocm --rocm_version=4.5.2 --rocm_home /opt/rocm
 RUN pip3 install /workspace/onnxruntime/build/Linux/$build_type/dist/*.whl
