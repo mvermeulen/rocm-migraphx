@@ -20,16 +20,16 @@ RUN apt update && apt install -y cmake time
 COPY patch.disable_migraphx_doc /workspace
 RUN apt install -y half
 RUN pip3 install https://github.com/RadeonOpenCompute/rbuild/archive/master.tar.gz
-RUN mkdir /workspace/migraphx
-RUN cd /workspace/migraphx && git clone --depth=1 --branch ${branch} https://github.com/ROCmSoftwarePlatform/AMDMIGraphX src
-RUN cd migraphx && patch -N src/CMakeLists.txt < ../patch.disable_migraphx_doc || true
-RUN cd /workspace/migraphx && rbuild package --cxx /opt/rocm/llvm/bin/clang++ -d /workspace/migraphx/deps -B build -S /workspace/migraphx/src -DPYTHON_EXECUTABLE=/usr/bin/python3
-RUN cd /workspace/migraphx/build && dpkg -i *.deb
+RUN cd /workspace && git clone --depth=1 --branch ${branch} https://github.com/ROCmSoftwarePlatform/AMDMIGraphX
+RUN cd /workspace && patch -N AMDMIGraphX/CMakeLists.txt < patch.disable_migraphx_doc || true
+RUN cd /workspace/AMDMIGraphX && rbuild package --cxx /opt/rocm/llvm/bin/clang++ -d /workspace/AMDMIGraphX/deps -B /workspace/AMDMIGraphX/build -DPYTHON_EXECUTABLE=/usr/bin/python3
+RUN cd /workspace/AMDMIGraphX/build && dpkg -i *.deb
 
 # build ONNX runtime wheel package
 COPY patch.enable_gfx1030 /workspace
 RUN git clone --recursive ${ort_repository}
 RUN cd onnxruntime && git checkout ${ort_branch}
+RUN cd onnxruntime && sed -i 's/Version(torch.__version__) >= Version("1.11.0")/Version(torch.__version__).release >= Version("1.11.0").release/g' onnxruntime/python/tools/transformers/torch_onnx_export_helper.py
 RUN patch onnxruntime/cmake/onnxruntime_providers.cmake < patch.enable_gfx1030
 RUN cd onnxruntime && ./build.sh --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=`cat ./VERSION_NUMBER` --config $build_type --skip_tests --build_wheel --use_migraphx --use_rocm --rocm_version=5.2.3 --rocm_home /opt/rocm
 RUN pip3 install /workspace/onnxruntime/build/Linux/$build_type/dist/*.whl
