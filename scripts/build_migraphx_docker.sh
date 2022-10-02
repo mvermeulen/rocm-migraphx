@@ -5,7 +5,7 @@
 set -x
 #
 # Parameters
-ROCM_RELEASE=${ROCM_RELEASE:="5.2.3"}
+ROCM_RELEASE=${ROCM_RELEASE:="5.3"}
 COMPLETE=${COMPLETE:="-complete"}
 ROCM_BASE=${ROCM_BASE:="rocm/dev-ubuntu-20.04:${ROCM_RELEASE}${COMPLETE}"}
 DOCKERIMAGE=${DOCKERIMAGE:="rocm-migraphx:${ROCM_RELEASE}"}
