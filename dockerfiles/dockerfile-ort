@@ -1,4 +1,4 @@
-ARG base_image="rocm/pytorch:rocm5.3_ubuntu20.04_py3.7_pytorch_1.12.1"
+ARG base_image="rocm/pytorch:rocm5.4_ubuntu20.04_py3.8_pytorch_1.12.1"
 FROM ${base_image}
 ENV DEBIAN_FRONTEND noninteractive
 ENV TOKENIZERS_PARALLELISM=false
@@ -28,9 +28,11 @@ RUN cd /workspace/AMDMIGraphX && rbuild package --cxx /opt/rocm/llvm/bin/clang++
 RUN cd /workspace/AMDMIGraphX/build && dpkg -i *.deb
 
 # build ONNX runtime wheel package
+COPY patch.ort_rocm54_fix /workspace
 RUN git clone --recursive ${ort_repository}
 RUN cd onnxruntime && git checkout ${ort_branch}
-RUN cd onnxruntime && sed -i 's/Version(torch.__version__) >= Version("1.11.0")/Version(torch.__version__).release >= Version("1.11.0").release/g' onnxruntime/python/tools/transformers/torch_onnx_export_helper.py
+RUN cd /workspace && patch -N onnxruntime/include/onnxruntime/core/framework/float16.h < patch.ort_rocm54_fix
+#RUN cd onnxruntime && sed -i 's/Version(torch.__version__) >= Version("1.11.0")/Version(torch.__version__).release >= Version("1.11.0").release/g' onnxruntime/python/tools/transformers/torch_onnx_export_helper.py
 RUN cd onnxruntime && ./build.sh --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=`cat ./VERSION_NUMBER` --config $build_type --skip_tests --build_wheel --use_migraphx --use_rocm --rocm_version=5.3 --rocm_home /opt/rocm
 RUN pip3 install /workspace/onnxruntime/build/Linux/$build_type/dist/*.whl
 RUN pip3 install psutil onnx coloredlogs torch packaging transformers sympy
