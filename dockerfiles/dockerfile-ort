@@ -31,9 +31,9 @@ RUN cd /workspace/AMDMIGraphX/build && dpkg -i *.deb
 RUN git clone --recursive ${ort_repository}
 RUN cd onnxruntime && git checkout ${ort_branch}
 
-# Temporarily add -Wno-deprecated-builtins until PR #13783 gets merged
-RUN cd onnxruntime && ./build.sh --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=`cat ./VERSION_NUMBER` CMAKE_HIP_FLAGS=-Wno-deprecated-builtins --config $build_type --skip_tests --build_wheel --use_migraphx --use_rocm --rocm_version=5.4 --rocm_home /opt/rocm
-#RUN cd onnxruntime && ./build.sh --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=`cat ./VERSION_NUMBER` --config $build_type --skip_tests --build_wheel --use_migraphx --use_rocm --rocm_version=5.4 --rocm_home /opt/rocm
+# Work around temporary break - fixed in PR 14126
+RUN cd onnxruntime && git checkout f4cd35f9
+RUN cd onnxruntime && ./build.sh --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=`cat ./VERSION_NUMBER` --config $build_type --skip_tests --build_wheel --use_migraphx --use_rocm --rocm_version=5.4 --rocm_home /opt/rocm
 RUN pip3 install /workspace/onnxruntime/build/Linux/$build_type/dist/*.whl
 RUN pip3 install psutil onnx coloredlogs torch packaging transformers sympy
 RUN pip3 install -U numpy
