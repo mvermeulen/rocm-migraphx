@@ -28,7 +28,7 @@ struct name_value {
   char *value;
 };
 
-#define DBFILE "/opt/rocm/miopen/share/miopen/db/gfx906_60.db"
+#define DBFILE "/opt/rocm/share/miopen/db/gfx906_60.db"
 
 static sqlite3 *db_handle = NULL;
 
