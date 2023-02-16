@@ -1,0 +1,10 @@
+ARG base_image="migxmlir:20230216"
+FROM ${base_image}
+
+ARG migraphx_repository="https://github.com/ROCmSoftwarePlatform/AMDMIGraphX"
+ARG migraphx_branch="develop"
+
+WORKDIR /workspace
+RUN git clone ${migraphx_repository} --depth=1 --branch ${migraphx_branch}
+RUN cd AMDMIGraphX && rbuild build -d /workspace/depend -B /workspace/build --cxx=/opt/rocm/llvm/bin/clang++ -DMIGRAPHX_ENABLE_MLIR=On -DCMAKE_CXX_FLAGS_DEBUG="-g -O2" -DCMAKE_CFLAGS_DEBUG="-g -O2"
+RUN cd /workspace/AMDMIGraphX/build && dpkg -i *.deb
