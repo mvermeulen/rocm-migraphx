@@ -6,9 +6,9 @@ BRANCH=${BRANCH:="develop"}
 DOCKERIMAGE=${DOCKERIMAGE:="rocm-migraphx:$DATESTAMP"}
 
 if [ "$BUILD_NAVI" = "0" ]; then
-    BASE=${BASE:="rocm-migraphx:5.3"}
+    BASE=${BASE:="rocm-migraphx:5.4"}
 else
-    BASE=${BASE:="rocm-migraphx:5.3n"}
+    BASE=${BASE:="rocm-migraphx:5.4n"}
 fi
 
 MIOPENTUNE=${MIOPENTUNE:="miopen-rocm52"}
