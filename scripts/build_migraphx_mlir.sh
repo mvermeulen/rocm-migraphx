@@ -1,6 +1,7 @@
 #!/bin/bash
 MIGRAPHX_DIR=${MIGRAPHX_DIR:="/home/mev/source/AMDMIGraphX"}
-NOCACHE=${NOCACHE:="--no-cache"}
+#NOCACHE=${NOCACHE:="--no-cache"}
+NOCACHE=
 
 if [ `id -u` != 0 ]; then
     echo script should be run as root

@@ -1,4 +1,4 @@
-ARG base_image="migxmlir:20230216"
+ARG base_image="migxmlir:5.5"
 FROM ${base_image}
 
 ARG migraphx_repository="https://github.com/ROCmSoftwarePlatform/AMDMIGraphX"
