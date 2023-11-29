@@ -16,10 +16,10 @@ fi
 cd transformers
 if [ $SETUP == 1 ]; then
     pip3 install .
-    pip3 install -r ./examples/requirements.txt
+    pip3 install -r ./examples/pytorch/text-classification/requirements.txt
 fi
 
-cd examples
+cd examples/pytorch/text-classification
 if [ ! -f bert_mrpc1.onnx ]; then
     python3 run_glue.py \
 	    --model_type bert \
