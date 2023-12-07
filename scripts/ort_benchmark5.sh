@@ -6,8 +6,15 @@ MICROBENCH=${MICROBENCH:="/workspace/onnxruntime/onnxruntime/python/tools/microb
 
 testdir=${TEST_RESULTDIR}/onnxruntime-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
-pushd /workspace/migraphx/src
+pushd /src/AMDMIGraphX/src
 git log > $testdir/commit.txt
+arch=`rocminfo | grep gfx | head -1 | awk '{ print $2 }'`
+echo $arch > $testdir/arch.txt
+if [ "$arch" = "gfx1034" ]; then
+    export HSA_OVERRIDE_GFX_VERSION=10.3.0
+    arch=`rocminfo | grep gfx | head -1 | awk '{ print $2 }'`
+    echo $arch " overridden" >> $testdir/arch.txt
+fi
 popd
 cd ${EXEDIR}
 touch ${testdir}/summary.csv
@@ -16,49 +23,49 @@ touch ${testdir}/summary.csv
 # Ideal sequence: 16,32,64,128,256,384,512
 echo "\n***** bert-base-cased migraphx\n" >> $testdir/dashboard.out
 echo "\n***** bert-base-cased migraphx\n" >> $testdir/dashboard.err
-timeout 600 python3 benchmark.py -g -m bert-base-cased --sequence_length 32 384 --batch_sizes 1 32 --provider=migraphx -p fp16 --disable_gelu --disable_layer_norm --disable_attention --disable_skip_layer_norm --disable_embed_layer_norm --disable_bias_skip_layer_norm --disable_bias_gelu --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
+time python3 benchmark.py -g -m bert-base-cased --sequence_length 32 384 --batch_sizes 1 32 --provider=migraphx -p fp16 --disable_gelu --disable_layer_norm --disable_attention --disable_skip_layer_norm --disable_embed_layer_norm --disable_bias_skip_layer_norm --disable_bias_gelu --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
 
 # Ideal batch: 1,2,4,8,16,32,64,128
 # Ideal sequence: 16,32,64,128,256,384,512
 echo "\n***** bert-large-uncased migraphx\n" >> $testdir/dashboard.out
 echo "\n***** bert-large-uncased migraphx\n" >> $testdir/dashboard.err
-timeout 600 python3 benchmark.py -g -m bert-large-uncased --sequence_length 32 384 --batch_sizes 1 32 --provider=migraphx -p fp16 --disable_gelu --disable_layer_norm --disable_attention --disable_skip_layer_norm --disable_embed_layer_norm --disable_bias_skip_layer_norm --disable_bias_gelu --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
+time python3 benchmark.py -g -m bert-large-uncased --sequence_length 32 384 --batch_sizes 1 32 --provider=migraphx -p fp16 --disable_gelu --disable_layer_norm --disable_attention --disable_skip_layer_norm --disable_embed_layer_norm --disable_bias_skip_layer_norm --disable_bias_gelu --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
 
 # Ideal batch: 1,2,4,8,16,32
 # Ideal sequence: 16,32,64,128,256,384,512
 echo "\n***** distilgpt2 migraphx\n" >> $testdir/dashboard.out
 echo "\n***** distilgpt2 migraphx\n" >> $testdir/dashboard.err
-timeout 600 python3 benchmark.py -g -m distilgpt2 --model_class AutoModelForCausalLM --sequence_length 32 384 --batch_sizes 1 8 --provider=migraphx -p fp16 --disable_gelu --disable_layer_norm --disable_attention --disable_skip_layer_norm --disable_embed_layer_norm --disable_bias_skip_layer_norm --disable_bias_gelu --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
+time python3 benchmark.py -g -m distilgpt2 --model_class AutoModelForCausalLM --sequence_length 32 384 --batch_sizes 1 8 --provider=migraphx -p fp16 --disable_gelu --disable_layer_norm --disable_attention --disable_skip_layer_norm --disable_embed_layer_norm --disable_bias_skip_layer_norm --disable_bias_gelu --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
 
 # clear the cached optimized models
 rm ./onnx_models/*gpu*
 
 echo "\n***** bert-base-cased rocm\n" >> $testdir/dashboard.out
 echo "\n***** bert-base-cased rocm\n" >> $testdir/dashboard.err
-timeout 600 python3 benchmark.py -g -m bert-base-cased --sequence_length 32 384 --batch_sizes 1 32 --provider=rocm -p fp16 --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
+time python3 benchmark.py -g -m bert-base-cased --sequence_length 32 384 --batch_sizes 1 32 --provider=rocm -p fp16 --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
 
 echo "\n***** bert-large-uncased rocm\n" >> $testdir/dashboard.out
 echo "\n***** bert-large-uncased rocm\n" >> $testdir/dashboard.err
-timeout 600 python3 benchmark.py -g -m bert-large-uncased --sequence_length 32 384 --batch_sizes 1 32 --provider=rocm -p fp16 --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
+time python3 benchmark.py -g -m bert-large-uncased --sequence_length 32 384 --batch_sizes 1 32 --provider=rocm -p fp16 --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
 
 echo "\n***** distilgpt2 rocm\n" >> $testdir/dashboard.out
 echo "\n***** distilgpt2 rocm\n" >> $testdir/dashboard.err
-timeout 600 python3 benchmark.py -g -m distilgpt2 --model_class AutoModelForCausalLM --sequence_length 32 384 --batch_sizes 1 8 --provider=rocm -p fp16 --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
+time python3 benchmark.py -g -m distilgpt2 --model_class AutoModelForCausalLM --sequence_length 32 384 --batch_sizes 1 8 --provider=rocm -p fp16 --result_csv $testdir/dashboard.csv --detail_csv $testdir/dashboard-detail.csv 1>>$testdir/dashboard.out 2>>$testdir/dashboard.err
 
 while read model batch sequence precision
 do
     file="${model}-b${batch}-s${sequence}-${precision}"
     tag="${model}-b${batch}-s${sequence}-${precision}-rocm"
-    timeout 600 python3 benchmark.py -g -b $batch -m $model --sequence_length $sequence --precision $precision --provider rocm --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+    time python3 benchmark.py -g -b $batch -m $model --sequence_length $sequence --precision $precision --provider rocm --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
     tag="${model}-b${batch}-s${sequence}-${precision}-migraphx"
-    timeout 600 python3 benchmark.py -o no_opt -g -b $batch -m $model --sequence_length $sequence --precision $precision --provider migraphx --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+    time python3 benchmark.py -o no_opt -g -b $batch -m $model --sequence_length $sequence --precision $precision --provider migraphx --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
     if [ "$precision" = "fp32" ]; then
 	tag="${model}-b${batch}-s${sequence}-${precision}-torch"	
-	timeout 600 python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e torch --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+	time python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e torch --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
 	tag="${model}-b${batch}-s${sequence}-${precision}-torchscript"	
-	timeout 600 python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e torchscript --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+	time python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e torchscript --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
 	tag="${model}-b${batch}-s${sequence}-${precision}-cpu"		
-	timeout 600 python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e cpu --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err	
+	time python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e cpu --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err	
     fi
     sort -ru $testdir/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
     sort -ru $testdir/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
