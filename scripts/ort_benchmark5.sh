@@ -34,7 +34,10 @@ do
 		    tag="${file}-${engine}-${provider}"
 		    case $provider in
 			"cpu")
-			    options="-e onnxruntime --provider cpu"			    
+			    if [ "$precision" = "fp16" ]; then
+				continue
+			    fi
+			    options="-e onnxruntime --provider cpu"
 			;;
 			"migraphx")
 			    options="-g -e onnxruntime --provider migraphx --disable_gelu --disable_layer_norm --disable_attention --disable_skip_layer_norm --disable_embed_layer_norm --disable_bias_skip_layer_norm --disable_bias_gelu"
@@ -53,23 +56,23 @@ do
 		;;
 	    "torch")
 		tag="${file}-${engine}"
-		options="-o no_opt -e torch"		
+		options="-g -o no_opt -e torch"		
 		;;
 	    "torch2")
 		tag="${file}-${engine}"
-		options="-o no_opt -e torch2"		
+		options="-g -o no_opt -e torch2"		
 		;;
 	    "torchscript")
 		tag="${file}-${engine}"
-		options="-o no_opt -e torchscript"		
+		options="-g -o no_opt -e torchscript"		
 		;;
 	    "tensorflow")
 		tag="${file}-${engine}"
-		options="-o no_opt -e tensorflow"		
+		options="-g -o no_opt -e tensorflow"		
 		;;
 	    "shark")
 		tag="${file}-${engine}"
-		options="-o no_opt -e shark"
+		options="-g -o no_opt -e shark"
 		;;    
 	esac
 	echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
