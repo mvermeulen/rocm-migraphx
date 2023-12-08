@@ -26,12 +26,12 @@ while read model batch sequence precision
 do
     for engine in "${ENGINES[@]}"
     do
-	file="${model}-b${batch}-s${sequence}-${precision}-${engine}"    
+	file="${model}-b${batch}-s${sequence}-${precision}"    
 	case $engine in
 	    "onnxruntime")
 		for provider in "${PROVIDERS[@]}"
 		do
-		    tag="${file}-${provider}"
+		    tag="${file}-${engine}-${provider}"
 		    case $provider in
 			"cpu")
 			    options="-e onnxruntime --provider cpu"			    
@@ -44,7 +44,7 @@ do
 			;;
 		    esac
 		    echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
-		    time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+		    /usr/bin/time -o ${testdir}/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
 		    sort -ru ${testdir}/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
 		    sort -ru ${testdir}/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
 		    cat ${testdir}/${file}-summary-sort.csv >> ${testdir}/summary.csv
@@ -73,7 +73,7 @@ do
 		;;    
 	esac
 	echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
-	time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+	/usr/bin/time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
 	sort -ru ${testdir}/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
 	sort -ru ${testdir}/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
 	cat ${testdir}/${file}-summary-sort.csv >> ${testdir}/summary.csv
