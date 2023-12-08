@@ -1,8 +1,8 @@
-ARG base_image="migxmlir:5.5"
+ARG base_image="mlir-base:latest"
 FROM ${base_image}
 
 ARG migraphx_repository="https://github.com/ROCmSoftwarePlatform/AMDMIGraphX"
-ARG migraphx_branch="develop"
+ARG migraphx_branch="mlir-gemm1"
 
 WORKDIR /workspace
 RUN git clone ${migraphx_repository} --depth=1 --branch ${migraphx_branch}

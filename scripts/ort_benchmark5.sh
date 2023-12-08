@@ -2,7 +2,7 @@
 set -x
 TEST_RESULTDIR=${TEST_RESULTDIR:="/home/mev/source/rocm-migraphx/test-results"}
 EXEDIR=${EXEDIR:="/src/onnxruntime/onnxruntime/python/tools/transformers"}
-MICROBENCH=${MICROBENCH:="/workspace/onnxruntime/onnxruntime/python/tools/microbench"}
+MICROBENCH=${MICROBENCH:="/src/onnxruntime/onnxruntime/python/tools/microbench"}
 
 testdir=${TEST_RESULTDIR}/onnxruntime-`date '+%Y-%m-%d-%H-%M'`
 mkdir $testdir
@@ -62,10 +62,10 @@ do
     if [ "$precision" = "fp32" ]; then
 	tag="${model}-b${batch}-s${sequence}-${precision}-torch"	
 	time python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e torch --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+	tag="${model}-b${batch}-s${sequence}-${precision}-torch2"	
+	time python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e torch2 --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err	
 	tag="${model}-b${batch}-s${sequence}-${precision}-torchscript"	
 	time python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e torchscript --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
-	tag="${model}-b${batch}-s${sequence}-${precision}-cpu"		
-	time python3 benchmark.py -o no_opt -b $batch -m $model --sequence_length $sequence --precision $precision -e cpu --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err	
     fi
     sort -ru $testdir/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
     sort -ru $testdir/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
@@ -87,7 +87,7 @@ roberta-base 1 128 fp16
 roberta-base 1 128 fp32
 BMARK_LIST
 sort -ru ${testdir}/summary.csv > ${testdir}/results.csv
-
+exit 1
 cd ${MICROBENCH}
 while read bmark provider precision
 do
