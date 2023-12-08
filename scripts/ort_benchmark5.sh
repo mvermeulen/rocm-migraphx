@@ -24,12 +24,12 @@ PROVIDERS=('rocm' 'migraphx' 'cpu')
 
 while read model batch sequence precision
 do
-    file="${model}-b${batch}-s${sequence}-${precision}-${engine}"    
-    for engine in $ENGINES
+    for engine in "${ENGINES[@]}"
     do
+	file="${model}-b${batch}-s${sequence}-${precision}-${engine}"    
 	case $engine in
 	    "onnxruntime")
-		for provider in $PROVIDERS
+		for provider in "${PROVIDERS[@]}"
 		do
 		    tag="${file}-${provider}"
 		    case $provider in
@@ -43,12 +43,12 @@ do
 			    options="-g -e onnxruntime --provider rocm"
 			;;
 		    esac
+		    echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
+		    time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+		    sort -ru ${testdir}/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
+		    sort -ru ${testdir}/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
+		    cat ${testdir}/${file}-summary-sort.csv >> ${testdir}/summary.csv
 		done
-		echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
-		time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail-csv $testdir/${file}-detail-csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
-		sort -ru ${testdir}/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
-		sort -ru ${testdir}/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
-		cat ${testdir}/${file}-summary-sort.csv >> ${testdir}/summary.csv		
 		continue
 		;;
 	    "torch")
@@ -73,7 +73,7 @@ do
 		;;    
 	esac
 	echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
-	time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail-csv $testdir/${file}-detail-csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+	time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
 	sort -ru ${testdir}/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
 	sort -ru ${testdir}/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
 	cat ${testdir}/${file}-summary-sort.csv >> ${testdir}/summary.csv
