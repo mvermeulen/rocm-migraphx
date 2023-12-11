@@ -1,7 +1,7 @@
 #!/bin/bash
 ORT_REPOSITORY=${ORT_REPOSITORY:="https://github.com/mvermeulen/onnxruntime"}
 ORT_BRANCH=${ORT_BRANCH:="mev_add_shark"}
-ROCM_VERSION=${ROCM_VERSION:="5.7.1"}
+ROCM_VERSION=${ROCM_VERSION:="5.7.2"}
 WORKDIR=${WORKSPACE:="/workdir"}
 
 pip3 install packaging
@@ -16,7 +16,7 @@ export PATH=/usr/local/cmake-${CMAKE_VERSION}-linux-x86_64/bin:$PATH
 cd /src
 git clone --recursive --branch ${ORT_BRANCH} --depth=1 ${ORT_REPOSITORY}
 cd onnxruntime
-./build.sh --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=`cat ./VERSION_NUMBER` CMAKE_HIP_FLAGS=-Wno-deprecated-builtins --config Release --skip_tests --build_wheel --use_migraphx --use_rocm --rocm_version=5.7.1 --rocm_home /opt/rocm --allow_running_as_root
+./build.sh --parallel --cmake_extra_defines ONNXRUNTIME_VERSION=`cat ./VERSION_NUMBER` CMAKE_HIP_FLAGS=-Wno-deprecated-builtins --config Release --skip_tests --build_wheel --use_migraphx --use_rocm --rocm_version=${ROCM_VERSION} --rocm_home /opt/rocm --allow_running_as_root
 
 pip3 install /src/onnxruntime/build/Linux/Release/dist/*.whl
 
