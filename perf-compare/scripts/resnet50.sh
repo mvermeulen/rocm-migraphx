@@ -7,7 +7,7 @@ if [ ! -f setup_venv.sh ]; then
 fi
 
 PYTHON=python3.11 VENV_DIR=1211_venv IMPORTER=1 ./setup_venv.sh
-source
+source 1211_venv/bin/activate
 
 python -m shark.examples.shark_inference.resnet50_script --device=vulkan
 

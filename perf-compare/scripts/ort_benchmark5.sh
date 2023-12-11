@@ -20,19 +20,22 @@ cd ${EXEDIR}
 touch ${testdir}/summary.csv
 
 # Temporary
-# Run SHARK separately because need to set up the environment
+# Run SHARK separately SHARK manages a separate python venv and also uses python3.11
+# This also means we may need to reinstall some python packages in the venv.
 pushd /src/SHARK
 PYTHON=python3.11 ./setup_venv.sh
 source shark.venv/bin/activate
+pip3 install /src/onnxruntime/build/Linux/Release/dist/*.whl
+popd
+
+engine="shark"
 while read model batch sequence precision
 do
     file="${model}-b${batch}-s${sequence}-${precision}"    
     tag="${file}-${engine}"
     options="-g -o no_opt -e shark"
     echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
-    /usr/bin/time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $p
-recision --result_csv $testdir/${file}-shark-summary.csv --detail_csv $testdir/${file}-shark-detail.csv 1>$testdir/${tag}.out 2>$testdir/$
-{tag}.err
+    /usr/bin/time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-shark-summary.csv --detail_csv $testdir/${file}-shark-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
     sort -ru ${testdir}/${file}-shark-detail.csv > ${testdir}/${file}-detail-sort.csv
     sort -ru ${testdir}/${file}-shark-summary.csv > ${testdir}/${file}-summary-sort.csv
     cat ${testdir}/${file}-shark-summary-sort.csv >> ${testdir}/shark-summary.csv
