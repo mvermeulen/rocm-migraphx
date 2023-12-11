@@ -20,8 +20,7 @@ cd ${EXEDIR}
 touch ${testdir}/summary.csv
 
 # Temporary
-# Run SHARK separately SHARK manages a separate python venv and also uses python3.11
-# This also means we may need to reinstall some python packages in the venv.
+# Run SHARK separately SHARK manages a separate python venv
 pushd /src/SHARK
 PYTHON=python3.11 ./setup_venv.sh
 source shark.venv/bin/activate
