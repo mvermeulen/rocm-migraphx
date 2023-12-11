@@ -19,7 +19,42 @@ popd
 cd ${EXEDIR}
 touch ${testdir}/summary.csv
 
-ENGINES=('onnxruntime' 'shark' 'torch' 'torch2' 'torchscript' 'tensorflow')
+# Temporary
+# Run SHARK separately because need to set up the environment
+pushd /src/SHARK
+PYTHON=python3.11 ./setup_venv.sh
+source shark.venv/bin/activate
+while read model batch sequence precision
+do
+    file="${model}-b${batch}-s${sequence}-${precision}"    
+    tag="${file}-${engine}"
+    options="-g -o no_opt -e shark"
+    echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
+    /usr/bin/time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-shark-summary.csv --detail_csv $testdir/${file}-shark-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+    sort -ru ${testdir}/${file}-shark-detail.csv > ${testdir}/${file}-detail-sort.csv
+    sort -ru ${testdir}/${file}-shark-summary.csv > ${testdir}/${file}-summary-sort.csv
+    cat ${testdir}/${file}-shark-summary-sort.csv >> ${testdir}/shark-summary.csv
+done <<EOF    
+bert-base-uncased 1 128 fp16
+bert-base-uncased 1 128 fp32
+bert-base-cased 1 32 fp16
+bert-base-cased 1 384 fp16
+bert-base-cased 32 32 fp16
+bert-base-cased 32 384 fp16
+bert-large-uncased 1 32 fp16
+bert-large-uncased 1 384 fp16
+bert-large-uncased 32 32 fp16
+bert-large-uncased 32 384 fp16
+distilgpt2 1 32 fp16
+distilgpt2 1 384 fp16
+distilgpt2 32 32 fp16
+distilgpt2 32 384 fp16
+EOF
+
+deactivate
+exit 0
+
+ENGINES=('onnxruntime' 'torch' 'torch2' 'torchscript' 'tensorflow')
 PROVIDERS=('rocm' 'migraphx' 'cpu')
 
 while read model batch sequence precision
