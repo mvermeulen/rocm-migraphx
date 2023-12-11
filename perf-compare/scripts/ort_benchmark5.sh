@@ -21,10 +21,13 @@ touch ${testdir}/summary.csv
 
 # Temporary
 # Run SHARK separately SHARK manages a separate python venv
+# This means we might need to reinstall some python packages previously installed.
 pushd /src/SHARK
+PYTHONPATH=/src/SHARK:$PYTHONPATH
 PYTHON=python3.11 ./setup_venv.sh
 source shark.venv/bin/activate
 pip3 install /src/onnxruntime/build/Linux/Release/dist/*.whl
+pip3 install onnx
 popd
 
 engine="shark"
