@@ -1,0 +1,11 @@
+# Base ONNX runtime package built on top of MIGraphX
+ARG base_docker="migraphx:5.7.2"
+FROM ${base_docker}
+
+# Set up SHARK for benchmarks
+RUN apt install -y python3.11 python3.11-venv
+RUN cd /src && git clone https://github.com/nod-ai/SHARK
+
+
+COPY scripts/build_ort_migraphx.sh /workdir/build_ort_migraphx.sh
+RUN /workdir/build_ort_migraphx.sh

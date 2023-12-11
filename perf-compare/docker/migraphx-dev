@@ -1,0 +1,6 @@
+# Basic MIGraphX development building from source
+ARG base_docker="rocm-dev:5.7.2"
+FROM ${base_docker}
+
+COPY scripts/build_migraphx.sh /workdir/build_migraphx.sh
+RUN /workdir/build_migraphx.sh
