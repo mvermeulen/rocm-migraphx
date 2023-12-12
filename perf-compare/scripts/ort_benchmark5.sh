@@ -25,12 +25,21 @@ touch ${testdir}/summary.csv
 pushd /src/SHARK
 export PYTHONPATH=/src/SHARK:$PYTHONPATH
 # ONNX runtime benchmarks checks for a GPU version of torch and shark loads a CPU version
-sed -e 's?download.pytorch.org/whl/nightly/cpu?download.pytorch.org/whl/nightly/rocm5.7?g' setup_venv.sh > setup_venv_rocm.sh
-chmod 755 setup_venv_rocm.sh
-PYTHON=python3.11 ./setup_venv_rocm.sh
+PYTHON=python3.11 ./setup_venv.sh
 source shark.venv/bin/activate
 pip3 install /src/onnxruntime/build/Linux/Release/dist/*.whl
 pip3 install onnx
+# Hack...
+# 1. torch-mlir pulled in as a dependency by shark indirectly pulls in the CPU version
+#    of torch from https://llvm.github.io/torch-mlir/package-index/.
+# 2. We need the GPU version running in the ONNX benchmark.py script.  Rather than building
+#    we try downloading the corresponding version from
+#    https://download.pytorch.org/whl/nightly/rocm5.7/torch/
+# 3. The version of torch built nightly doesn't necessarily have a corresponding torch-triton
+#    so for now we pass the --no-dependencies flag.
+# Hopefully not more is broken than the triton side...
+required_torch_version=`pip3 list | grep "^torch " | awk '{ print $2 }' | sed -e 's/cpu/rocm5.7/g'`
+pip3 install torch==${required_torch_version} -f https://download.pytorch.org/whl/nightly/rocm5.7/torch/ --no-dependencies
 popd
 
 engine="shark"
