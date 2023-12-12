@@ -24,7 +24,10 @@ touch ${testdir}/summary.csv
 # This means we might need to reinstall some python packages previously installed.
 pushd /src/SHARK
 export PYTHONPATH=/src/SHARK:$PYTHONPATH
-PYTHON=python3.11 ./setup_venv.sh
+# ONNX runtime benchmarks checks for a GPU version of torch and shark loads a CPU version
+sed -e 's?download.pytorch.org/whl/nightly/cpu?download.pytorch.org/whl/nightly/rocm5.7/g' setup_venv.sh setup_venv_rocm.sh
+chmod 755 setup_venv_rocm.sh
+PYTHON=python3.11 ./setup_venv_rocm.sh
 source shark.venv/bin/activate
 pip3 install /src/onnxruntime/build/Linux/Release/dist/*.whl
 pip3 install onnx
