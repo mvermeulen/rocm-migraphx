@@ -19,6 +19,82 @@ popd
 cd ${EXEDIR}
 touch ${testdir}/summary.csv
 
+ENGINES=('torchscript')
+PROVIDERS=('rocm' 'migraphx' 'cpu')
+
+while read model batch sequence precision
+do
+    for engine in "${ENGINES[@]}"
+    do
+	file="${model}-b${batch}-s${sequence}-${precision}-${engine}"    
+	case $engine in
+	    "onnxruntime")
+		for provider in "${PROVIDERS[@]}"
+		do
+		    tag="${file}-${provider}"
+		    case $provider in
+			"cpu")
+			    options="-e onnxruntime --provider cpu"			    
+			;;
+			"migraphx")
+			    options="-g -e onnxruntime --provider migraphx --disable_gelu --disable_layer_norm --disable_attention --disable_skip_layer_norm --disable_embed_layer_norm --disable_bias_skip_layer_norm --disable_bias_gelu"
+			;;
+			"rocm")
+			    options="-g -e onnxruntime --provider rocm"
+			;;
+		    esac
+		    echo "*** python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
+		    /usr/bin/time -o $testdir/${tag}.time python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+		    sort -ru ${testdir}/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
+		    sort -ru ${testdir}/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
+		    cat ${testdir}/${file}-summary-sort.csv >> ${testdir}/summary.csv
+		done
+		continue
+		;;
+	    "torch")
+		tag="${file}-${engine}"
+		options="-o no_opt -e torch"		
+		;;
+	    "torch2")
+		tag="${file}-${engine}"
+		options="-o no_opt -e torch2"		
+		;;
+	    "torchscript")
+		tag="${file}-${engine}"
+		options="-o no_opt -e torchscript"		
+		;;
+	    "tensorflow")
+		tag="${file}-${engine}"
+		options="-o no_opt -e tensorflow"		
+		;;
+	    "shark")
+		tag="${file}-${engine}"
+		options="-o no_opt -e shark"
+		;;    
+	esac
+	echo "*** python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
+	/usr/bin/time -o $testdir/${tag}.time python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+	sort -ru ${testdir}/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
+	sort -ru ${testdir}/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
+	cat ${testdir}/${file}-summary-sort.csv >> ${testdir}/summary.csv
+    done
+done <<EOF    
+bert-base-uncased 1 128 fp16
+bert-base-uncased 1 128 fp32
+bert-base-cased 1 32 fp16
+bert-base-cased 1 384 fp16
+bert-base-cased 32 32 fp16
+bert-base-cased 32 384 fp16
+bert-large-uncased 1 32 fp16
+bert-large-uncased 1 384 fp16
+bert-large-uncased 32 32 fp16
+bert-large-uncased 32 384 fp16
+distilgpt2 1 32 fp16
+distilgpt2 1 384 fp16
+distilgpt2 32 32 fp16
+distilgpt2 32 384 fp16
+EOF
+
 # Temporary
 # Run SHARK separately SHARK manages a separate python venv
 # This means we might need to reinstall some python packages previously installed.
