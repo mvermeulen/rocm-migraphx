@@ -53,23 +53,23 @@ do
 		;;
 	    "torch")
 		tag="${file}-${engine}"
-		options="-o no_opt -e torch"		
+		options="-g -o no_opt -e torch"		
 		;;
 	    "torch2")
 		tag="${file}-${engine}"
-		options="-o no_opt -e torch2"		
+		options="-g -o no_opt -e torch2"		
 		;;
 	    "torchscript")
 		tag="${file}-${engine}"
-		options="-o no_opt -e torchscript"		
+		options="-g -o no_opt -e torchscript"		
 		;;
 	    "tensorflow")
 		tag="${file}-${engine}"
-		options="-o no_opt -e tensorflow"		
+		options="-g -o no_opt -e tensorflow"		
 		;;
 	    "shark")
 		tag="${file}-${engine}"
-		options="-o no_opt -e shark"
+		options="-g -o no_opt -e shark"
 		;;    
 	esac
 	echo "*** python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
