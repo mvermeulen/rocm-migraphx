@@ -48,8 +48,8 @@ do
     file="${model}-b${batch}-s${sequence}-${precision}"    
     tag="${file}-${engine}"
     options="-g -o no_opt -e shark"
-    echo "*** python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
-    /usr/bin/time -o $testdir/${tag}.time python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-${engine}-summary.csv --detail_csv $testdir/${file}-${engine}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+    echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
+    /usr/bin/time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-${engine}-summary.csv --detail_csv $testdir/${file}-${engine}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
 
     sort -ru ${testdir}/${file}-${engine}-detail.csv > ${testdir}/${file}-${engine}-detail-sort.csv
     sort -ru ${testdir}/${file}-${engine}-summary.csv > ${testdir}/${file}-${engine}-summary-sort.csv
@@ -65,8 +65,8 @@ do
     file="${model}-b${batch}-s${sequence}-${precision}"    
     tag="${file}-${engine}"
     options="-g -o no_opt -e torchscript"
-    echo "*** python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
-    /usr/bin/time -o $testdir/${tag}.time python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-${engine}-summary.csv --detail_csv $testdir/${file}-${engine}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+    echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
+    /usr/bin/time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-${engine}-summary.csv --detail_csv $testdir/${file}-${engine}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
 
     sort -ru ${testdir}/${file}-${engine}-detail.csv > ${testdir}/${file}-${engine}-detail-sort.csv
     sort -ru ${testdir}/${file}-${engine}-summary.csv > ${testdir}/${file}-${engine}-summary-sort.csv
@@ -104,8 +104,8 @@ do
 			    options="-g -e onnxruntime --provider rocm"
 			;;
 		    esac
-		    echo "*** python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
-		    /usr/bin/time -o $testdir/${tag}.time python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+		    echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
+		    /usr/bin/time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
 		    sort -ru ${testdir}/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
 		    sort -ru ${testdir}/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
 		    cat ${testdir}/${file}-summary-sort.csv >> ${testdir}/summary.csv
@@ -133,8 +133,8 @@ do
 		options="-g -o no_opt -e shark"
 		;;    
 	esac
-	echo "*** python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
-	/usr/bin/time -o $testdir/${tag}.time python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+	echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
+	/usr/bin/time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-summary.csv --detail_csv $testdir/${file}-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
 	sort -ru ${testdir}/${file}-detail.csv > ${testdir}/${file}-detail-sort.csv
 	sort -ru ${testdir}/${file}-summary.csv > ${testdir}/${file}-summary-sort.csv
 	cat ${testdir}/${file}-summary-sort.csv >> ${testdir}/summary.csv
@@ -185,10 +185,10 @@ do
     file="${model}-b${batch}-s${sequence}-${precision}"    
     tag="${file}-${engine}"
     options="-g -o no_opt -e shark"
-    echo "*** python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
-    /usr/bin/time -o $testdir/${tag}.time python3 benchmark2.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-shark-summary.csv --detail_csv $testdir/${file}-shark-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
+    echo "*** python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision"
+    /usr/bin/time -o $testdir/${tag}.time python3 benchmark.py ${options} -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-shark-summary.csv --detail_csv $testdir/${file}-shark-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err
 
-    /usr/bin/time -o $testdir/${tag}.time python3 benchmark2.py -g -o no_opt -e torchscript -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-shark-summary.csv --detail_csv $testdir/${file}-shark-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err    
+    /usr/bin/time -o $testdir/${tag}.time python3 benchmark.py -g -o no_opt -e torchscript -m $model --batch_sizes $batch --sequence_length $sequence -p $precision --result_csv $testdir/${file}-shark-summary.csv --detail_csv $testdir/${file}-shark-detail.csv 1>$testdir/${tag}.out 2>$testdir/${tag}.err    
     sort -ru ${testdir}/${file}-shark-detail.csv > ${testdir}/${file}-shark-detail-sort.csv
     sort -ru ${testdir}/${file}-shark-summary.csv > ${testdir}/${file}-shark-summary-sort.csv
     cat ${testdir}/${file}-shark-summary-sort.csv >> ${testdir}/shark-summary.csv
