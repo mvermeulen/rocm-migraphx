@@ -27,7 +27,8 @@ RUN ln -s /usr/lib/python3/dist-packages/numpy/core/include/numpy /usr/include/p
 RUN wget ${install_script}
 
 RUN apt install -y ./`basename ${install_script}`
-RUN amdgpu-install --vulkan=pro --usecase=rocmdev,graphics,mlsdk --accept-eula --no-dkms
+# RUN amdgpu-install --vulkan=pro --usecase=rocmdev,graphics,mlsdk --accept-eula --no-dkms
+RUN amdgpu-install --usecase=rocmdev,graphics,mlsdk --accept-eula --no-dkms
 
 # ROCm packages installed after repository is set up
 RUN apt install -y half
